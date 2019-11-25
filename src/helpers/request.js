@@ -10,7 +10,7 @@ function request(url) {
                 console.error(error.stack)
                 console.error('Get http error, try again after 3 minutes ...', error)
                 request(url)
-            }, 180000) // 3 minutes
+            }, 10000) // 10 seconds
         }
     })
 }

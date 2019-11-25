@@ -24,7 +24,7 @@ const {
 
 const {
     safePriceSwing,
-} = require('../utils/config')
+} = require('../utils/config/base.config')
 
 const {
     ethgasstationAPI
@@ -52,6 +52,7 @@ async function getBTCPrice() {
     if (binancePrice > 0) {
         allPrices.push({
             "exchangeName": "binance",
+            "asset": "imbtc",
             "price": binancePrice,
         })
     }
@@ -62,6 +63,7 @@ async function getBTCPrice() {
     if (bitfinexPrice > 0) {
         allPrices.push({
             "exchangeName": "bitfinex",
+            "asset": "imbtc",
             "price": bitfinexPrice,
         })
     }
@@ -72,6 +74,7 @@ async function getBTCPrice() {
     if (bittrexPrice > 0) {
         allPrices.push({
             "exchangeName": "bittrex",
+            "asset": "imbtc",
             "price": bittrexPrice,
         })
     }
@@ -82,6 +85,7 @@ async function getBTCPrice() {
     if (gatePrice > 0) {
         allPrices.push({
             "exchangeName": "gate",
+            "asset": "imbtc",
             "price": gatePrice,
         })
     }
@@ -92,6 +96,7 @@ async function getBTCPrice() {
     if (huobiPrice > 0) {
         allPrices.push({
             "exchangeName": "huobi",
+            "asset": "imbtc",
             "price": huobiPrice,
         })
     }
@@ -102,6 +107,7 @@ async function getBTCPrice() {
     if (hitbtcPrice > 0) {
         allPrices.push({
             "exchangeName": "hitbtc",
+            "asset": "imbtc",
             "price": hitbtcPrice,
         })
     }
@@ -112,6 +118,7 @@ async function getBTCPrice() {
     if (kucoinPrice > 0) {
         allPrices.push({
             "exchangeName": "kucoin",
+            "asset": "imbtc",
             "price": kucoinPrice,
         })
     }
@@ -156,12 +163,18 @@ async function getBTCPrice() {
     }
 
     if (validPrices.length >= 5 && swing <= safePriceSwing) {
-        return [true, validPrices]
+        return {
+            "result": true,
+            "prices": validPrices,
+        }
     } else {
         retrayBTCTimes = retrayBTCTimes + 1
         if (retrayBTCTimes >= 5) {
             retrayBTCTimes = 0
-            return [false, validPrices]
+            return {
+                "result": false,
+                "prices": validPrices
+            }
         }
         await getBTCPrice()
     }
@@ -181,6 +194,7 @@ async function getETHPrice() {
     if (binancePrice > 0) {
         allPrices.push({
             "exchangeName": "binance",
+            "asset": "eth",
             "price": binancePrice,
         })
     }
@@ -190,6 +204,7 @@ async function getETHPrice() {
     if (bitfinexPrice > 0) {
         allPrices.push({
             "exchangeName": "bitfinex",
+            "asset": "eth",
             "price": bitfinexPrice,
         })
     }
@@ -199,6 +214,7 @@ async function getETHPrice() {
     if (bittrexPrice > 0) {
         allPrices.push({
             "exchangeName": "bittrex",
+            "asset": "eth",
             "price": bittrexPrice,
         })
     }
@@ -211,6 +227,7 @@ async function getETHPrice() {
     if (gateUSDT > 0 && gateUSDC > 0) {
         allPrices.push({
             "exchangeName": "gate",
+            "asset": "eth",
             "price": gatePrice,
         })
     }
@@ -220,6 +237,7 @@ async function getETHPrice() {
     if (huobiPrice > 0) {
         allPrices.push({
             "exchangeName": "huobi",
+            "asset": "eth",
             "price": huobiPrice,
         })
     }
@@ -229,6 +247,7 @@ async function getETHPrice() {
     if (hitbtcPrice > 0) {
         allPrices.push({
             "exchangeName": "hitbtc",
+            "asset": "eth",
             "price": hitbtcPrice,
         })
     }
@@ -238,6 +257,7 @@ async function getETHPrice() {
     if (kucoinPrice > 0) {
         allPrices.push({
             "exchangeName": "kucoin",
+            "asset": "eth",
             "price": kucoinPrice,
         })
     }
@@ -282,12 +302,18 @@ async function getETHPrice() {
     }
 
     if (validPrices.length >= 5 && swing <= safePriceSwing) {
-        return [true, validPrices]
+        return {
+            "result": true,
+            "prices": validPrices,
+        }
     } else {
         retrayETHTimes = retrayETHTimes + 1
         if (retrayETHTimes >= 5) {
             retrayETHTimes = 0
-            return [false, validPrices]
+            return {
+                "result": false,
+                "prices": validPrices,
+            }
         }
         await getETHPrice()
     }
@@ -307,6 +333,7 @@ async function getUSDTPrice() {
     if (binancePrice > 0) {
         allPrices.push({
             "exchangeName": "binance",
+            "asset": "usdt",
             "price": binancePrice,
         })
     }
@@ -317,6 +344,7 @@ async function getUSDTPrice() {
     if (bitfinexPrice > 0) {
         allPrices.push({
             "exchangeName": "bitfinex",
+            "asset": "usdt",
             "price": bitfinexPrice,
         })
     }
@@ -330,6 +358,7 @@ async function getUSDTPrice() {
     if (bittrexETH > 0 && bittrexUSDT > 0) {
         allPrices.push({
             "exchangeName": "bittrex",
+            "asset": "usdt",
             "price": bittrexPrice,
         })
     }
@@ -340,6 +369,7 @@ async function getUSDTPrice() {
     if (gatePrice > 0) {
         allPrices.push({
             "exchangeName": "gate",
+            "asset": "usdt",
             "price": gatePrice,
         })
     }
@@ -350,6 +380,7 @@ async function getUSDTPrice() {
     if (hitbtcPrice > 0) {
         allPrices.push({
             "exchangeName": "hitbtc",
+            "asset": "usdt",
             "price": hitbtcPrice,
         })
     }
@@ -360,6 +391,7 @@ async function getUSDTPrice() {
     if (huobiPrice > 0) {
         allPrices.push({
             "exchangeName": "huobi",
+            "asset": "usdt",
             "price": huobiPrice,
         })
     }
@@ -370,6 +402,7 @@ async function getUSDTPrice() {
     if (kucoinPrice > 0) {
         allPrices.push({
             "exchangeName": "kucoin",
+            "asset": "usdt",
             "price": kucoinPrice,
         })
     }
@@ -414,12 +447,18 @@ async function getUSDTPrice() {
     }
 
     if (validPrices.length >= 5 && swing <= safePriceSwing) {
-        return [true, validPrices]
+        return {
+            "result": true,
+            "prices": validPrices,
+        }
     } else {
         retrayUSDTTimes = retrayUSDTTimes + 1
         if (retrayUSDTTimes >= 5) {
             retrayUSDTTimes = 0
-            return [false, validPrices]
+            return {
+                "result": false,
+                "prices": validPrices,
+            }
         }
         await getUSDTPrice()
     }
