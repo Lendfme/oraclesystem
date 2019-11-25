@@ -15,7 +15,6 @@ function request(url) {
     })
 }
 
-
 module.exports = {
     request,
 }
