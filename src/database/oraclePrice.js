@@ -4,17 +4,18 @@ const sqliteDB = new SqliteDB(file);
 
 function initDB() {
 	sqliteDB.createTable(`CREATE TABLE IF NOT EXISTS exchangePrice(
-		id INTEGER PRIMARY KEY NOT NULL,
+		id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         exchange CHAR(32),
         currency CHAR(32),
 		price VARCHAR(64),
+        endSign BLOB,
 		timestamp INTEGER
         );`);
 	console.log('initDB finished!');
 }
 
 function insertExchangePrice(insertData, insertField = []) {
-    insertField = insertField.length == 0 ? ['exchange', 'currency', 'price', 'timestamp'] : insertField;
+    insertField = insertField.length == 0 ? ['exchange', 'currency', 'price', 'endSign', 'timestamp'] : insertField;
     insertTable('exchangePrice', insertData, insertField);
 }
 
@@ -38,22 +39,11 @@ function insertTable(table ,insertData, insertField) {
     }
     var str = (10 ** insertField.length).toLocaleString().replace(/,/g, '').slice(1).replace(/0/g, '?').split('').toString();
     var insertSql = `INSERT INTO ${table}(${insertField.toString()}) VALUES(${str})`;
-    // console.log(insertSql);
-    // return;
     sqliteDB.insertData(insertSql, insertData);
 }
 
-function getExchangePrice() {
-    let queryBlockNumber = `select * from exchangePrice where timestamp = (select max(timestamp) from exchangePrice)`
-    return new Promise(resolve => {
-        sqliteDB.queryData(queryBlockNumber, result => {
-            resolve(result)
-        })
-    })
-}
-
-function getExchangePriceAll() {
-    let query = `select * from exchangePrice`
+function getExchangePrice(currency = '') {
+    let query = `select * from exchangePrice where timestamp = (select max(timestamp) from exchangePrice) ${currency ? 'AND currency = "' + currency + '"' : ''}`;
     return new Promise(resolve => {
         sqliteDB.queryData(query, result => {
             resolve(result)
@@ -65,6 +55,5 @@ module.exports = {
     initDB,
     insertTable,
     insertExchangePrice,
-    getExchangePriceAll,
     getExchangePrice
 }
