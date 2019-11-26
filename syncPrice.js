@@ -1,6 +1,6 @@
 const oraclePrice = require('./src/database/oraclePrice');
 const https = require('./src/helpers/https')
-const apiPriceConfig = require('./src/utils/apiPriceConfig')
+const apiPriceConfig = require('./src/utils/config/apiPriceConfig')
 
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));

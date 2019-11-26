@@ -20,7 +20,7 @@ const {
     kucoinBTCPrice,
     kucoinETHPrice,
     kucoinUSDTPrice,
-} = require('../utils/api.config')
+} = require('../utils/config/api.config')
 
 const {
     safePriceSwing,
@@ -464,6 +464,76 @@ async function getUSDTPrice() {
     }
 }
 
+// TODO: clean code
+function getMedianPrice(allPrices) {
+    let validPrices = []
+    let midValue = 0
+    let averagePrice = 0
+    allPrices.sort(function (a, b) {
+        return a.price - b.price
+    })
+
+    console.log("all price are=====", allPrices)
+
+    if (allPrices.length === 0) {
+        return {
+            "result": false,
+            "median": [],
+        }
+    } else if (allPrices.length % 2 !== 0) {
+        let midIndex = Math.floor(allPrices.length / 2)
+        midValue = allPrices[midIndex].price
+    } else if (allPrices.length % 2 === 0) {
+        let midIndex = Math.floor(allPrices.length / 2)
+        midValue = (allPrices[midIndex].price + allPrices[midIndex + 1].price) / 2
+    }
+
+    if (allPrices.length >= 0) {
+        let totalPrice = 0
+        for (let i = 0, len = allPrices.length; i < len; i++) {
+            totalPrice += Number(allPrices[i].price)
+        }
+        averagePrice = totalPrice / allPrices.length
+    }
+
+    console.log("mid value is ", midValue)
+    console.log("avg value is ", averagePrice)
+
+    let swing = Math.abs(midValue - averagePrice) / averagePrice
+
+    console.log("swing is", swing)
+    console.log("safePriceSwing is", safePriceSwing)
+
+    for (let i = 0, len = allPrices.length; i < len; i++) {
+        let priceDifferance = Math.abs(allPrices[i].price - averagePrice) / averagePrice
+        if (priceDifferance <= safePriceSwing) {
+            validPrices.push(allPrices[i])
+        }
+    }
+
+    if (validPrices.length >= 5 && swing <= safePriceSwing) {
+        validPrices.sort(function (a, b) {
+            return a.price - b.price
+        })
+        if (validPrices.length % 2 !== 0) {
+            let midIndex = Math.floor(validPrices.length / 2)
+            midValue = validPrices[midIndex].price
+        } else if (validPrices.length % 2 === 0) {
+            let midIndex = Math.floor(validPrices.length / 2)
+            midValue = (validPrices[midIndex].price + validPrices[midIndex + 1].price) / 2
+        }
+        return {
+            "result": true,
+            "median": midValue,
+        }
+    } else {
+        return {
+            "result": false,
+            "median": [],
+        }
+    }
+}
+
 async function getGasPrice() {
     let result = await request(ethgasstationAPI)
     return result
@@ -474,4 +544,5 @@ module.exports = {
     getETHPrice,
     getGasPrice,
     getUSDTPrice,
+    getMedianPrice,
 }
