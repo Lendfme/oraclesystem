@@ -43,7 +43,7 @@ function insertTable(table ,insertData, insertField) {
 }
 
 function getExchangePrice(currency = '') {
-    let query = `select * from exchangePrice where timestamp = (select max(timestamp) from exchangePrice) ${currency ? 'AND currency = "' + currency + '"' : ''}`;
+    let query = `select * from exchangePrice where endSign = true AND timestamp = (select max(timestamp) from exchangePrice) ${currency ? 'AND currency = "' + currency + '"' : ''}`;
     return new Promise(resolve => {
         sqliteDB.queryData(query, result => {
             resolve(result)
