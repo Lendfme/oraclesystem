@@ -34,15 +34,18 @@ class Oracle extends BaseContract {
     }
 
     // capToMax(anchorPrice, price)
-    getFinalPrice(asset, input, standard) {
-        if (Math.abs(input) < maxPendingAnchorSwing) {
-            this.log.info(" You are going to write", asset, " by getting price: ", input.toString())
-            return input
+    getFinalPrice(asset, anchorPrice, price) {
+        // calculate changing ratio
+        let changingRatio = (price.toString() - anchorPrice.toString()) / anchorPrice.toString()
+        this.log.info(asset, " changes ratio is", changingRatio)
+        if (Math.abs(changingRatio) < maxPendingAnchorSwing) {
+            this.log.info(" You are going to write", asset, " by getting price: ", price.toString())
+            return price.toString()
         } else {
-            let newRatio = input > maxPendingAnchorSwing ? maxPendingAnchorSwing : -1 * maxPendingAnchorSwing
-            let finalPrice = standard.mul(new BN((1 + newRatio) * 10)).div(new BN("10"))
+            let newRatio = changingRatio > maxPendingAnchorSwing ? maxPendingAnchorSwing : -1 * maxPendingAnchorSwing
+            let finalPrice = anchorPrice.mul(new BN((1 + newRatio) * 10)).div(new BN("10"))
             this.log.info(" You are going to write", asset, " by getting discount price: ", finalPrice.toString())
-            return finalPrice
+            return finalPrice.toString()
         }
     }
 
@@ -63,7 +66,7 @@ class Oracle extends BaseContract {
     async setPendingAnchor(asset, newAnchorPrice) {
         let txCount = await this.getNonce(this.admin)
         let data = this.contract.methods._setPendingAnchor(asset, newAnchorPrice).encodeABI()
-        let rawTX = await this.txHelper(txCount, this.contractAddress, data)
+        let rawTX = await this.txHelper(this.admin, txCount, this.contractAddress, data)
         let transaction = this.signTx(rawTX)
 
         return new Promise((resolve, reject) => {
@@ -85,9 +88,9 @@ class Oracle extends BaseContract {
 
     // setPrices(address[] assets, uint[] requestedPriceMantissas)
     async setPrices(assets, requestedPrices) {
-        let txCount = await this.getNonce(this.baseAccount)
+        let txCount = await this.getNonce(this.poster)
         let data = this.contract.methods.setPrices(assets, requestedPrices).encodeABI()
-        let rawTX = await this.txHelper(txCount, this.contractAddress, data)
+        let rawTX = await this.txHelper(this.poster, txCount, this.contractAddress, data)
         let transaction = this.signTx(rawTX)
 
         return new Promise((resolve, reject) => {

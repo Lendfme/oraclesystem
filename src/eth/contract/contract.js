@@ -40,7 +40,7 @@ class BaseContract {
         })
     }
 
-    async txHelper(count, receiver, originData) {
+    async txHelper(account, count, receiver, originData) {
         let accountNonce = this.web3.utils.toHex(count)
         let {
             average

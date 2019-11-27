@@ -3,13 +3,12 @@ const {
     maxPriceSwing,
 } = require('../utils/config/base.config')
 
-function feedPrice(currenPrice, finalPrice) {
-    // TODO: get previous price from database.
-    priceChangingRatio = (currenPrice - previousPrice) / previousPrice
+function feedPrice(currenPrice, finalPrice, previousPrice, previousTime) {
+    priceChangingRatio = Math.abs(currenPrice - previousPrice) / previousPrice
+    console.log("ratio is ", priceChangingRatio)
     let currentTime = Math.round(new Date().getTime() / 1000)
-    let lastTime = time
     if (priceChangingRatio > maxPriceSwing) {
-        // not exceed 10%
+        // do not exceed 10%
         if (currenPrice === finalPrice) {
             return {
                 "type": "normal",
@@ -21,7 +20,7 @@ function feedPrice(currenPrice, finalPrice) {
         }
     }
 
-    if (currentTime - lastTime >= maxFeedingPriceInterval) {
+    if (currentTime - previousTime >= maxFeedingPriceInterval) {
         return {
             "type": "normal",
         }

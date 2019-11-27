@@ -1,3 +1,5 @@
+const BN = require('bn.js')
+
 const {
     binanceBTCPrice,
     binanceETHPrice,
@@ -473,12 +475,10 @@ function getMedianPrice(allPrices) {
         return a.price - b.price
     })
 
-    console.log("all price are=====", allPrices)
-
     if (allPrices.length === 0) {
         return {
             "result": false,
-            "median": [],
+            "median": new BN(0),
         }
     } else if (allPrices.length % 2 !== 0) {
         let midIndex = Math.floor(allPrices.length / 2)
@@ -524,12 +524,12 @@ function getMedianPrice(allPrices) {
         }
         return {
             "result": true,
-            "median": midValue,
+            "median": new BN((midValue * 10 ** 8).toFixed()),
         }
     } else {
         return {
             "result": false,
-            "median": [],
+            "median": new BN(0),
         }
     }
 }

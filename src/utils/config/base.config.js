@@ -20,9 +20,9 @@ const mainnetAssets = {
 }
 
 const rinkebyAssets = {
-    'usdx': '0xaf21bb8ae7b7a5eec37964e478583cd486fd12e2',
+    'usdx': '0xAF21BB8ae7b7a5Eec37964e478583CD486FD12E2',
     'usdt': '0xA1e525F7d24D7cCB78A070BBd12C0BF21Fb4a848',
-    'imbtc': '0x7b054ebe1d7e003afda8e717daeab05d56d5836a',
+    'imbtc': '0x7b054eBe1D7e003afdA8e717DAEaB05D56D5836A',
     'weth': '0xC8b1a5ef2e19937dd6c0f804DF2e3efE9F093B1e',
 }
 
