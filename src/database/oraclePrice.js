@@ -11,12 +11,25 @@ function initDB() {
         endSign BLOB,
 		timestamp INTEGER
         );`);
+
+    sqliteDB.createTable(`CREATE TABLE IF NOT EXISTS lendfMePrice(
+		id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        asset CHAR(42),
+        currency CHAR(32),
+		price VARCHAR(64),
+		timestamp INTEGER
+        );`);
 	console.log('initDB finished!');
 }
 
 function insertExchangePrice(insertData, insertField = []) {
     insertField = insertField.length == 0 ? ['exchange', 'currency', 'price', 'endSign', 'timestamp'] : insertField;
     insertTable('exchangePrice', insertData, insertField);
+}
+
+function insertLendfMePrice(insertData, insertField = []) {
+    insertField = insertField.length == 0 ? ['asset', 'currency', 'price', 'timestamp'] : insertField;
+    insertTable('lendfMePrice', insertData, insertField);
 }
 
 function insertTable(table ,insertData, insertField) {
@@ -43,7 +56,16 @@ function insertTable(table ,insertData, insertField) {
 }
 
 function getExchangePrice(currency = '') {
-    let query = `select * from exchangePrice where endSign = true AND timestamp = (select max(timestamp) from exchangePrice) ${currency ? 'AND currency = "' + currency + '"' : ''}`;
+    let query = `select * from exchangePrice WHERE endSign = true AND timestamp = (select max(timestamp) from exchangePrice) ${currency ? 'AND currency = "' + currency + '"' : ''}`;
+    return new Promise(resolve => {
+        sqliteDB.queryData(query, result => {
+            resolve(result)
+        })
+    })
+}
+
+function getLendfMePrice(asset = '') {
+    let query = `select * from lendfMePrice WHERE timestamp = (select max(timestamp) from lendfMePrice) ${asset ? 'AND asset = "' + asset + '"' : ''}`;
     return new Promise(resolve => {
         sqliteDB.queryData(query, result => {
             resolve(result)
@@ -55,5 +77,7 @@ module.exports = {
     initDB,
     insertTable,
     insertExchangePrice,
-    getExchangePrice
+    insertLendfMePrice,
+    getExchangePrice,
+    getLendfMePrice
 }
