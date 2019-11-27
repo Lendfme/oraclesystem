@@ -22,16 +22,6 @@ function initDB() {
 	console.log('initDB finished!');
 }
 
-function insertExchangePrice(insertData, insertField = []) {
-    insertField = insertField.length == 0 ? ['exchange', 'currency', 'price', 'endSign', 'timestamp'] : insertField;
-    insertTable('exchangePrice', insertData, insertField);
-}
-
-function insertLendfMePrice(insertData, insertField = []) {
-    insertField = insertField.length == 0 ? ['asset', 'currency', 'price', 'timestamp'] : insertField;
-    insertTable('lendfMePrice', insertData, insertField);
-}
-
 function insertTable(table ,insertData, insertField) {
 
     table = table.toString();
@@ -55,8 +45,18 @@ function insertTable(table ,insertData, insertField) {
     sqliteDB.insertData(insertSql, insertData);
 }
 
+function insertExchangePrice(insertData, insertField = []) {
+    insertField = insertField.length == 0 ? ['exchange', 'currency', 'price', 'endSign', 'timestamp'] : insertField;
+    insertTable('exchangePrice', insertData, insertField);
+}
+
+function insertLendfMePrice(insertData, insertField = []) {
+    insertField = insertField.length == 0 ? ['asset', 'currency', 'price', 'timestamp'] : insertField;
+    insertTable('lendfMePrice', insertData, insertField);
+}
+
 function getExchangePrice(currency = '') {
-    let query = `select * from exchangePrice WHERE endSign = true AND timestamp = (select max(timestamp) from exchangePrice) ${currency ? 'AND currency = "' + currency + '"' : ''}`;
+    let query = `SELECT * FROM exchangePrice WHERE endSign = true AND timestamp = (SELECT max(timestamp) FROM exchangePrice) ${currency ? 'AND currency = "' + currency + '"' : ''}`;
     return new Promise(resolve => {
         sqliteDB.queryData(query, result => {
             resolve(result)
@@ -65,12 +65,19 @@ function getExchangePrice(currency = '') {
 }
 
 function getLendfMePrice(asset = '') {
-    let query = `select * from lendfMePrice WHERE timestamp = (select max(timestamp) from lendfMePrice) ${asset ? 'AND asset = "' + asset + '"' : ''}`;
+    let query = `SELECT * FROM lendfMePrice WHERE timestamp = (SELECT max(timestamp) FROM lendfMePrice) ${asset ? 'AND asset = "' + asset + '"' : ''}`;
     return new Promise(resolve => {
         sqliteDB.queryData(query, result => {
             resolve(result)
         })
     })
+}
+
+function cleanDatabase(num = 200) {
+    var sql = `DELETE FROM exchangePrice WHERE id NOT IN (SELECT id FROM exchangePrice ORDER BY timestamp DESC LIMIT ${num})`;
+    sqliteDB.executeSql(sql);
+    var sql = `DELETE FROM lendfMePrice WHERE id NOT IN (SELECT id FROM lendfMePrice ORDER BY timestamp DESC LIMIT ${num})`;
+	sqliteDB.executeSql(sql);
 }
 
 module.exports = {
@@ -79,5 +86,6 @@ module.exports = {
     insertExchangePrice,
     insertLendfMePrice,
     getExchangePrice,
-    getLendfMePrice
+    getLendfMePrice,
+    cleanDatabase
 }

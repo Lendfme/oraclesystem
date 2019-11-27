@@ -74,6 +74,7 @@ async function parsePriceData(priceData, currency, timestamp) {
 	console.log(`currency: ${currency}, ${timestamp}, length: ${data.length}`);
 	console.log(data);
 	await oraclePrice.insertExchangePrice(data);
+	await oraclePrice.cleanDatabase(500);
 }
 
 async function main() {
