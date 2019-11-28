@@ -472,46 +472,43 @@ function getMedianPrice(allPrices) {
     let midValue = 0
     let averagePrice = 0
 
+    allPrices.sort(function (a, b) {
+        return a.price - b.price
+    })
+
     if (allPrices.length < 5) {
         return {
             "result": false,
             "median": new BN(0),
         }
     } else {
-        let totalPrice = 0
-        for (let i = 0, len = allPrices.length; i < len; i++) {
-            totalPrice += Number(allPrices[i].price)
-        }
-        averagePrice = totalPrice / allPrices.length
+        let midIndex = Math.floor(allPrices.length / 2)
+        midValue = allPrices[midIndex].price
     }
 
-    console.log("average value is ", averagePrice)
+    console.log("median value is ", midValue)
 
     for (let i = 0, len = allPrices.length; i < len; i++) {
-        let priceDifferance = Math.abs(Number(allPrices[i].price) - averagePrice) / averagePrice
+        let priceDifferance = Math.abs(Number(allPrices[i].price) - midValue) / midValue
         if (priceDifferance <= safePriceSwing) {
             validPrices.push(allPrices[i])
         }
     }
-
-    validPrices.sort(function (a, b) {
-        return a.price - b.price
-    })
 
     if (validPrices.length < 5) {
         return {
             "result": false,
             "median": new BN(0),
         }
-    } else if (validPrices.length % 2 !== 0) {
-        let midIndex = Math.floor(validPrices.length / 2)
-        midValue = validPrices[midIndex].price
-    } else if (validPrices.length % 2 === 0) {
-        let midIndex = Math.floor(validPrices.length / 2)
-        midValue = (validPrices[midIndex].price + validPrices[midIndex + 1].price) / 2
+    } else {
+        let totalPrice = 0
+        for (let i = 0, len = validPrices.length; i < len; i++) {
+            totalPrice += Number(validPrices[i].price)
+        }
+        averagePrice = totalPrice / validPrices.length
     }
 
-    console.log("median value is ", midValue)
+    console.log("average value is ", averagePrice)
 
     let swing = Math.abs(midValue - averagePrice) / averagePrice
 
