@@ -7,9 +7,11 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 var BTCPrice = [];
 var USDTPrice = [];
+var USDxPrice = [];
 
 var endflagBTC = false;
 var endflagUSDT = false;
+var endflagUSDx = false;
 
 var time;
 
@@ -68,13 +70,18 @@ async function parsePriceData(priceData, currency, timestamp) {
 				break;
 		}
 
-		data.push([priceData[index].sign, currency, price, endSign, timestamp]);
+		if(endSign)
+			data.push([priceData[index].sign, currency, price, endSign, timestamp]);
 		
 	}
 	console.log(`currency: ${currency}, ${timestamp}, length: ${data.length}`);
 	console.log(data);
-	await oraclePrice.insertExchangePrice(data);
-	await oraclePrice.cleanDatabase(500);
+	if (data.length < 5) {
+		return;
+	}
+	oraclePrice.insertExchangePrice(data);
+	await delay(200);
+	oraclePrice.cleanDatabase(500);
 }
 
 async function main() {
@@ -84,11 +91,14 @@ async function main() {
 		console.log(`sync BTC price [${index}]:${apiPriceConfig.exchange[index]}  url: ${apiPriceConfig.apiUrlBTC[index]}`);
 		https.asyncGet(apiPriceConfig.apiUrlUSDT[index], USDTPrice, apiPriceConfig.exchange[index]);
 		console.log(`sync USDT price [${index}]:${apiPriceConfig.exchange[index]}  url: ${apiPriceConfig.apiUrlUSDT[index]}`);
+		https.asyncGet(apiPriceConfig.apiUrlUSDT[index], USDTPrice, apiPriceConfig.exchange[index]);
+		console.log(`sync USDx price [${index}]:${apiPriceConfig.exchange[index]}  url: ${apiPriceConfig.apiUrlUSDT[index]}`);
 	}
 	time = Math.ceil(Date.now() / 1000);
-	await oraclePrice.initDB();
+	oraclePrice.initDB();
+	await delay(200);
 	while(true){
-		if (endflagBTC && endflagUSDT) {
+		if (endflagBTC && endflagUSDT && endflagUSDx) {
 
 			return;
 		}
@@ -106,7 +116,14 @@ async function main() {
 			endflagUSDT = true;
 		}
 
-		await delay(1000);
+		if (USDxPrice.length == apiPriceConfig.exchange.length) {
+			
+			parsePriceData(USDxPrice, 'USDx', time);
+			USDxPrice = [];
+			endflagUSDx = true;
+		}
+
+		await delay(500);
 	}
 }
 
