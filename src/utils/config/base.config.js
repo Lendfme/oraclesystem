@@ -34,7 +34,7 @@ const assets = {
 // price oracle contract address
 const oracleContract = {
     'mainnet': '',
-    'rinkeby': '0xDc898416421a72Ff16cb560CB411D339247F0f05',
+    'rinkeby': '0xCe9A5bdEb6088861A99E28ec6852fCA404fE0012',
 }
 
 const infuraKey = process.env.INFURA_KEY
