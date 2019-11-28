@@ -28,7 +28,7 @@ const apiUrlUSDT = [
     'https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=ETH-USDT'
 ]
 
-const apiUrlETH = [
+const apiUrlUSDx = [
     'https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDC',
     'https://api.hitbtc.com/api/2/public/ticker/ETHUSDC?limit=1',
     'https://api.huobi.pro/market/trade?symbol=ethhusd',
@@ -167,7 +167,7 @@ module.exports = {
     exchange,
     apiUrlBTC,
     apiUrlUSDT,
-    apiUrlETH,
+    apiUrlUSDx,
     binanceBTCPrice,
     binanceETHPrice,
     binanceUSDTPrice,

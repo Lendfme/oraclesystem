@@ -91,8 +91,8 @@ async function main() {
 		console.log(`sync BTC price [${index}]:${apiPriceConfig.exchange[index]}  url: ${apiPriceConfig.apiUrlBTC[index]}`);
 		https.asyncGet(apiPriceConfig.apiUrlUSDT[index], USDTPrice, apiPriceConfig.exchange[index]);
 		console.log(`sync USDT price [${index}]:${apiPriceConfig.exchange[index]}  url: ${apiPriceConfig.apiUrlUSDT[index]}`);
-		https.asyncGet(apiPriceConfig.apiUrlUSDT[index], USDTPrice, apiPriceConfig.exchange[index]);
-		console.log(`sync USDx price [${index}]:${apiPriceConfig.exchange[index]}  url: ${apiPriceConfig.apiUrlUSDT[index]}`);
+		https.asyncGet(apiPriceConfig.apiUrlUSDx[index], USDxPrice, apiPriceConfig.exchange[index]);
+		console.log(`sync USDx price [${index}]:${apiPriceConfig.exchange[index]}  url: ${apiPriceConfig.apiUrlUSDx[index]}`);
 	}
 	time = Math.ceil(Date.now() / 1000);
 	oraclePrice.initDB();
