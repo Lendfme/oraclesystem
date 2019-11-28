@@ -2,25 +2,25 @@ const BN = require('bn.js')
 
 const {
     binanceBTCPrice,
-    binanceETHPrice,
+    binanceUSDxPrice,
     binanceUSDTPrice,
     bitfinexBTCPrice,
-    bitfinexETHPrice,
+    bitfinexUSDxPrice,
     bitfinexUSDTPrice,
     bittrexBTCPrice,
-    bittrexETHPrice,
+    bittrexUSDxPrice,
     bittrexUSDTPrice,
     gateBTCPrice,
-    gateUSDCPrice,
+    gateUSDxPrice,
     gateUSDTPrice,
     hitbtcBTCPrice,
-    hitbtcETHPrice,
+    hitbtcUSDxPrice,
     hitbtcUSDTPrice,
     huobiproBTCPrice,
-    huobiproETHPrice,
+    huobiproUSDxPrice,
     huobiproUSDTPrice,
     kucoinBTCPrice,
-    kucoinETHPrice,
+    kucoinUSDxPrice,
     kucoinUSDTPrice,
 } = require('../utils/config/api.config')
 
@@ -183,7 +183,7 @@ async function getBTCPrice() {
 }
 
 // NOTICE: current we get ETH price form Oracle.
-async function getETHPrice() {
+async function getUSDxPrice() {
     console.log('\n')
     console.log("start to get eth price")
     let allPrices = []
@@ -191,7 +191,7 @@ async function getETHPrice() {
     let midValue = 0
     let averagePrice = 0
 
-    let binancePrice = await request(binanceETHPrice)
+    let binancePrice = await request(binanceUSDxPrice)
     binancePrice = binancePrice.price
     if (binancePrice > 0) {
         allPrices.push({
@@ -201,7 +201,7 @@ async function getETHPrice() {
         })
     }
 
-    let bitfinexPrice = await request(bitfinexETHPrice)
+    let bitfinexPrice = await request(bitfinexUSDxPrice)
     bitfinexPrice = bitfinexPrice[0][7]
     if (bitfinexPrice > 0) {
         allPrices.push({
@@ -211,7 +211,7 @@ async function getETHPrice() {
         })
     }
 
-    let bittrexPrice = await request(bittrexETHPrice)
+    let bittrexPrice = await request(bittrexUSDxPrice)
     bittrexPrice = bittrexPrice.result.Last
     if (bittrexPrice > 0) {
         allPrices.push({
@@ -221,7 +221,7 @@ async function getETHPrice() {
         })
     }
 
-    let gateUSDC = await request(gateUSDCPrice)
+    let gateUSDC = await request(gateUSDxPrice)
     gateUSDC = gateUSDC.last
     let gateUSDT = await request(gateUSDTPrice)
     gateUSDT = gateUSDT.last
@@ -234,7 +234,7 @@ async function getETHPrice() {
         })
     }
 
-    let huobiPrice = await request(huobiproETHPrice)
+    let huobiPrice = await request(huobiproUSDxPrice)
     huobiPrice = huobiPrice.tick.data[0].price
     if (huobiPrice > 0) {
         allPrices.push({
@@ -244,7 +244,7 @@ async function getETHPrice() {
         })
     }
 
-    let hitbtcPrice = await request(hitbtcETHPrice)
+    let hitbtcPrice = await request(hitbtcUSDxPrice)
     hitbtcPrice = hitbtcPrice.last
     if (hitbtcPrice > 0) {
         allPrices.push({
@@ -254,7 +254,7 @@ async function getETHPrice() {
         })
     }
 
-    let kucoinPrice = await request(kucoinETHPrice)
+    let kucoinPrice = await request(kucoinUSDxPrice)
     kucoinPrice = kucoinPrice.data.price
     if (kucoinPrice > 0) {
         allPrices.push({
@@ -271,7 +271,7 @@ async function getETHPrice() {
     console.log("all eth price are ", allPrices)
 
     if (allPrices.length === 0) {
-        await getETHPrice()
+        await getUSDxPrice()
     } else if (allPrices.length % 2 !== 0) {
         let midIndex = Math.floor(allPrices.length / 2)
         midValue = allPrices[midIndex].price
@@ -317,7 +317,7 @@ async function getETHPrice() {
                 "prices": validPrices,
             }
         }
-        await getETHPrice()
+        await getUSDxPrice()
     }
 }
 
@@ -352,12 +352,9 @@ async function getUSDTPrice() {
     }
 
     // get price from bittrex
-    let bittrexETH = await request(bittrexETHPrice)
-    bittrexETH = bittrexETH.result.Last
-    let bittrexUSDT = await request(bittrexUSDTPrice)
-    bittrexUSDT = bittrexUSDT.result.Last
-    let bittrexPrice = bittrexETH / bittrexUSDT
-    if (bittrexETH > 0 && bittrexUSDT > 0) {
+    let bittrexPrice = await request(bittrexUSDTPrice)
+    bittrexPrice = bittrexPrice.result.Last
+    if (bittrexPrice > 0) {
         allPrices.push({
             "exchangeName": "bittrex",
             "asset": "usdt",
@@ -535,7 +532,7 @@ async function getGasPrice() {
 
 module.exports = {
     getBTCPrice,
-    getETHPrice,
+    getUSDxPrice,
     getGasPrice,
     getUSDTPrice,
     getMedianPrice,

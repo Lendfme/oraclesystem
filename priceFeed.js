@@ -86,15 +86,23 @@ async function feed() {
             log.info(currentNet, ' imBTC pending anchor is: ', imBTCAnchorPrice.toString())
             imBTCAnchorPrice = new BN(imBTCAnchorPrice)
 
+            let USDxAnchorPrice = await priceOracle.getPendingAnchor(assets[netType].usdx)
+            log.info(currentNet, ' USDx pending anchor is: ', USDxAnchorPrice.toString())
+            USDxAnchorPrice = new BN(USDxAnchorPrice)
+
             // TODO: abstract to a function
             // get all assets current price
             let allBTCPrices = await getExchangePrice("BTC")
             let allUSDTPrices = await getExchangePrice("USDT")
+            let allUSDxPrices = await getExchangePrice("USDx")
             let currentBTCPrice = getMedianPrice(allBTCPrices)
             log.info(currentNet, ' BTC current result is: ', currentBTCPrice.result, ", price is: ", currentBTCPrice.median.toString())
 
             let currentUSDTPrice = getMedianPrice(allUSDTPrices)
             log.info(currentNet, ' USDT current result is: ', currentUSDTPrice.result, ", price is: ", currentUSDTPrice.median.toString())
+
+            let currentUSDxPrice = getMedianPrice(allUSDxPrices)
+            log.info(currentNet, ' USDx current result is: ', currentUSDxPrice.result, ", price is: ", currentUSDxPrice.median.toString())
 
             let getPrices = []
             let actualPrices = []
@@ -110,6 +118,13 @@ async function feed() {
                 getPrices.push(["USDT", toWriteUSDTPrice.toString(), assets[netType].usdt])
                 let usdtFinalPrice = priceOracle.getFinalPrice("USDT", USDTAnchorPrice, toWriteUSDTPrice)
                 actualPrices.push(["USDT", usdtFinalPrice.toString(), assets[netType].usdt])
+            }
+
+            if (currentUSDxPrice.result) {
+                let toWriteUSDxPrice = mantissaOne.mul(new BN(10 ** 8)).div(currentUSDxPrice.median)
+                getPrices.push(["USDx", toWriteUSDxPrice.toString(), assets[netType].usdx])
+                let usdxFinalPrice = priceOracle.getFinalPrice("USDx", USDxAnchorPrice, toWriteUSDxPrice)
+                actualPrices.push(["USDx", usdxFinalPrice.toString(), assets[netType].usdx])
             }
 
             log.info(' Get prices are: ', getPrices)

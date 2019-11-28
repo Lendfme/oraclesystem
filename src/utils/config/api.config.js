@@ -3,7 +3,7 @@
 //     "price": "166.69000000"
 //   }
 const binanceBTCPrice = `https://api.binance.com/api/v3/ticker/price?symbol=ETHBTC`
-const binanceETHPrice = `https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDC`
+const binanceUSDxPrice = `https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDC`
 const binanceUSDTPrice = `https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT`
 
 // response is: {
@@ -19,7 +19,7 @@ const binanceUSDTPrice = `https://api.binance.com/api/v3/ticker/price?symbol=ETH
 //     "symbol": "USDTUSD"
 // }
 const hitbtcBTCPrice = `https://api.hitbtc.com/api/2/public/ticker/ETHBTC?limit=1`
-const hitbtcETHPrice = `https://api.hitbtc.com/api/2/public/ticker/ETHUSDC?limit=1`
+const hitbtcUSDxPrice = `https://api.hitbtc.com/api/2/public/ticker/ETHUSDC?limit=1`
 const hitbtcUSDTPrice = `https://api.hitbtc.com/api/2/public/ticker/ETHUSD?limit=1`
 
 // response is: {
@@ -42,7 +42,7 @@ const hitbtcUSDTPrice = `https://api.hitbtc.com/api/2/public/ticker/ETHUSD?limit
 //     }
 //   }
 const huobiproBTCPrice = `https://api.huobi.pro/market/trade?symbol=ethbtc`
-const huobiproETHPrice = `https://api.huobi.pro/market/trade?symbol=ethhusd`
+const huobiproUSDxPrice = `https://api.huobi.pro/market/trade?symbol=ethhusd`
 const huobiproUSDTPrice = `https://api.huobi.pro/market/trade?symbol=ethusdt`
 
 // response is: {
@@ -58,7 +58,7 @@ const huobiproUSDTPrice = `https://api.huobi.pro/market/trade?symbol=ethusdt`
 //     "percentChange": "-1.77"
 // }
 const gateBTCPrice = `https://data.gateio.life/api2/1/ticker/eth_btc`
-const gateUSDCPrice = `https://data.gateio.life/api2/1/ticker/usdc_usdt`
+const gateUSDxPrice = `https://data.gateio.life/api2/1/ticker/usdc_usdt`
 const gateUSDTPrice = `https://data.gateio.life/api2/1/ticker/eth_usdt`
 
 // response is: [
@@ -77,7 +77,7 @@ const gateUSDTPrice = `https://data.gateio.life/api2/1/ticker/eth_usdt`
 //     ]
 // ]
 const bitfinexBTCPrice = `https://api-pub.bitfinex.com/v2/tickers/?symbols=tETHBTC`
-const bitfinexETHPrice = `https://api-pub.bitfinex.com/v2/tickers/?symbols=tETHUSD`
+const bitfinexUSDxPrice = `https://api-pub.bitfinex.com/v2/tickers/?symbols=tETHUSD`
 const bitfinexUSDTPrice = `https://api-pub.bitfinex.com/v2/tickers/?symbols=tETHUST`
 
 // response is: {
@@ -90,8 +90,8 @@ const bitfinexUSDTPrice = `https://api-pub.bitfinex.com/v2/tickers/?symbols=tETH
 //     }
 // }
 const bittrexBTCPrice = `https://api.bittrex.com/api/v1.1/public/getticker?market=BTC-ETH`
-const bittrexETHPrice = `https://api.bittrex.com/api/v1.1/public/getticker?market=USDT-ETH`
-const bittrexUSDTPrice = `https://api.bittrex.com/api/v1.1/public/getticker?market=USD-USDT`
+const bittrexUSDxPrice = `https://api.bittrex.com/api/v1.1/public/getticker?market=USD-ETH`
+const bittrexUSDTPrice = `https://api.bittrex.com/api/v1.1/public/getticker?market=USDT-ETH`
 
 // response is: {
 //     "code": "200000",
@@ -107,29 +107,29 @@ const bittrexUSDTPrice = `https://api.bittrex.com/api/v1.1/public/getticker?mark
 //         }
 // }
 const kucoinBTCPrice = `https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=ETH-BTC`
-const kucoinETHPrice = `https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=ETH-USDC`
+const kucoinUSDxPrice = `https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=ETH-USDC`
 const kucoinUSDTPrice = `https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=ETH-USDT`
 
 module.exports = {
     binanceBTCPrice,
-    binanceETHPrice,
+    binanceUSDxPrice,
     binanceUSDTPrice,
     bitfinexBTCPrice,
-    bitfinexETHPrice,
+    bitfinexUSDxPrice,
     bitfinexUSDTPrice,
     bittrexBTCPrice,
-    bittrexETHPrice,
+    bittrexUSDxPrice,
     bittrexUSDTPrice,
     gateBTCPrice,
-    gateUSDCPrice,
+    gateUSDxPrice,
     gateUSDTPrice,
-    hitbtcETHPrice,
+    hitbtcUSDxPrice,
     hitbtcBTCPrice,
     hitbtcUSDTPrice,
     huobiproBTCPrice,
-    huobiproETHPrice,
+    huobiproUSDxPrice,
     huobiproUSDTPrice,
     kucoinBTCPrice,
-    kucoinETHPrice,
+    kucoinUSDxPrice,
     kucoinUSDTPrice,
 }
