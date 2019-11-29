@@ -141,7 +141,7 @@ async function feed() {
                 let price = await getLendfMePrice(getPrices[i][2])
                 previousPrice = await priceOracle.getPrice(getPrices[i][2])
                 if (price.length !== 0) {
-                    previousTime = previousPrice.timestamp
+                    previousTime = price[0].timestamp
                     result = feedPrice(getPrices[i][1], actualPrices[i][1], previousPrice, previousTime)
                 } else {
                     result["type"] = "normal" // only for the first time.
