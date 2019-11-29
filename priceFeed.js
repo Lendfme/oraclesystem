@@ -156,7 +156,7 @@ async function feed() {
                     // for admin
                     case "abnormal":
                         assetNames.push(actualPrices[i][0])
-                        finalWritingPrice.push(actualPrices[i][1])
+                        finalWritingPrice.push(getPrices[i][1])
                         finalAssets.push(actualPrices[i][2])
                         await priceOracle.setPendingAnchor(actualPrices[i][2], actualPrices[i][1])
                         break
