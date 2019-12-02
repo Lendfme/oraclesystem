@@ -39,3 +39,18 @@ if the new price meets either of these two conditions, we will set a new price.
 Calculate median and average, if they differ by less than 1%, we think all prices are valid, so we use the median as the price to feed.
 
 When try to set a new price, we will determine whether the price exceeds the price of the `pendingAnchor` which is set in the contract `PriceOracle.sol` by 10%. If so, after feeding this price, if admin does not update value of the `pendingAnchor`, we can not set a price that exceeds 10% in an hour.
+
+### Install
+
+```
+~/$ git clone https://github.com/Lendfme/oraclesystem.git
+~/$ cd ./oraclesystem
+~/oraclesystem$ npm install
+```
+
+### Run
+
+```
+~/oraclesystem$ node syncPrice.js
+~/oraclesystem$ node priceFeed.js
+```

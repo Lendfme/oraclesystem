@@ -57,7 +57,7 @@ async function feed() {
         var netType = netTypes[i]
         let currentNet = netType.toUpperCase()
         log4js.initLogger(netType)
-        log = log4js.getLogger()
+        log = log4js.getLogger(netType)
         let bot = new Slack(netType, log)
         try {
             let web3 = web3Provider(netType)
@@ -131,7 +131,7 @@ async function feed() {
             log.info(' Actual prices are: ', actualPrices)
             let currentTime = Math.round(new Date().getTime() / 1000)
             log.info(' Current time is: ', currentTime)
-            let finalWritingPrice = []
+            let finalWritingPrices = []
             let finalAssets = []
             let assetNames = []
             let previousPrice = 0
@@ -150,28 +150,28 @@ async function feed() {
                 switch (result.type) {
                     case "normal":
                         assetNames.push(getPrices[i][0])
-                        finalWritingPrice.push(getPrices[i][1])
+                        finalWritingPrices.push(getPrices[i][1])
                         finalAssets.push(getPrices[i][2])
                         break
                     // for admin
                     case "abnormal":
                         assetNames.push(actualPrices[i][0])
-                        finalWritingPrice.push(getPrices[i][1])
+                        finalWritingPrices.push(getPrices[i][1])
                         finalAssets.push(actualPrices[i][2])
                         await priceOracle.setPendingAnchor(actualPrices[i][2], actualPrices[i][1])
                         break
                 }
             }
 
-            if (finalWritingPrice.length != 0) {
+            if (finalWritingPrices.length != 0) {
                 let data = []
-                for (let i = 0, len = finalWritingPrice.length; i < len; i++) {
-                    data.push([finalAssets[i], assetNames[i], finalWritingPrice[i], currentTime])
+                for (let i = 0, len = finalWritingPrices.length; i < len; i++) {
+                    data.push([finalAssets[i], assetNames[i], finalWritingPrices[i], currentTime])
                 }
                 insertLendfMePrice(data)
-                let setPriceResult = await priceOracle.setPrices(finalAssets, finalWritingPrice)
+                let setPriceResult = await priceOracle.setPrices(finalAssets, finalWritingPrices)
                 if (setPriceResult.status) {
-                    log.info(currentNet, " Set new price!", finalWritingPrice)
+                    log.info(currentNet, " Set new price!", finalWritingPrices)
                     log.info(' Final prices are: ', actualPrices)
                 } else {
                     log.error('You get an error when set new price!')
@@ -179,7 +179,7 @@ async function feed() {
                     throw new Error('Feed price failed!')
                 }
 
-                await verifyResult(bot, priceOracle, finalAssets, finalWritingPrice)
+                await verifyResult(bot, priceOracle, finalAssets, finalWritingPrices)
             }
         } catch (err) {
             log.error('You get an error in try-catch', err)
@@ -187,6 +187,8 @@ async function feed() {
             log.trace('Error: ', err)
         }
     }
+    // Quit the program
+    process.exit(0)
 }
 
 async function main() {
