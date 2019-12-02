@@ -65,7 +65,8 @@ function getExchangePrice(currency = '') {
 }
 
 function getLendfMePrice(asset = '') {
-    let query = `SELECT * FROM lendfMePrice WHERE timestamp = (SELECT max(timestamp) FROM lendfMePrice) ${asset ? 'AND asset = "' + asset + '"' : ''}`;
+    // let query = `SELECT * FROM lendfMePrice WHERE timestamp = (SELECT max(timestamp) FROM lendfMePrice) ${asset ? 'AND asset = "' + asset + '"' : ''}`;
+    let query = `SELECT max(id),* FROM lendfMePrice ${asset ? 'WHERE asset = "' + asset + '"' : ''}`;
     return new Promise(resolve => {
         sqliteDB.queryData(query, result => {
             resolve(result)
