@@ -40,10 +40,6 @@ const {
 } = require('./src/helpers/verifyResult')
 
 const {
-    Slack
-} = require('./src/slack/bot')
-
-const {
     getExchangePrice
 } = require('./src/database/oraclePrice')
 
@@ -58,7 +54,6 @@ async function feed() {
         let currentNet = netType.toUpperCase()
         log4js.initLogger(netType)
         log = log4js.getLogger(netType)
-        let bot = new Slack(netType, log)
         try {
             let web3 = web3Provider(netType)
 
@@ -74,7 +69,6 @@ async function feed() {
             log.info(currentNet, ' current balance is: ', currentBalanceFromWei)
             if (currentBalanceFromWei < minBalance) {
                 log.warn(currentNet, 'Attention to your balance! please deposit more!')
-                bot.lackingBalanceWarning(priceOracle.poster, currentBalanceFromWei)
             }
 
             // get all assets pending anchor price
@@ -129,8 +123,7 @@ async function feed() {
 
             log.info(' Get prices are: ', getPrices)
             log.info(' Actual prices are: ', actualPrices)
-            let currentTime = Math.round(new Date().getTime() / 1000)
-            log.info(' Current time is: ', currentTime)
+
             let finalWritingPrices = []
             let finalAssets = []
             let assetNames = []
@@ -153,7 +146,7 @@ async function feed() {
                         finalWritingPrices.push(getPrices[i][1])
                         finalAssets.push(getPrices[i][2])
                         break
-                    // for admin
+                        // for admin
                     case "abnormal":
                         assetNames.push(actualPrices[i][0])
                         finalWritingPrices.push(getPrices[i][1])
@@ -165,6 +158,8 @@ async function feed() {
 
             if (finalWritingPrices.length != 0) {
                 let data = []
+                let currentTime = Math.round(new Date().getTime() / 1000)
+                log.info(' Current time is: ', currentTime)
                 for (let i = 0, len = finalWritingPrices.length; i < len; i++) {
                     data.push([finalAssets[i], assetNames[i], finalWritingPrices[i], currentTime])
                 }
@@ -175,15 +170,13 @@ async function feed() {
                     log.info(' Final prices are: ', actualPrices)
                 } else {
                     log.error('You get an error when set new price!')
-                    bot.getError(`${currentNet} Set new price failed!`)
                     throw new Error('Feed price failed!')
                 }
 
-                await verifyResult(bot, priceOracle, finalAssets, finalWritingPrices)
+                await verifyResult(priceOracle, finalAssets, finalWritingPrices)
             }
         } catch (err) {
             log.error('You get an error in try-catch', err)
-            bot.getError(`${currentNet} You catch an error: ${err}`)
             log.trace('Error: ', err)
         }
     }

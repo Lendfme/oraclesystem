@@ -10,7 +10,7 @@ async function _verify(priceOracle, assetAddress, newPrice) {
     }
 }
 
-async function verifyResult(bot, priceOracle, assets, prices, balance) {
+async function verifyResult(priceOracle, assets, prices, balance) {
     for (let i = 0, len = prices.length; i < len; i++) {
         let verifiedResult = await _verify(priceOracle, assets[i], prices[i])
         if (verifiedResult) {
@@ -19,11 +19,9 @@ async function verifyResult(bot, priceOracle, assets, prices, balance) {
             // if (i < len - 1) {
             //     feeding(currentNet, convertPrice.toString(), log)
             // } else if (i == len - 1) {
-                bot.feeding(convertPrice.toString())
             // }
         } else {
             priceOracle.log.error('You get an error when verify new price.')
-            bot.getError("Verified price failed!")
         }
     }
 }
