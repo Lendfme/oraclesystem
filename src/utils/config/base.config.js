@@ -11,6 +11,14 @@ const minBalance = 0.01
 // Support net type.
 const netTypes = ['mainnet', 'rinkeby']
 
+// Multi-collateral currencies
+const currency = [
+    'usdx',
+    'usdt',
+    'imbte',
+    'weth',
+]
+
 // when add a new collateral asset, need to add here.
 const mainnetAssets = {
     'usdx': '0xeb269732ab75A6fD61Ea60b06fE994cD32a83549',
@@ -49,6 +57,7 @@ module.exports = {
     assets,
     infuraKey,
     netTypes,
+    currency,
     maxFeedingPriceInterval,
     maxPriceSwing,
     minBalance,
