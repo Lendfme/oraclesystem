@@ -12,6 +12,14 @@ function initDB() {
 		timestamp INTEGER
         );`);
 
+    sqliteDB.createTable(`CREATE TABLE IF NOT EXISTS feedPrice(
+		id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        exchange CHAR(32),
+        currency CHAR(32),
+		price VARCHAR(64),
+		timestamp INTEGER
+        );`);
+
     sqliteDB.createTable(`CREATE TABLE IF NOT EXISTS lendfMePrice(
 		id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         asset CHAR(42),
@@ -50,6 +58,11 @@ function insertExchangePrice(insertData, insertField = []) {
     insertTable('exchangePrice', insertData, insertField);
 }
 
+function insertFeedPrice(insertData, insertField = []) {
+    insertField = insertField.length == 0 ? ['exchange', 'currency', 'price', 'timestamp'] : insertField;
+    insertTable('feedPrice', insertData, insertField);
+}
+
 function insertLendfMePrice(insertData, insertField = []) {
     insertField = insertField.length == 0 ? ['asset', 'currency', 'price', 'timestamp'] : insertField;
     insertTable('lendfMePrice', insertData, insertField);
@@ -57,6 +70,15 @@ function insertLendfMePrice(insertData, insertField = []) {
 
 function getExchangePrice(currency = '') {
     let query = `SELECT * FROM exchangePrice WHERE endSign = true AND timestamp = (SELECT max(timestamp) FROM exchangePrice) ${currency ? 'AND currency = "' + currency + '"' : ''}`;
+    return new Promise(resolve => {
+        sqliteDB.queryData(query, result => {
+            resolve(result)
+        })
+    })
+}
+
+function getFeedPrice(currency = '') {
+    let query = `SELECT max(id),* FROM feedPrice ${currency ? 'WHERE currency = "' + currency + '"' : ''}`;
     return new Promise(resolve => {
         sqliteDB.queryData(query, result => {
             resolve(result)
@@ -77,7 +99,9 @@ function getLendfMePrice(asset = '') {
 function cleanDatabase(num = 200) {
     var sql = `DELETE FROM exchangePrice WHERE id NOT IN (SELECT id FROM exchangePrice ORDER BY timestamp DESC LIMIT ${num})`;
     sqliteDB.executeSql(sql);
-    var sql = `DELETE FROM lendfMePrice WHERE id NOT IN (SELECT id FROM lendfMePrice ORDER BY timestamp DESC LIMIT ${num})`;
+    var sql = `DELETE FROM feedPrice WHERE id NOT IN (SELECT id FROM feedPrice ORDER BY id DESC LIMIT ${num})`;
+    sqliteDB.executeSql(sql);
+    var sql = `DELETE FROM lendfMePrice WHERE id NOT IN (SELECT id FROM lendfMePrice ORDER BY id DESC LIMIT ${num})`;
 	sqliteDB.executeSql(sql);
 }
 
@@ -85,8 +109,10 @@ module.exports = {
     initDB,
     insertTable,
     insertExchangePrice,
+    insertFeedPrice,
     insertLendfMePrice,
     getExchangePrice,
+    getFeedPrice,
     getLendfMePrice,
     cleanDatabase
 }
