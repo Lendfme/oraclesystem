@@ -15,8 +15,7 @@ const netTypes = ['mainnet', 'rinkeby']
 const currency = [
     'usdx',
     'usdt',
-    'imbte',
-    'weth',
+    'imbtc',
 ]
 
 // when add a new collateral asset, need to add here.
