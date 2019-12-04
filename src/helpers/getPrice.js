@@ -525,6 +525,71 @@ function getMedianPrice(allPrices) {
     }
 }
 
+function getMedian(allPrices) {
+    let validPrices = []
+    let midValue = 0
+    let averagePrice = 0
+
+    allPrices.sort(function (a, b) {
+        return a[2] - b[2]
+    })
+
+    if (allPrices.length < 5) {
+        return {
+            "result": false,
+            'exchange':'',
+            "median": new BN(0),
+        }
+    } else {
+        let midIndex = Math.floor(allPrices.length / 2)
+        midValue = allPrices[midIndex][2]
+    }
+
+    console.log("median value is ", midValue)
+
+    for (let i = 0, len = allPrices.length; i < len; i++) {
+        let priceDifferance = Math.abs(Number(allPrices[i][2]) - midValue) / midValue
+        if (priceDifferance <= safePriceSwing) {
+            validPrices.push(allPrices[i])
+        }
+    }
+
+    if (validPrices.length < 5) {
+        return {
+            "result": false,
+            'exchange':'',
+            "median": new BN(0),
+        }
+    } else {
+        let totalPrice = 0
+        for (let i = 0, len = validPrices.length; i < len; i++) {
+            totalPrice += Number(validPrices[i][2])
+        }
+        averagePrice = totalPrice / validPrices.length
+    }
+
+    console.log("average value is ", averagePrice)
+
+    let swing = Math.abs(midValue - averagePrice) / averagePrice
+
+    console.log("swing is", swing)
+    console.log("safePriceSwing is", safePriceSwing)
+
+    if (swing <= safePriceSwing) {
+        return {
+            "result": true,
+            'exchange':allPrices[midIndex][0],
+            "median": new BN((midValue * 10 ** 8).toFixed()),
+        }
+    } else {
+        return {
+            "result": false,
+            'exchange':'',
+            "median": new BN(0),
+        }
+    }
+}
+
 async function getGasPrice() {
     let result = await request(ethgasstationAPI)
     return result
@@ -536,4 +601,5 @@ module.exports = {
     getGasPrice,
     getUSDTPrice,
     getMedianPrice,
+    getMedian,
 }
