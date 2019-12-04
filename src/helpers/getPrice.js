@@ -540,10 +540,9 @@ function getMedian(allPrices) {
             'exchange':'',
             "median": new BN(0),
         }
-    } else {
-        let midIndex = Math.floor(allPrices.length / 2)
-        midValue = allPrices[midIndex][2]
     }
+    let midIndex = Math.floor(allPrices.length / 2)
+    midValue = allPrices[midIndex][2]
 
     console.log("median value is ", midValue)
 
@@ -560,13 +559,12 @@ function getMedian(allPrices) {
             'exchange':'',
             "median": new BN(0),
         }
-    } else {
-        let totalPrice = 0
-        for (let i = 0, len = validPrices.length; i < len; i++) {
-            totalPrice += Number(validPrices[i][2])
-        }
-        averagePrice = totalPrice / validPrices.length
     }
+    let totalPrice = 0
+    for (let i = 0, len = validPrices.length; i < len; i++) {
+        totalPrice += Number(validPrices[i][2])
+    }
+    averagePrice = totalPrice / validPrices.length
 
     console.log("average value is ", averagePrice)
 
@@ -581,13 +579,13 @@ function getMedian(allPrices) {
             'exchange':allPrices[midIndex][0],
             "median": new BN((midValue * 10 ** 8).toFixed()),
         }
-    } else {
-        return {
-            "result": false,
-            'exchange':'',
-            "median": new BN(0),
-        }
     }
+    return {
+        "result": false,
+        'exchange':'',
+        "median": new BN(0),
+    }
+
 }
 
 async function getGasPrice() {
