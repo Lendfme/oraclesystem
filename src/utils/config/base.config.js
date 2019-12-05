@@ -12,14 +12,10 @@ const minBalance = 0.01
 const netTypes = ['mainnet', 'rinkeby']
 
 // Multi-collateral currencies
-const supportAssets = [
-    'usdx',
-    'usdt',
-    'imbtc',
-]
+const supportAssets = ['usdx', 'usdt', 'imbtc']
 
 // Recommended magnification
-const supposedMantissa = [1, 12, 10]
+const supposedMantissa = [0, 12, 10]
 
 // when add a new collateral asset, need to add here.
 const mainnetAssets = {

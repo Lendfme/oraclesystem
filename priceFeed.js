@@ -86,9 +86,10 @@ async function feed() {
                 anchorPrice = new BN(anchorPrice)
 
                 let currentPrice = getFeedPrice(supportAssets[i])
-                log.info(`${currentNet} ${supportAssets[i]} current result is: ${currentPrice.toString()} price is: ${currentPrice.median.toString()}`)
+                log.info(`${currentNet} ${supportAssets[i]} current price is: ${currentPrice[0].price.toString()}`)
+                currentPrice = new BN(currentPrice[0].price)
 
-                let toWritePrice = mantissaOne.mul(new BN(10 ** 8)).div(currentPrice.price).mul(new BN(10 ** supposedMantissa[i]))
+                let toWritePrice = mantissaOne.mul(new BN(10 ** 8)).div(currentPrice).mul(new BN(10 ** supposedMantissa[i]))
                 getPrices.push([supportAssets[i], toWritePrice.toString(), assets[netType][supportAssets[i]]])
                 let finalPrice = priceOracle.getFinalPrice(supportAssets[i], anchorPrice, toWritePrice)
                 actualPrices.push([supportAssets[i], finalPrice.toString(), assets[netType][supportAssets[i]]])
