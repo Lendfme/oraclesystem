@@ -8,21 +8,23 @@ function feedPrice(currenPrice, finalPrice, previousPrice, previousTime) {
     console.log("ratio is ", priceChangingRatio)
     let currentTime = Math.round(new Date().getTime() / 1000)
     if (priceChangingRatio > maxPriceSwing) {
-        // do not exceed 10%
-        if (currenPrice === finalPrice) {
-            return {
-                "type": "normal",
-            }
-        } else {
-            return {
-                "type": "abnormal",
-            }
+        // current price has been max based on anchor price.
+        if (finalPrice === previousPrice) {
+            return false
+        }
+
+        return {
+            "type": true,
+            "feedPrice": currenPrice,
+            "actualPrice": finalPrice,
         }
     }
 
     if (currentTime - previousTime >= maxFeedingPriceInterval) {
         return {
-            "type": "normal",
+            "type": true,
+            "feedPrice": currenPrice,
+            "actualPrice": finalPrice,
         }
     }
 

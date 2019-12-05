@@ -15,6 +15,13 @@ function request(url) {
     })
 }
 
+function post(url, data) {
+    axios.post(url, data).then((res) => {
+        console.log("res=>", res)
+    })
+}
+
 module.exports = {
     request,
+    post,
 }

@@ -28,25 +28,29 @@ const {
 } = require('./src/eth/contract/oracle')
 
 const {
+    post
+} = require('./src/helpers/request')
+
+const {
     feedPrice
 } = require('./src/helpers/strategy')
 
 const {
-    getMedianPrice,
-} = require('./src/helpers/getPrice')
+    verify
+} = require('./src/helpers/verify')
 
 const {
-    verifyResult
-} = require('./src/helpers/verifyResult')
-
-const {
-    getExchangePrice
+    getFeedPrice
 } = require('./src/database/oraclePrice')
 
 const {
     getLendfMePrice,
     insertLendfMePrice,
 } = require('./src/database/oraclePrice')
+
+let currentBalance = 0
+let verifyResult = false
+let currentTime = 0
 
 async function feed() {
     for (let i = 0, len = netTypes.length; i < len; i++) {
@@ -64,7 +68,7 @@ async function feed() {
             let account = new Account(netType)
             let priceOracle = new Oracle(netType, log, oracleContract[netType])
 
-            let currentBalance = await account.getBalance(priceOracle.poster)
+            currentBalance = await account.getBalance(priceOracle.poster)
             let currentBalanceFromWei = web3.utils.fromWei(currentBalance.toString(), 'ether')
             log.info(currentNet, ' current balance is: ', currentBalanceFromWei)
             if (currentBalanceFromWei < minBalance) {
@@ -73,7 +77,7 @@ async function feed() {
 
             // get all assets pending anchor price
             let USDTAnchorPrice = await priceOracle.getPendingAnchor(assets[netType].usdt)
-            log.info(currentNet, ' USDT pending anchor is: ', USDTAnchorPrice.toString())
+            log.info(currentNet, ' usdt pending anchor is: ', USDTAnchorPrice.toString())
             USDTAnchorPrice = new BN(USDTAnchorPrice)
 
             let imBTCAnchorPrice = await priceOracle.getPendingAnchor(assets[netType].imbtc)
@@ -81,45 +85,31 @@ async function feed() {
             imBTCAnchorPrice = new BN(imBTCAnchorPrice)
 
             let USDxAnchorPrice = await priceOracle.getPendingAnchor(assets[netType].usdx)
-            log.info(currentNet, ' USDx pending anchor is: ', USDxAnchorPrice.toString())
+            log.info(currentNet, ' usdx pending anchor is: ', USDxAnchorPrice.toString())
             USDxAnchorPrice = new BN(USDxAnchorPrice)
 
             // TODO: abstract to a function
             // get all assets current price
-            let allBTCPrices = await getExchangePrice("BTC")
-            let allUSDTPrices = await getExchangePrice("USDT")
-            let allUSDxPrices = await getExchangePrice("USDx")
-            let currentBTCPrice = getMedianPrice(allBTCPrices)
-            log.info(currentNet, ' BTC current result is: ', currentBTCPrice.result, ", price is: ", currentBTCPrice.median.toString())
-
-            let currentUSDTPrice = getMedianPrice(allUSDTPrices)
-            log.info(currentNet, ' USDT current result is: ', currentUSDTPrice.result, ", price is: ", currentUSDTPrice.median.toString())
-
-            let currentUSDxPrice = getMedianPrice(allUSDxPrices)
-            log.info(currentNet, ' USDx current result is: ', currentUSDxPrice.result, ", price is: ", currentUSDxPrice.median.toString())
+            let currentBTCPrice = await getFeedPrice("imbtc")
+            let currentUSDTPrice = await getFeedPrice("usdt")
+            let currentUSDxPrice = await getFeedPrice("usdx")
 
             let getPrices = []
             let actualPrices = []
-            if (currentBTCPrice.result) {
-                let toWriteBTCPrice = mantissaOne.mul(new BN(10 ** 8)).div(currentBTCPrice.median).mul(new BN(10 ** 10))
-                getPrices.push(["BTC", toWriteBTCPrice.toString(), assets[netType].imbtc])
-                let btcFinalPrice = priceOracle.getFinalPrice("BTC", imBTCAnchorPrice, toWriteBTCPrice)
-                actualPrices.push(["BTC", btcFinalPrice.toString(), assets[netType].imbtc])
-            }
+            let toWriteBTCPrice = mantissaOne.mul(new BN(10 ** 8)).div(new BN(currentBTCPrice.price)).mul(new BN(10 ** 10))
+            getPrices.push(["imbtc", toWriteBTCPrice.toString(), assets[netType].imbtc])
+            let btcFinalPrice = priceOracle.getFinalPrice("imbtc", imBTCAnchorPrice, toWriteBTCPrice)
+            actualPrices.push(["imbtc", btcFinalPrice.toString(), assets[netType].imbtc])
 
-            if (currentUSDTPrice.result) {
-                let toWriteUSDTPrice = mantissaOne.mul(new BN(10 ** 8)).div(currentUSDTPrice.median).mul(new BN(10 ** 12))
-                getPrices.push(["USDT", toWriteUSDTPrice.toString(), assets[netType].usdt])
-                let usdtFinalPrice = priceOracle.getFinalPrice("USDT", USDTAnchorPrice, toWriteUSDTPrice)
-                actualPrices.push(["USDT", usdtFinalPrice.toString(), assets[netType].usdt])
-            }
+            let toWriteUSDTPrice = mantissaOne.mul(new BN(10 ** 8)).div(new BN(currentUSDTPrice.price)).mul(new BN(10 ** 12))
+            getPrices.push(["usdt", toWriteUSDTPrice.toString(), assets[netType].usdt])
+            let usdtFinalPrice = priceOracle.getFinalPrice("usdt", USDTAnchorPrice, toWriteUSDTPrice)
+            actualPrices.push(["usdt", usdtFinalPrice.toString(), assets[netType].usdt])
 
-            if (currentUSDxPrice.result) {
-                let toWriteUSDxPrice = mantissaOne.mul(new BN(10 ** 8)).div(currentUSDxPrice.median)
-                getPrices.push(["USDx", toWriteUSDxPrice.toString(), assets[netType].usdx])
-                let usdxFinalPrice = priceOracle.getFinalPrice("USDx", USDxAnchorPrice, toWriteUSDxPrice)
-                actualPrices.push(["USDx", usdxFinalPrice.toString(), assets[netType].usdx])
-            }
+            let toWriteUSDxPrice = mantissaOne.mul(new BN(10 ** 8)).div(new BN(currentUSDxPrice.price))
+            getPrices.push(["usdx", toWriteUSDxPrice.toString(), assets[netType].usdx])
+            let usdxFinalPrice = priceOracle.getFinalPrice("usdx", USDxAnchorPrice, toWriteUSDxPrice)
+            actualPrices.push(["usdx", usdxFinalPrice.toString(), assets[netType].usdx])
 
             log.info(' Get prices are: ', getPrices)
             log.info(' Actual prices are: ', actualPrices)
@@ -129,6 +119,7 @@ async function feed() {
             let assetNames = []
             let previousPrice = 0
             let previousTime = 0
+            let toVerifyPrices = []
             let result = {}
             for (let i = 0, len = getPrices.length; i < len; i++) {
                 let price = await getLendfMePrice(getPrices[i][2])
@@ -137,28 +128,23 @@ async function feed() {
                     previousTime = price[0].timestamp
                     result = feedPrice(getPrices[i][1], actualPrices[i][1], previousPrice, previousTime)
                 } else {
-                    result["type"] = "normal" // only for the first time.
+                    // only for the first time.
+                    result["type"] = true
+                    result["feedPrice"] = currenPrice
+                    result["actualPrice"] = finalPrice
                 }
 
-                switch (result.type) {
-                    case "normal":
-                        assetNames.push(getPrices[i][0])
-                        finalWritingPrices.push(getPrices[i][1])
-                        finalAssets.push(getPrices[i][2])
-                        break
-                        // for admin
-                    case "abnormal":
-                        assetNames.push(actualPrices[i][0])
-                        finalWritingPrices.push(getPrices[i][1])
-                        finalAssets.push(actualPrices[i][2])
-                        await priceOracle.setPendingAnchor(actualPrices[i][2], actualPrices[i][1])
-                        break
+                if (result.type) {
+                    assetNames.push(getPrices[i][0])
+                    finalWritingPrices.push(getPrices[i][1])
+                    toVerifyPrices.push(result.actualPrice)
+                    finalAssets.push(getPrices[i][2])
                 }
             }
 
             if (finalWritingPrices.length != 0) {
                 let data = []
-                let currentTime = Math.round(new Date().getTime() / 1000)
+                currentTime = Math.round(new Date().getTime() / 1000)
                 log.info(' Current time is: ', currentTime)
                 for (let i = 0, len = finalWritingPrices.length; i < len; i++) {
                     data.push([finalAssets[i], assetNames[i], finalWritingPrices[i], currentTime])
@@ -173,7 +159,8 @@ async function feed() {
                     throw new Error('Feed price failed!')
                 }
 
-                await verifyResult(priceOracle, finalAssets, finalWritingPrices)
+                verifyResult = await verify(priceOracle, finalAssets, toVerifyPrices)
+
             }
         } catch (err) {
             log.error('You get an error in try-catch', err)
