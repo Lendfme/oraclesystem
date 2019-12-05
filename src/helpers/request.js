@@ -21,7 +21,30 @@ function post(url, data) {
     })
 }
 
+function asyncGet(url, duration, data, sign = '') {
+
+    axios.get(url, {timeout: duration})
+    .then(function (response) {
+    
+        var info = sign ? {'sign': sign, 'data' : response.data} : response.data;
+			if (Array.isArray(data))
+				data.push(info)
+			else
+				data = info;
+    }).catch(function (error) {
+    
+        var info = sign ? {'sign': sign, 'data' : false} : false;
+		if (Array.isArray(data))
+			data.push(info);
+		else
+			data = info;
+        console.log('sign error : ' + sign);
+        console.log(error.errno);
+    })
+}
+
 module.exports = {
     request,
     post,
+    asyncGet,
 }

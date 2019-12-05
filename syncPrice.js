@@ -1,68 +1,101 @@
 const oraclePrice = require('./src/database/oraclePrice');
-const https = require('./src/helpers/https')
-const apiPriceConfig = require('./src/utils/config/apiPriceConfig')
+const apiPriceConfig = require('./src/utils/config/apiPriceConfig');
+const {
+	asyncGet
+} = require('./src/helpers/request');
+
+const {
+    getMedian
+} = require('./src/helpers/getPrice');
+
+const {
+    supportAssets
+} = require('./src/utils/config/base.config');
 
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-var BTCPrice = [];
-var USDTPrice = [];
-var USDxPrice = [];
-
-var endflagBTC = false;
-var endflagUSDT = false;
-var endflagUSDx = false;
-
+var duration = 30000;
+var priceData = {};
+var medianData = {};
+var endflag = 0;
 var time;
 
 async function parsePriceData(priceData, currency, timestamp) {
 
 	var data = [];
+	var result;
 	var price = '0';
 	var endSign = false;
+	console.log(`parsePriceData : ${currency} ; timestamp : ${timestamp}----------------------------\n`);
 	for (let index = 0; index < priceData.length; index++) {
 		price = '0';
 		endSign = false;
+		console.log(`exchange: ${priceData[index].sign}, ${timestamp}, length: ${data.length}`);
+		console.log(`res: ${JSON.stringify(priceData[index])}`);
+		console.log(`\n`);
+		if (!priceData[index].data)
+			continue;
+			
+		result = priceData[index].data == String ? JSON.parse(priceData[index].data) : priceData[index].data;
 		switch (priceData[index].sign) {
 			case apiPriceConfig.exchange[0]:
-				if (priceData[index].data){
-					price = JSON.parse(priceData[index].data).price;
+				if (result.hasOwnProperty('price') && result.price && !isNaN(result.price)) {
+					price = result.price.toString();
 					endSign = true;
 				}
 				break;
 			case apiPriceConfig.exchange[1]:
-				if (priceData[index].data){
-					price = JSON.parse(priceData[index].data).last;
+				if (result.hasOwnProperty('last') && result.last && !isNaN(result.last)) {
+					price = result.last.toString();
 					endSign = true;
 				}
 				break;
 			case apiPriceConfig.exchange[2]:
-				if (priceData[index].data){
-					price = JSON.parse(priceData[index].data).tick.data[0].price;
+				if (result.hasOwnProperty('tick') 
+					&& result.tick.hasOwnProperty('bid')
+					&& Array.isArray(result.tick.bid)
+					&& result.tick.bid[0]
+					&& !isNaN(result.tick.bid[0])
+				) {
+					price = result.tick.bid[0].toString();
 					endSign = true;
 				}
 				break;
 			case apiPriceConfig.exchange[3]:
-				if (priceData[index].data){
-					price = JSON.parse(priceData[index].data).last;
+				if (result.hasOwnProperty('last') && result.last && !isNaN(result.last)) {
+					price = result.last.toString();
 					endSign = true;
 				}
 				break;
 			case apiPriceConfig.exchange[4]:
-				if (priceData[index].data){
-					price = JSON.parse(priceData[index].data)[0][7];
+				if (Array.isArray(result) 
+					&& Array.isArray(result[0])
+					&& result[0].length > 7
+					&& result[0][7]
+					&& !isNaN(result[0][7])
+				) {
+					price = result[0][7].toString();
 					endSign = true;
 				}
 				break;
 			case apiPriceConfig.exchange[5]:
-				if (priceData[index].data){
-					price = JSON.parse(priceData[index].data).result.Last;
+				if (result.hasOwnProperty('result') 
+					&& result.result.hasOwnProperty('Last')
+					&& result.result.Last
+					&& !isNaN(result.result.Last)
+				) {
+					price = result.result.Last.toString();
 					endSign = true;
 				}
 				break;
 			case apiPriceConfig.exchange[6]:
-				if (priceData[index].data){
-					price = JSON.parse(priceData[index].data).data.price;
+				if (result.hasOwnProperty('data') 
+					&& result.data.hasOwnProperty('price')
+					&& result.data.price
+					&& !isNaN(result.data.price)
+				) {
+					price = result.data.price.toString();
 					endSign = true;
 				}
 				break;
@@ -71,59 +104,71 @@ async function parsePriceData(priceData, currency, timestamp) {
 		}
 
 		if(endSign)
-			data.push([priceData[index].sign, currency, price, endSign, timestamp]);
-		
+			data.push([priceData[index].sign, currency, price.toString(), endSign, timestamp]);		
 	}
 	console.log(`currency: ${currency}, ${timestamp}, length: ${data.length}`);
 	console.log(data);
 	if (data.length < 5) {
-		return;
+		return data;
 	}
 	oraclePrice.insertExchangePrice(data);
 	await delay(200);
 	oraclePrice.cleanDatabase(500);
+
+	return data;
 }
 
 async function main() {
 
-	for (let index = 0; index < apiPriceConfig.exchange.length; index++) {
-		https.asyncGet(apiPriceConfig.apiUrlBTC[index], BTCPrice, apiPriceConfig.exchange[index]);
-		console.log(`sync BTC price [${index}]:${apiPriceConfig.exchange[index]}  url: ${apiPriceConfig.apiUrlBTC[index]}`);
-		https.asyncGet(apiPriceConfig.apiUrlUSDT[index], USDTPrice, apiPriceConfig.exchange[index]);
-		console.log(`sync USDT price [${index}]:${apiPriceConfig.exchange[index]}  url: ${apiPriceConfig.apiUrlUSDT[index]}`);
-		https.asyncGet(apiPriceConfig.apiUrlUSDx[index], USDxPrice, apiPriceConfig.exchange[index]);
-		console.log(`sync USDx price [${index}]:${apiPriceConfig.exchange[index]}  url: ${apiPriceConfig.apiUrlUSDx[index]}`);
-	}
-	time = Math.ceil(Date.now() / 1000);
 	oraclePrice.initDB();
 	await delay(200);
-	while(true){
-		if (endflagBTC && endflagUSDT && endflagUSDx) {
+	while (true) {
 
-			return;
+		console.log('start----------------------------\n');
+		time = Math.ceil(Date.now() / 1000);
+		for (let i = 0; i < supportAssets.length; i++) {
+
+			priceData[supportAssets[i]] = [];
+			for (let index = 0; index < apiPriceConfig.apiList[supportAssets[i]].length; index++) {
+				asyncGet(apiPriceConfig.apiList[supportAssets[i]][index], duration, priceData[supportAssets[i]], apiPriceConfig.exchange[index]);
+				console.log(`sync ${supportAssets[i]} price [${index}]:${apiPriceConfig.exchange[index]}  url: ${apiPriceConfig.apiList[supportAssets[i]][index]}`);
+			}
 		}
-		if (BTCPrice.length == apiPriceConfig.exchange.length) {
+
+		while(endflag < supportAssets.length){
+
+			for (let index = 0; index < supportAssets.length; index++) {
+				if (priceData[supportAssets[index]].length == apiPriceConfig.exchange.length) {
+					medianData[supportAssets[index]] = await parsePriceData(priceData[supportAssets[index]], supportAssets[index], time);
+					priceData[supportAssets[index]] = [];
+					endflag += 1;
+				}
+			}
+			await delay(200);
+		}
+
+		endflag = 0;
+		
+		var data = [];
+		var priceMedian;
+		for (let index = 0; index < supportAssets.length; index++) {
+			priceMedian = getMedian(medianData[supportAssets[index]]);
+
+			console.log(supportAssets[index]);
+			console.log(priceMedian.result);
+			console.log(priceMedian.median.toString());
+			if (priceMedian.result)
+				data.push([priceMedian.exchange, supportAssets[index], priceMedian.median.toString(), time]);
 			
-			parsePriceData(BTCPrice, 'BTC', time);
-			BTCPrice = [];
-			endflagBTC = true;
 		}
-
-		if (USDTPrice.length == apiPriceConfig.exchange.length) {
-			
-			parsePriceData(USDTPrice, 'USDT', time);
-			USDTPrice = [];
-			endflagUSDT = true;
-		}
-
-		if (USDxPrice.length == apiPriceConfig.exchange.length) {
-			
-			parsePriceData(USDxPrice, 'USDx', time);
-			USDxPrice = [];
-			endflagUSDx = true;
-		}
-
-		await delay(500);
+		console.log(data);
+		if (data.length)	
+			oraclePrice.insertFeedPrice(data);
+		
+		console.log('medianData----------------------------\n');
+		console.log(medianData);
+		console.log('end----------------------------\n\n');
+		await delay(50000);
 	}
 }
 
