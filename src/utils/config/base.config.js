@@ -12,11 +12,14 @@ const minBalance = 0.01
 const netTypes = ['mainnet', 'rinkeby']
 
 // Multi-collateral currencies
-const currency = [
+const supportAssets = [
     'usdx',
     'usdt',
     'imbtc',
 ]
+
+// Recommended magnification
+const supposedMantissa = [1, 12, 10]
 
 // when add a new collateral asset, need to add here.
 const mainnetAssets = {
@@ -48,15 +51,12 @@ const infuraKey = process.env.INFURA_KEY
 const privateKey = process.env.POSTER_PRIVATE_KEY
 const adminPrivateKey = process.env.ADMIN_PRIVATE_KEY
 const safetyFactor = process.env.IMPROVING_FACTOR
-// slack web hook
-const slackWebHook = process.env.SLACK_WEB_HOOK
 
 module.exports = {
     adminPrivateKey,
     assets,
     infuraKey,
     netTypes,
-    currency,
     maxFeedingPriceInterval,
     maxPriceSwing,
     minBalance,
@@ -64,5 +64,6 @@ module.exports = {
     privateKey,
     safePriceSwing,
     safetyFactor,
-    slackWebHook,
+    supportAssets,
+    supposedMantissa,
 }

@@ -13,6 +13,8 @@ const {
     netTypes,
     minBalance,
     oracleContract,
+    supportAssets,
+    supposedMantissa,
 } = require('./src/utils/config/base.config')
 
 const {
@@ -67,6 +69,8 @@ async function feed() {
             // init
             let account = new Account(netType)
             let priceOracle = new Oracle(netType, log, oracleContract[netType])
+            let getPrices = []
+            let actualPrices = []
 
             currentBalance = await account.getBalance(priceOracle.poster)
             let currentBalanceFromWei = web3.utils.fromWei(currentBalance.toString(), 'ether')
@@ -75,41 +79,20 @@ async function feed() {
                 log.warn(currentNet, 'Attention to your balance! please deposit more!')
             }
 
-            // get all assets pending anchor price
-            let USDTAnchorPrice = await priceOracle.getPendingAnchor(assets[netType].usdt)
-            log.info(currentNet, ' usdt pending anchor is: ', USDTAnchorPrice.toString())
-            USDTAnchorPrice = new BN(USDTAnchorPrice)
+            // get all assets current price and pending anchor price
+            for (let i = 0, len = supportAssets.length; i < len; i++) {
+                let anchorPrice = await priceOracle.getPendingAnchor(assets[netType][supportAssets[i]])
+                log.info(`${currentNet} ${supportAssets[i]} pending anchor is: ${anchorPrice.toString()}`)
+                anchorPrice = new BN(anchorPrice)
 
-            let imBTCAnchorPrice = await priceOracle.getPendingAnchor(assets[netType].imbtc)
-            log.info(currentNet, ' imBTC pending anchor is: ', imBTCAnchorPrice.toString())
-            imBTCAnchorPrice = new BN(imBTCAnchorPrice)
+                let currentPrice = getFeedPrice(supportAssets[i])
+                log.info(`${currentNet} ${supportAssets[i]} current result is: ${currentPrice.toString()} price is: ${currentPrice.median.toString()}`)
 
-            let USDxAnchorPrice = await priceOracle.getPendingAnchor(assets[netType].usdx)
-            log.info(currentNet, ' usdx pending anchor is: ', USDxAnchorPrice.toString())
-            USDxAnchorPrice = new BN(USDxAnchorPrice)
-
-            // TODO: abstract to a function
-            // get all assets current price
-            let currentBTCPrice = await getFeedPrice("imbtc")
-            let currentUSDTPrice = await getFeedPrice("usdt")
-            let currentUSDxPrice = await getFeedPrice("usdx")
-
-            let getPrices = []
-            let actualPrices = []
-            let toWriteBTCPrice = mantissaOne.mul(new BN(10 ** 8)).div(new BN(currentBTCPrice.price)).mul(new BN(10 ** 10))
-            getPrices.push(["imbtc", toWriteBTCPrice.toString(), assets[netType].imbtc])
-            let btcFinalPrice = priceOracle.getFinalPrice("imbtc", imBTCAnchorPrice, toWriteBTCPrice)
-            actualPrices.push(["imbtc", btcFinalPrice.toString(), assets[netType].imbtc])
-
-            let toWriteUSDTPrice = mantissaOne.mul(new BN(10 ** 8)).div(new BN(currentUSDTPrice.price)).mul(new BN(10 ** 12))
-            getPrices.push(["usdt", toWriteUSDTPrice.toString(), assets[netType].usdt])
-            let usdtFinalPrice = priceOracle.getFinalPrice("usdt", USDTAnchorPrice, toWriteUSDTPrice)
-            actualPrices.push(["usdt", usdtFinalPrice.toString(), assets[netType].usdt])
-
-            let toWriteUSDxPrice = mantissaOne.mul(new BN(10 ** 8)).div(new BN(currentUSDxPrice.price))
-            getPrices.push(["usdx", toWriteUSDxPrice.toString(), assets[netType].usdx])
-            let usdxFinalPrice = priceOracle.getFinalPrice("usdx", USDxAnchorPrice, toWriteUSDxPrice)
-            actualPrices.push(["usdx", usdxFinalPrice.toString(), assets[netType].usdx])
+                let toWritePrice = mantissaOne.mul(new BN(10 ** 8)).div(currentPrice.price).mul(new BN(10 ** supposedMantissa[i]))
+                getPrices.push([supportAssets[i], toWritePrice.toString(), assets[netType][supportAssets[i]]])
+                let finalPrice = priceOracle.getFinalPrice(supportAssets[i], anchorPrice, toWritePrice)
+                actualPrices.push([supportAssets[i], finalPrice.toString(), assets[netType][supportAssets[i]]])
+            }
 
             log.info(' Get prices are: ', getPrices)
             log.info(' Actual prices are: ', actualPrices)
