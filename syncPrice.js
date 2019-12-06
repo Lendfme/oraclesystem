@@ -37,72 +37,81 @@ async function parsePriceData(priceData, currency, timestamp) {
 		if (!priceData[index].data)
 			continue;
 			
-		result = priceData[index].data == String ? JSON.parse(priceData[index].data) : priceData[index].data;
-		switch (priceData[index].sign) {
-			case apiPriceConfig.exchange[0]:
-				if (result.hasOwnProperty('price') && result.price && !isNaN(result.price)) {
-					price = result.price.toString();
-					endSign = true;
-				}
-				break;
-			case apiPriceConfig.exchange[1]:
-				if (result.hasOwnProperty('last') && result.last && !isNaN(result.last)) {
-					price = result.last.toString();
-					endSign = true;
-				}
-				break;
-			case apiPriceConfig.exchange[2]:
-				if (result.hasOwnProperty('tick') 
-					&& result.tick.hasOwnProperty('bid')
-					&& Array.isArray(result.tick.bid)
-					&& result.tick.bid[0]
-					&& !isNaN(result.tick.bid[0])
-				) {
-					price = result.tick.bid[0].toString();
-					endSign = true;
-				}
-				break;
-			case apiPriceConfig.exchange[3]:
-				if (result.hasOwnProperty('last') && result.last && !isNaN(result.last)) {
-					price = result.last.toString();
-					endSign = true;
-				}
-				break;
-			case apiPriceConfig.exchange[4]:
-				if (Array.isArray(result) 
-					&& Array.isArray(result[0])
-					&& result[0].length > 7
-					&& result[0][7]
-					&& !isNaN(result[0][7])
-				) {
-					price = result[0][7].toString();
-					endSign = true;
-				}
-				break;
-			case apiPriceConfig.exchange[5]:
-				if (result.hasOwnProperty('result') 
-					&& result.result.hasOwnProperty('Last')
-					&& result.result.Last
-					&& !isNaN(result.result.Last)
-				) {
-					price = result.result.Last.toString();
-					endSign = true;
-				}
-				break;
-			case apiPriceConfig.exchange[6]:
-				if (result.hasOwnProperty('data') 
-					&& result.data.hasOwnProperty('price')
-					&& result.data.price
-					&& !isNaN(result.data.price)
-				) {
-					price = result.data.price.toString();
-					endSign = true;
-				}
-				break;
-			default:
-				break;
+		try {
+			result = priceData[index].data == String ? JSON.parse(priceData[index].data) : priceData[index].data;
+			if (!(result instanceof Object))
+				continue;
+			switch (priceData[index].sign) {
+				case apiPriceConfig.exchange[0]:
+					if (result.hasOwnProperty('price') && result.price && !isNaN(result.price)) {
+						price = result.price.toString();
+						endSign = true;
+					}
+					break;
+				case apiPriceConfig.exchange[1]:
+					if (result.hasOwnProperty('last') && result.last && !isNaN(result.last)) {
+						price = result.last.toString();
+						endSign = true;
+					}
+					break;
+				case apiPriceConfig.exchange[2]:
+					if (result.hasOwnProperty('tick') 
+						&& result.tick instanceof Object
+						&& result.tick.hasOwnProperty('bid')
+						&& Array.isArray(result.tick.bid)
+						&& result.tick.bid[0]
+						&& !isNaN(result.tick.bid[0])
+					) {
+						price = result.tick.bid[0].toString();
+						endSign = true;
+					}
+					break;
+				case apiPriceConfig.exchange[3]:
+					if (result.hasOwnProperty('last') && result.last && !isNaN(result.last)) {
+						price = result.last.toString();
+						endSign = true;
+					}
+					break;
+				case apiPriceConfig.exchange[4]:
+					if (Array.isArray(result) 
+						&& Array.isArray(result[0])
+						&& result[0].length > 7
+						&& result[0][7]
+						&& !isNaN(result[0][7])
+					) {
+						price = result[0][7].toString();
+						endSign = true;
+					}
+					break;
+				case apiPriceConfig.exchange[5]:
+					if (result.hasOwnProperty('result') 
+						&& result.result instanceof Object
+						&& result.result.hasOwnProperty('Last')
+						&& result.result.Last
+						&& !isNaN(result.result.Last)
+					) {
+						price = result.result.Last.toString();
+						endSign = true;
+					}
+					break;
+				case apiPriceConfig.exchange[6]:
+					if (result.hasOwnProperty('data') 
+						&& result.data instanceof Object
+						&& result.data.hasOwnProperty('price')
+						&& result.data.price
+						&& !isNaN(result.data.price)
+					) {
+						price = result.data.price.toString();
+						endSign = true;
+					}
+					break;
+				default:
+					break;
+			}
+		} catch (error) {
+			console.log(error);
 		}
-
+		
 		if(endSign)
 			data.push([priceData[index].sign, currency, price.toString(), endSign, timestamp]);		
 	}
