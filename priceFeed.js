@@ -85,7 +85,7 @@ async function feed() {
                 log.info(`${currentNet} ${supportAssets[i]} pending anchor is: ${anchorPrice.toString()}`)
                 anchorPrice = new BN(anchorPrice)
 
-                let currentPrice = getFeedPrice(supportAssets[i])
+                let currentPrice = await getFeedPrice(supportAssets[i])
                 log.info(`${currentNet} ${supportAssets[i]} current price is: ${currentPrice[0].price.toString()}`)
                 currentPrice = new BN(currentPrice[0].price)
 
