@@ -25,7 +25,7 @@ class Oracle extends BaseContract {
         return new Promise((resolve, reject) => {
             this.contract.methods.anchors(assetAddress).call()
                 .then(result => {
-                    resolve(result.priceMantissa)
+                    resolve(result)
                 })
                 .catch(err => {
                     this.log.error("Fail due to ", err.message)

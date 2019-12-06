@@ -3,14 +3,19 @@ const {
     maxPriceSwing,
 } = require('../utils/config/base.config')
 
-function feedPrice(currenPrice, finalPrice, previousPrice, previousTime) {
-    priceChangingRatio = Math.abs(currenPrice - previousPrice) / previousPrice
+const {
+    newPendingAnchorInterval
+} = require('../utils/config/common.config')
+
+function feedPrice(currenPrice, finalPrice, previousPrice, previousTime, anchorPricesPeriod, currentBlockNumber) {
+    let priceChangingRatio = Math.abs(currenPrice - previousPrice) / previousPrice
     console.log("ratio is ", priceChangingRatio)
     let currentTime = Math.round(new Date().getTime() / 1000)
     if (priceChangingRatio > maxPriceSwing) {
         // current price has been max based on anchor price.
-        if (finalPrice === previousPrice) {
-            return false
+        if (finalPrice === previousPrice && currentPrice != finalPrice) {
+            if (Math.floor(currentBlockNumber / newPendingAnchorInterval) + 1 < anchorPricesPeriod )
+                return false
         }
 
         return {

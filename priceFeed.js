@@ -71,6 +71,7 @@ async function feed() {
             let priceOracle = new Oracle(netType, log, oracleContract[netType])
             let getPrices = []
             let actualPrices = []
+            let anchorPrices = []
 
             currentBalance = await account.getBalance(priceOracle.poster)
             let currentBalanceFromWei = web3.utils.fromWei(currentBalance.toString(), 'ether')
@@ -82,8 +83,9 @@ async function feed() {
             // get all assets current price and pending anchor price
             for (let i = 0, len = supportAssets.length; i < len; i++) {
                 let anchorPrice = await priceOracle.getPendingAnchor(assets[netType][supportAssets[i]])
-                log.info(`${currentNet} ${supportAssets[i]} pending anchor is: ${anchorPrice.toString()}`)
-                anchorPrice = new BN(anchorPrice)
+                anchorPrices.push(anchorPrice)
+                log.info(`${currentNet} ${supportAssets[i]} pending anchor is: ${anchorPrice.priceMantissa.toString()}`)
+                anchorPrice = new BN(anchorPrice.priceMantissa)
 
                 let currentPrice = await getFeedPrice(supportAssets[i])
                 log.info(`${currentNet} ${supportAssets[i]} current price is: ${currentPrice[0].price.toString()}`)
@@ -108,9 +110,10 @@ async function feed() {
             for (let i = 0, len = getPrices.length; i < len; i++) {
                 let price = await getLendfMePrice(getPrices[i][2])
                 previousPrice = await priceOracle.getPrice(getPrices[i][2])
+                let currentBlockNumber = await priceOracle.getBlockNumber()
                 if (price.length !== 0) {
                     previousTime = price[0].timestamp
-                    result = feedPrice(getPrices[i][1], actualPrices[i][1], previousPrice, previousTime)
+                    result = feedPrice(getPrices[i][1], actualPrices[i][1], previousPrice, previousTime, anchorPrices[i].period, currentBlockNumber)
                 } else {
                     // only for the first time.
                     result["type"] = true

@@ -24,6 +24,10 @@ class BaseContract {
         return await this.web3.eth.getTransactionCount(account)
     }
 
+    async getBlockNumber() {
+        return await this.web3.eth.getBlockNumber()
+    }
+
     async estimateGas(account, nonce, receiver, originData) {
         return new Promise((resolve, reject) => {
             this.web3.eth.estimateGas({
