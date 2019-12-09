@@ -220,7 +220,7 @@ http.createServer(async function(req, res){
 						req.on('data', async function(chunk){    
 							data += chunk;
 							console.log(data);
-							oraclePrice.insertLendfMePrice(data);
+							oraclePrice.insertLendfMePrice(JSON.parse(data));
 							if (result[0].id == null)
 								result = [{}];
 							result = JSON.stringify(result);
