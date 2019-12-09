@@ -1,3 +1,6 @@
+const http = require('http');
+const url = require('url');
+
 const oraclePrice = require('./src/database/oraclePrice');
 const apiPriceConfig = require('./src/utils/config/apiPriceConfig');
 const {
@@ -191,45 +194,46 @@ http.createServer(async function(req, res){
     var result = 'parameter error';
 	console.log(urlInfo);
 	var data = '';
-	req.on('data', async function(chunk){    
-		data += chunk;
-		console.log(data);
-		for (const key in urlInfo.query) {
-			switch (key) {
-				case 'model':
-	
-					switch (urlInfo.query[key]) {
-						case 'feedPrice':
-							if (urlInfo.query.currency){
-								result = await oraclePrice.getFeedPrice(urlInfo.query.currency);
-								if (result[0].id == null)
-									result = [{}];
-								result = JSON.stringify(result);		
-							}
-							break;
-						case 'lendfMePrice':
-							if (urlInfo.query.asset){
-								result = await oraclePrice.getLendfMePrice(urlInfo.query.asset);
-								if (result[0].id == null)
-									result = [{}];
-								result = JSON.stringify(result);		
-							}
-							break;
-						case 'insertLendfMePrice':
-								oraclePrice.insertLendfMePrice(data);
-								if (result[0].id == null)
-									result = [{}];
-								result = JSON.stringify(result);
-							break;
-						default:
-							break;
-					}
-					break;
-				default:
-					break;
-			}
+	for (const key in urlInfo.query) {
+		switch (key) {
+			case 'model':
+				switch (urlInfo.query[key]) {
+					case 'feedPrice':
+						if (urlInfo.query.currency){
+							result = await oraclePrice.getFeedPrice(urlInfo.query.currency);
+							if (result[0].id == null)
+								result = [{}];
+							result = JSON.stringify(result);
+							res.end(`${data}`);		
+						}
+						break;
+					case 'lendfMePrice':
+						if (urlInfo.query.asset){
+							result = await oraclePrice.getLendfMePrice(urlInfo.query.asset);
+							if (result[0].id == null)
+								result = [{}];
+							result = JSON.stringify(result);
+							res.end(`${data}`);		
+						}
+						break;
+					case 'insertLendfMePrice':
+						req.on('data', async function(chunk){    
+							data += chunk;
+							console.log(data);
+							oraclePrice.insertLendfMePrice(data);
+							if (result[0].id == null)
+								result = [{}];
+							result = JSON.stringify(result);
+							res.end(`${data}`);
+						});
+						break;
+					default:
+						break;
+				}
+				break;
+			default:
+				break;
 		}
-		res.end(`${result}`);
-	});
-    
+		break;
+	}
 }).listen(localPort);
