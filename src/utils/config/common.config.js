@@ -1,6 +1,7 @@
 require('dotenv').config()
 
 const BN = require('bn.js')
+const fs = require('fs')
 
 const {
     adminPrivateKey,
@@ -20,12 +21,15 @@ const newPendingAnchorInterval = 240 // 240 blocks are equal to 1 hour
 const mantissaOne = (new BN(10)).pow(new BN(18))
 // query current gas price
 const ethgasstationAPI = `https://ethgasstation.info/json/ethgasAPI.json`
+// save last feeding time
+const timeDir = './time.log'
 
 module.exports = {
-    posterAccount,
     adminAccount,
     ethgasstationAPI,
     mantissaOne,
     maxPendingAnchorSwing,
     newPendingAnchorInterval,
+    posterAccount,
+    timeDir,
 }

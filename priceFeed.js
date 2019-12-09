@@ -1,11 +1,12 @@
 const BN = require('bn.js')
-
+const fs = require('fs')
 const log4js = require('./src/utils/logger/log')
 log4js.initLogger("mainnet")
 var log = log4js.getLogger()
 
 const {
-    mantissaOne
+    mantissaOne,
+    timeDir,
 } = require('./src/utils/config/common.config')
 
 const {
@@ -47,7 +48,6 @@ const {
 } = require('./src/database/oraclePrice')
 
 const {
-    getLendfMePrice,
     insertLendfMePrice,
 } = require('./src/database/oraclePrice')
 
@@ -88,6 +88,7 @@ async function feed() {
                 log.info(`${currentNet} ${supportAssets[i]} pending anchor is: ${anchorPrice.priceMantissa.toString()}`)
                 anchorPrice = new BN(anchorPrice.priceMantissa)
 
+                // TODO: remove getFeedPrice()
                 let currentPrice = await getFeedPrice(supportAssets[i])
                 log.info(`${currentNet} ${supportAssets[i]} current price is: ${currentPrice[0].price.toString()}`)
                 currentPrice = new BN(currentPrice[0].price)
@@ -105,15 +106,15 @@ async function feed() {
             let finalAssets = []
             let assetNames = []
             let previousPrice = 0
-            let previousTime = 0
             let toVerifyPrices = []
             let result = {}
             for (let i = 0, len = getPrices.length; i < len; i++) {
-                let price = await getLendfMePrice(getPrices[i][2])
+                let timeData = JSON.parse(fs.readFileSync(timeDir))
+                let previousTime = timeData[netType]
+                log.info(currentNet, ' last feeding time is: ', previousTime)
                 previousPrice = await priceOracle.getPrice(getPrices[i][2])
                 let currentBlockNumber = await priceOracle.getBlockNumber()
-                if (price.length !== 0) {
-                    previousTime = price[0].timestamp
+                if (previousTime !== 0) {
                     result = feedPrice(getPrices[i][1], actualPrices[i][1], previousPrice, previousTime, anchorPrices[i].period, currentBlockNumber)
                 } else {
                     // only for the first time.
@@ -133,7 +134,7 @@ async function feed() {
             if (finalWritingPrices.length != 0) {
                 let data = []
                 currentTime = Math.round(new Date().getTime() / 1000)
-                log.info(' Current time is: ', currentTime)
+                log.info(currentNet, ' Current time is: ', currentTime)
                 for (let i = 0, len = finalWritingPrices.length; i < len; i++) {
                     data.push([finalAssets[i], assetNames[i], finalWritingPrices[i], currentTime])
                 }
@@ -170,6 +171,12 @@ async function feed() {
 async function main() {
     log.info('\n\n\n')
     log.info('Init files')
+    let data = {}
+    for (let i = 0, len = netTypes.length; i < len; i++) {
+        let netType = netTypes[i]
+        data[netType] = 0
+    }
+    fs.writeFileSync(timeDir, JSON.stringify(data), 'utf8')
     log.info("start to run!")
     log.info("-------------------------------------------")
     log.info("-------------------------------------------")
