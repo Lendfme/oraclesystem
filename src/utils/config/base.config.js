@@ -10,12 +10,12 @@ const maxPriceSwing = 0.01
 const minBalance = 0.01
 // Support net type.
 const netTypes = ['mainnet', 'rinkeby']
-
 // Multi-collateral currencies
-const supportAssets = ['usdx', 'usdt', 'imbtc']
-
+const supportAssets = ['usdx', 'usdt']
 // Recommended magnification
 const supposedMantissa = [0, 12, 10]
+// Service name
+const serviceName = ''
 
 // when add a new collateral asset, need to add here.
 const mainnetAssets = {
@@ -60,6 +60,7 @@ module.exports = {
     privateKey,
     safePriceSwing,
     safetyFactor,
+    serviceName,
     supportAssets,
     supposedMantissa,
 }

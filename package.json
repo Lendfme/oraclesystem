@@ -1,6 +1,6 @@
 {
     "name": "oracle-system",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "description": "Oracle system for Lendf.me Multi-Collateral",
     "repository": {
         "type": "git",

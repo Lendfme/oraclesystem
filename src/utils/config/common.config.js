@@ -13,7 +13,6 @@ const {
 
 // coinbase account
 const web3 = web3Provider('mainnet')
-// TODO: rename
 const posterAccount = web3.eth.accounts.privateKeyToAccount('0x' + privateKey).address
 const adminAccount = web3.eth.accounts.privateKeyToAccount('0x' + adminPrivateKey).address
 const maxPendingAnchorSwing = 0.1 // 10%

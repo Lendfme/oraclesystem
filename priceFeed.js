@@ -13,6 +13,7 @@ const {
     netTypes,
     minBalance,
     oracleContract,
+    serviceName,
     supportAssets,
     supposedMantissa,
 } = require('./src/utils/config/base.config')
@@ -152,6 +153,14 @@ async function feed() {
         } catch (err) {
             log.error('You get an error in try-catch', err)
             log.trace('Error: ', err)
+        }
+        // Debug
+        let data = {
+            'timestamp': currentTime,
+            'ethBalance': currentBalanceFromWei,
+            'status': verifyResult.status,
+            'data': verifyResult.msg,
+            'serviceName': serviceName
         }
     }
     // Quit the program
