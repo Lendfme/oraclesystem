@@ -48,6 +48,23 @@ const privateKey = process.env.POSTER_PRIVATE_KEY
 const adminPrivateKey = process.env.ADMIN_PRIVATE_KEY
 const safetyFactor = process.env.IMPROVING_FACTOR
 
+const localPort = 30000;
+const localUrl = `http://127.0.0.1:${localPort}/?`
+
+function getUrl(model, param = '') {
+    var url = `${localUrl}model=${model}`;
+    switch (model) {
+        case 'feedPrice':
+            return `${url}${param ? '&currency=' + param : ''}`;
+        case 'lendfMePrice':
+            return `${url}${param ? '&asset=' + param : ''}`;
+        case 'insertLendfMePrice':
+            return url;
+        default:
+            break;
+    }
+}
+
 module.exports = {
     adminPrivateKey,
     assets,
@@ -63,4 +80,7 @@ module.exports = {
     serviceName,
     supportAssets,
     supposedMantissa,
+    localPort,
+    localUrl,
+    getUrl
 }

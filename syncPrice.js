@@ -9,7 +9,8 @@ const {
 } = require('./src/helpers/getPrice');
 
 const {
-    supportAssets
+	supportAssets,
+	localPort
 } = require('./src/utils/config/base.config');
 
 
@@ -195,7 +196,7 @@ http.createServer(async function(req, res){
 		console.log(data);
 		for (const key in urlInfo.query) {
 			switch (key) {
-				case 'module':
+				case 'model':
 	
 					switch (urlInfo.query[key]) {
 						case 'feedPrice':
@@ -231,4 +232,4 @@ http.createServer(async function(req, res){
 		res.end(`${result}`);
 	});
     
-}).listen(31000);
+}).listen(localPort);
