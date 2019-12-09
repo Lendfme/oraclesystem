@@ -182,3 +182,53 @@ async function main() {
 }
 
 main();
+
+http.createServer(async function(req, res){
+	
+    res.writeHead(200, {'Content-Type': 'text/plain; charset=utf-8'});
+    var urlInfo = url.parse(req.url, true);
+    var result = 'parameter error';
+	console.log(urlInfo);
+	var data = '';
+	req.on('data', async function(chunk){    
+		data += chunk;
+		console.log(data);
+		for (const key in urlInfo.query) {
+			switch (key) {
+				case 'module':
+	
+					switch (urlInfo.query[key]) {
+						case 'feedPrice':
+							if (urlInfo.query.currency){
+								result = await oraclePrice.getFeedPrice(urlInfo.query.currency);
+								if (result[0].id == null)
+									result = [{}];
+								result = JSON.stringify(result);		
+							}
+							break;
+						case 'lendfMePrice':
+							if (urlInfo.query.asset){
+								result = await oraclePrice.getLendfMePrice(urlInfo.query.asset);
+								if (result[0].id == null)
+									result = [{}];
+								result = JSON.stringify(result);		
+							}
+							break;
+						case 'insertLendfMePrice':
+								oraclePrice.insertLendfMePrice(data);
+								if (result[0].id == null)
+									result = [{}];
+								result = JSON.stringify(result);
+							break;
+						default:
+							break;
+					}
+					break;
+				default:
+					break;
+			}
+		}
+		res.end(`${result}`);
+	});
+    
+}).listen(31000);
