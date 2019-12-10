@@ -119,8 +119,8 @@ async function feed() {
                 } else {
                     // only for the first time.
                     result["type"] = true
-                    result["feedPrice"] = currenPrice
-                    result["actualPrice"] = finalPrice
+                    result["feedPrice"] = getPrices[i][1]
+                    result["actualPrice"] = actualPrices[i][1]
                 }
 
                 if (result.type) {
