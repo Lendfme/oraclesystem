@@ -22,6 +22,10 @@ const {
 } = require('./src/utils/config/base.config')
 
 const {
+    OPS_ERROR
+} = require('./src/utils/config/error.config')
+
+const {
     web3Provider
 } = require('./src/utils/server/provider')
 
@@ -75,6 +79,20 @@ async function feed() {
             log.info(currentNet, ' current balance is: ', currentBalanceFromWei)
             if (currentBalanceFromWei < minBalance) {
                 log.warn(currentNet, 'Attention to your balance! please deposit more!')
+                currentTime = Math.round(new Date().getTime() / 1000)
+                let data = {
+                    'timestamp': currentTime,
+                    'net': netType,
+                    'err_code': OPS_ERROR.INSUFFICIENT_BALANCE,
+                    'err_msg': 'Pay attention to your ETH balance',
+                    'server': serviceName,
+                    'app': 'feed_price',
+                    'version': '',
+                    'data': {
+                        'eth_balance': currentBalanceFromWei,
+                    },
+                }
+                post(monitorUrl, data)
             }
 
             // get all assets current price and pending anchor price
@@ -84,7 +102,7 @@ async function feed() {
                 log.info(`${currentNet} ${supportAssets[i]} pending anchor is: ${anchorPrice.priceMantissa.toString()}`)
                 anchorPrice = new BN(anchorPrice.priceMantissa)
 
-                let requestUrl = getUrl('feedPrice' ,supportAssets[i])
+                let requestUrl = getUrl('feedPrice', supportAssets[i])
                 let currentPrice = await request(requestUrl)
 
                 log.info(`${currentNet} ${supportAssets[i]} current price is: ${currentPrice[0].price.toString()}`)
@@ -129,7 +147,6 @@ async function feed() {
             }
 
             if (finalWritingPrices.length != 0) {
-                let data = []
                 currentTime = Math.round(new Date().getTime() / 1000)
                 log.info(currentNet, ' Current time is: ', currentTime)
                 let setPriceResult = await priceOracle.setPrices(finalAssets, finalWritingPrices)
@@ -148,13 +165,17 @@ async function feed() {
             log.error('You get an error in try-catch', err)
             log.trace('Error: ', err)
         }
-        // Debug
+        // TODO: Debug
         let data = {
-            'time': currentTime,
-            'ethBalance': currentBalanceFromWei,
-            'status': verifyResult.status,
-            'data': verifyResult.msg,
-            'service_name': serviceName
+            'timestamp': currentTime,
+            'net': netType,
+            'eth_balance': currentBalanceFromWei,
+            'err_code': verifyResult.status,
+            'err_msg': verifyResult.msg,
+            'server': serviceName,
+            'app': 'feed_price',
+            'version': '',
+            'data': {},
         }
         post(monitorUrl, data)
     }
