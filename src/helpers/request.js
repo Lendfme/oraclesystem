@@ -13,9 +13,10 @@ function request(url) {
     })
 }
 
+// TODO: solve error
 function post(url, data) {
     axios.post(url, data).then((res) => {
-        console.log("res=>", res)
+        console.log("res=>", res.status)
     })
 }
 
@@ -23,14 +24,14 @@ function asyncGet(url, duration, data, sign = '') {
 
     axios.get(url, {timeout: duration})
     .then(function (response) {
-    
+
         var info = sign ? {'sign': sign, 'data' : response.data} : response.data;
 			if (Array.isArray(data))
 				data.push(info)
 			else
 				data = info;
     }).catch(function (error) {
-    
+
         var info = sign ? {'sign': sign, 'data' : false} : false;
 		if (Array.isArray(data))
 			data.push(info);

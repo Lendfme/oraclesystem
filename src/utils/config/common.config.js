@@ -1,7 +1,6 @@
 require('dotenv').config()
 
 const BN = require('bn.js')
-const fs = require('fs')
 
 const {
     adminPrivateKey,

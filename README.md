@@ -4,16 +4,13 @@ Version: multi-collateral V1.5
 
 Get and calculate price from off-chain source, and then set for the Lendf.me System.
 
-## Guide:
+## Overview:
 
-For version 1.5, there will be four collateral:
+For version 1.5, collateral assets will be:
 
 - USDx
 - USDT
 - WETH
-- imBTC
-
-At the beginnig, we just set price for USDT and imBTC, we will get ETH price from oracle.
 
 Feeding price every 10 minutes, we try to get price from these exchanges:
 
@@ -36,9 +33,13 @@ if the new price meets either of these two conditions, we will set a new price.
 
 ### Value
 
-Calculate median and average, if they differ by less than 1%, we think all prices are valid, so we use the median as the price to feed.
+Calculate median and compare the median value to each value, if they differ by less than 1%, we think all prices are valid, so we use the median as the price to feed.
 
-When try to set a new price, we will determine whether the price exceeds the price of the `pendingAnchor` which is set in the contract `PriceOracle.sol` by 10%. If so, after feeding this price, if admin does not update value of the `pendingAnchor`, we can not set a price that exceeds 10% in an hour.
+_Notice: more details on median calculations, you can find at [here](./src/helpers/strategy.png)_
+
+_Notice: when we set the price has exceeded the price of the `pendingAnchor` by ±10%, the final price will be ±10% of the `pendingAnchor` price, if admin does not update value of the `pendingAnchor`, we can not set a price that exceeds ±10% in an hour._
+
+## Guide:
 
 ### Install
 
@@ -46,6 +47,19 @@ When try to set a new price, we will determine whether the price exceeds the pri
 ~/$ git clone https://github.com/Lendfme/oraclesystem.git
 ~/$ cd ./oraclesystem
 ~/oraclesystem$ npm install
+```
+
+### Set config
+
+```
+~/oraclesystem$ mv ./.example.env ./.env
+```
+
+According to your favour, edit these files:
+
+```
+.env
+./src/utils/config/base.config.js
 ```
 
 ### Run

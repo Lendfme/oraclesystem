@@ -16,19 +16,19 @@ const supportAssets = ['usdx', 'usdt']
 const supposedMantissa = [0, 12, 10]
 // Service name
 const serviceName = ''
+// Monitor url
+const monitorUrl = ''
 
 // when add a new collateral asset, need to add here.
 const mainnetAssets = {
     'usdx': '0xeb269732ab75A6fD61Ea60b06fE994cD32a83549',
     'usdt': '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-    'imbtc': '0x3212b29E33587A00FB1C83346f5dBFA69A458923',
     'weth': '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
 }
 
 const rinkebyAssets = {
     'usdx': '0xAF21BB8ae7b7a5Eec37964e478583CD486FD12E2',
     'usdt': '0xA1e525F7d24D7cCB78A070BBd12C0BF21Fb4a848',
-    'imbtc': '0x7b054eBe1D7e003afdA8e717DAEaB05D56D5836A',
     'weth': '0xC8b1a5ef2e19937dd6c0f804DF2e3efE9F093B1e',
 }
 
@@ -39,8 +39,8 @@ const assets = {
 
 // price oracle contract address
 const oracleContract = {
-    'mainnet': '',
-    'rinkeby': '0xCe9A5bdEb6088861A99E28ec6852fCA404fE0012',
+    'mainnet': '0xE8a616FD9D7e82cfCaEf3f8a90c6A7EEA97E0856',
+    'rinkeby': '0xFdc55F9ab320819b8D4a91F50d1E78809B09eB3d',
 }
 
 const infuraKey = process.env.INFURA_KEY
@@ -73,6 +73,7 @@ module.exports = {
     maxFeedingPriceInterval,
     maxPriceSwing,
     minBalance,
+    monitorUrl,
     oracleContract,
     privateKey,
     safePriceSwing,

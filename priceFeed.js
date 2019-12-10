@@ -13,6 +13,7 @@ const {
     assets,
     netTypes,
     minBalance,
+    monitorUrl,
     oracleContract,
     serviceName,
     supportAssets,
@@ -45,13 +46,10 @@ const {
     verify
 } = require('./src/helpers/verify')
 
-const {
-    insertLendfMePrice,
-} = require('./src/database/oraclePrice')
-
 let currentBalance = 0
 let verifyResult = false
 let currentTime = 0
+let currentBalanceFromWei = 0
 
 async function feed() {
     for (let i = 0, len = netTypes.length; i < len; i++) {
@@ -73,7 +71,7 @@ async function feed() {
             let anchorPrices = []
 
             currentBalance = await account.getBalance(priceOracle.poster)
-            let currentBalanceFromWei = web3.utils.fromWei(currentBalance.toString(), 'ether')
+            currentBalanceFromWei = web3.utils.fromWei(currentBalance.toString(), 'ether')
             log.info(currentNet, ' current balance is: ', currentBalanceFromWei)
             if (currentBalanceFromWei < minBalance) {
                 log.warn(currentNet, 'Attention to your balance! please deposit more!')
@@ -134,10 +132,6 @@ async function feed() {
                 let data = []
                 currentTime = Math.round(new Date().getTime() / 1000)
                 log.info(currentNet, ' Current time is: ', currentTime)
-                for (let i = 0, len = finalWritingPrices.length; i < len; i++) {
-                    data.push([finalAssets[i], assetNames[i], finalWritingPrices[i], currentTime])
-                }
-                insertLendfMePrice(data)
                 let setPriceResult = await priceOracle.setPrices(finalAssets, finalWritingPrices)
                 if (setPriceResult.status) {
                     log.info(currentNet, " Set new price!", finalWritingPrices)
@@ -156,15 +150,18 @@ async function feed() {
         }
         // Debug
         let data = {
-            'timestamp': currentTime,
+            'time': currentTime,
             'ethBalance': currentBalanceFromWei,
             'status': verifyResult.status,
             'data': verifyResult.msg,
-            'serviceName': serviceName
+            'service_name': serviceName
         }
+        post(monitorUrl, data)
     }
     // Quit the program
-    process.exit(0)
+    setTimeout(() => {
+        process.exit(0)
+    }, 5000)
 }
 
 async function main() {
