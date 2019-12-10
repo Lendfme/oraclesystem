@@ -1,16 +1,14 @@
 const axios = require('axios')
 
+// TODO: limit retry time
 function request(url) {
     return new Promise(async (resolve, reject) => {
         try {
             let result = await axios.get(url)
             resolve(result.data)
         } catch (error) {
-            setTimeout(() => {
-                console.error(error.stack)
-                console.error('Get http error, try again after 3 minutes ...', error)
-                request(url)
-            }, 10000) // 10 seconds
+            console.error(error.stack)
+            console.error('Get http error, try again after 15 seconds ...', error)
         }
     })
 }

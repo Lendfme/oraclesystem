@@ -17,6 +17,7 @@ const {
     serviceName,
     supportAssets,
     supposedMantissa,
+    getUrl
 } = require('./src/utils/config/base.config')
 
 const {
@@ -32,7 +33,8 @@ const {
 } = require('./src/eth/contract/oracle')
 
 const {
-    post
+    post,
+    request,
 } = require('./src/helpers/request')
 
 const {
@@ -42,10 +44,6 @@ const {
 const {
     verify
 } = require('./src/helpers/verify')
-
-const {
-    getFeedPrice
-} = require('./src/database/oraclePrice')
 
 const {
     insertLendfMePrice,
@@ -88,8 +86,9 @@ async function feed() {
                 log.info(`${currentNet} ${supportAssets[i]} pending anchor is: ${anchorPrice.priceMantissa.toString()}`)
                 anchorPrice = new BN(anchorPrice.priceMantissa)
 
-                // TODO: remove getFeedPrice()
-                let currentPrice = await getFeedPrice(supportAssets[i])
+                let requestUrl = getUrl('feedPrice' ,supportAssets[i])
+                let currentPrice = await request(requestUrl)
+
                 log.info(`${currentNet} ${supportAssets[i]} current price is: ${currentPrice[0].price.toString()}`)
                 currentPrice = new BN(currentPrice[0].price)
 
