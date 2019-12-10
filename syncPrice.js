@@ -4,7 +4,8 @@ const url = require('url');
 const oraclePrice = require('./src/database/oraclePrice');
 const apiPriceConfig = require('./src/utils/config/apiPriceConfig');
 const {
-	asyncGet
+	asyncGet,
+	post
 } = require('./src/helpers/request');
 
 const {
@@ -13,11 +14,32 @@ const {
 
 const {
 	supportAssets,
-	localPort
+	localPort,
+	serviceName,
+	monitorUrl,
 } = require('./src/utils/config/base.config');
+
+const {
+	ERROR_CODE,
+	ERROR_MSG,
+} = require('./src/utils/config/error.config');
 
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+// const getPriceMonitorUrl = monitorUrl + '/getprice'
+const getPriceMonitorUrl = 'http://18.163.118.145:8000/getprice'
+var monitorData = {
+    "err_code":ERROR_CODE.NO_ERROR,
+    "err_msg":ERROR_MSG.NO_ERROR,
+    "timestamp":0,
+    "server":serviceName,
+    "app":"syncPrice",
+    "version":"0.1.0",
+    "data":{
+
+    }
+}
 
 var duration = 30000;
 var priceData = {};
@@ -114,6 +136,16 @@ async function parsePriceData(priceData, currency, timestamp) {
 			}
 		} catch (error) {
 			console.log(error);
+			monitorData.err_code = ERROR_CODE.SYNC_PRICE_PARSE_ERROR;
+			monitorData.err_msg = ERROR_MSG.SYNC_PRICE_PARSE_ERROR;
+			monitorData.timestamp = Math.ceil(Date.now() / 1000);;
+			monitorData.data = {
+				'exchange': priceData[index].sign,
+				'currency':currency,
+				'info':priceData[index],
+				'error_msg':error
+			};
+			post(getPriceMonitorUrl, monitorData);
 		}
 		
 		if(endSign)
@@ -122,11 +154,30 @@ async function parsePriceData(priceData, currency, timestamp) {
 	console.log(`currency: ${currency}, ${timestamp}, length: ${data.length}`);
 	console.log(data);
 	if (data.length < 5) {
+		monitorData.err_code = ERROR_CODE.SYNC_PRICE_FILTER_ERROR;
+		monitorData.err_msg = ERROR_MSG.SYNC_PRICE_FILTER_ERROR;
+		monitorData.timestamp = Math.ceil(Date.now() / 1000);;
+		monitorData.data = {
+			'currency':currency,
+			'info':data,
+			'length':data.length
+		};
+		post(getPriceMonitorUrl, monitorData);
 		return data;
 	}
 	oraclePrice.insertExchangePrice(data);
 	await delay(200);
 	oraclePrice.cleanDatabase(500);
+
+	monitorData.err_code = ERROR_CODE.NO_ERROR;
+	monitorData.err_msg = ERROR_MSG.NO_ERROR;
+	monitorData.timestamp = Math.ceil(Date.now() / 1000);;
+	monitorData.data = {
+		'currency':currency,
+		'info':data,
+		'length':data.length
+	};
+	post(getPriceMonitorUrl, monitorData);
 
 	return data;
 }
@@ -146,6 +197,14 @@ async function main() {
 				asyncGet(apiPriceConfig.apiList[supportAssets[i]][index], duration, priceData[supportAssets[i]], apiPriceConfig.exchange[index]);
 				console.log(`sync ${supportAssets[i]} price [${index}]:${apiPriceConfig.exchange[index]}  url: ${apiPriceConfig.apiList[supportAssets[i]][index]}`);
 			}
+			monitorData.err_code = ERROR_CODE.NO_ERROR;
+			monitorData.err_msg = ERROR_MSG.NO_ERROR;
+			monitorData.timestamp = Math.ceil(Date.now() / 1000);;
+			monitorData.data = {
+				'exchange':supportAssets[i],
+				'info':'Get exchange price',
+			};
+			post(getPriceMonitorUrl, monitorData);
 		}
 
 		while(endflag < supportAssets.length){
@@ -172,6 +231,16 @@ async function main() {
 			console.log(priceMedian.median.toString());
 			if (priceMedian.result)
 				data.push([priceMedian.exchange, supportAssets[index], priceMedian.median.toString(), time]);
+			else{
+				monitorData.err_code = ERROR_CODE.SYNC_PRICE_MEDIAN_ERROR;
+				monitorData.err_msg = ERROR_MSG.SYNC_PRICE_MEDIAN_ERROR;
+				monitorData.timestamp = Math.ceil(Date.now() / 1000);;
+				monitorData.data = {
+					'currency':supportAssets[index],
+					'info':priceMedian
+				};
+				post(getPriceMonitorUrl, monitorData);
+			}
 			
 		}
 		console.log(data);
