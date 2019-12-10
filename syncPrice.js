@@ -204,7 +204,7 @@ http.createServer(async function(req, res){
 							if (result[0].id == null)
 								result = [{}];
 							result = JSON.stringify(result);
-							res.end(`${data}`);		
+							res.end(`${result}`);		
 						}
 						break;
 					case 'lendfMePrice':
@@ -213,7 +213,7 @@ http.createServer(async function(req, res){
 							if (result[0].id == null)
 								result = [{}];
 							result = JSON.stringify(result);
-							res.end(`${data}`);		
+							res.end(`${result}`);		
 						}
 						break;
 					case 'insertLendfMePrice':
@@ -221,9 +221,6 @@ http.createServer(async function(req, res){
 							data += chunk;
 							console.log(data);
 							oraclePrice.insertLendfMePrice(JSON.parse(data));
-							if (result[0].id == null)
-								result = [{}];
-							result = JSON.stringify(result);
 							res.end(`${data}`);
 						});
 						break;
