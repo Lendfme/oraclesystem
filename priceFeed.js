@@ -22,7 +22,7 @@ const {
 } = require('./src/utils/config/base.config')
 
 const {
-    OPS_ERROR
+    ERROR_CODE
 } = require('./src/utils/config/error.config')
 
 const {
@@ -83,7 +83,7 @@ async function feed() {
                 let data = {
                     'timestamp': currentTime,
                     'net': netType,
-                    'err_code': OPS_ERROR.INSUFFICIENT_BALANCE,
+                    'err_code': ERROR_CODE.INSUFFICIENT_BALANCE,
                     'err_msg': 'Pay attention to your ETH balance',
                     'server': serviceName,
                     'app': 'feed_price',
