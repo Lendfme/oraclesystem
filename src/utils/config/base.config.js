@@ -17,7 +17,9 @@ const supposedMantissa = [0, 12, 10]
 // Service name
 const serviceName = ''
 // Monitor url
-const monitorUrl = ''
+const monitorUrl = 'http://18.163.118.145:8000'
+const monitorGetPriceUrl = monitorUrl + '/getprice'
+const monitorPostPriceUrl = monitorUrl + '/postprice'
 
 // when add a new collateral asset, need to add here.
 const mainnetAssets = {
@@ -74,6 +76,8 @@ module.exports = {
     maxPriceSwing,
     minBalance,
     monitorUrl,
+    monitorGetPriceUrl,
+    monitorPostPriceUrl,
     oracleContract,
     privateKey,
     safePriceSwing,

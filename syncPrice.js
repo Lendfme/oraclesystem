@@ -16,7 +16,7 @@ const {
 	supportAssets,
 	localPort,
 	serviceName,
-	monitorUrl,
+	monitorGetPriceUrl,
 } = require('./src/utils/config/base.config');
 
 const {
@@ -27,8 +27,6 @@ const {
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-// const getPriceMonitorUrl = monitorUrl + '/getprice'
-const getPriceMonitorUrl = 'http://18.163.118.145:8000/getprice'
 var monitorData = {
     "err_code":ERROR_CODE.NO_ERROR,
     "err_msg":ERROR_MSG.NO_ERROR,
@@ -145,7 +143,7 @@ async function parsePriceData(priceData, currency, timestamp) {
 				'info':priceData[index],
 				'error_msg':error
 			};
-			post(getPriceMonitorUrl, monitorData);
+			post(monitorGetPriceUrl, monitorData);
 		}
 		
 		if(endSign)
@@ -162,7 +160,7 @@ async function parsePriceData(priceData, currency, timestamp) {
 			'info':data,
 			'length':data.length
 		};
-		post(getPriceMonitorUrl, monitorData);
+		post(monitorGetPriceUrl, monitorData);
 		return data;
 	}
 	oraclePrice.insertExchangePrice(data);
@@ -177,7 +175,7 @@ async function parsePriceData(priceData, currency, timestamp) {
 		'info':data,
 		'length':data.length
 	};
-	post(getPriceMonitorUrl, monitorData);
+	post(monitorGetPriceUrl, monitorData);
 
 	return data;
 }
@@ -204,7 +202,7 @@ async function main() {
 				'exchange':supportAssets[i],
 				'info':'Get exchange price',
 			};
-			post(getPriceMonitorUrl, monitorData);
+			post(monitorGetPriceUrl, monitorData);
 		}
 
 		while(endflag < supportAssets.length){
@@ -239,7 +237,7 @@ async function main() {
 					'currency':supportAssets[index],
 					'info':priceMedian
 				};
-				post(getPriceMonitorUrl, monitorData);
+				post(monitorGetPriceUrl, monitorData);
 			}
 			
 		}

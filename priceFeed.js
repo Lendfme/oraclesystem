@@ -13,7 +13,7 @@ const {
     assets,
     netTypes,
     minBalance,
-    monitorUrl,
+    monitorPostPriceUrl,
     oracleContract,
     serviceName,
     supportAssets,
@@ -92,7 +92,7 @@ async function feed() {
                         'eth_balance': currentBalanceFromWei,
                     },
                 }
-                post(monitorUrl, data)
+                post(monitorPostPriceUrl, data)
             }
 
             // get all assets current price and pending anchor price
@@ -177,7 +177,7 @@ async function feed() {
             'version': '',
             'data': {},
         }
-        post(monitorUrl, data)
+        post(monitorPostPriceUrl, data)
     }
     // Quit the program
     setTimeout(() => {
