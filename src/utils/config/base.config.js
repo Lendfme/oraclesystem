@@ -9,7 +9,7 @@ const maxPriceSwing = 0.01
 // Expect account has minimum eth amount.
 const minBalance = 0.01
 // Support net type.
-const netTypes = ['mainnet', 'rinkeby']
+const netType = 'mainnet'
 // Multi-collateral currencies
 const supportAssets = ['usdx', 'usdt']
 // Recommended magnification
@@ -71,7 +71,7 @@ module.exports = {
     adminPrivateKey,
     assets,
     infuraKey,
-    netTypes,
+    netType,
     maxFeedingPriceInterval,
     maxPriceSwing,
     minBalance,

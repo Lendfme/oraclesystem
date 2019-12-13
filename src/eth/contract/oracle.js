@@ -12,8 +12,8 @@ const {
 
 
 class Oracle extends BaseContract {
-    constructor(net, log, oracleAddress) {
-        super(net, log)
+    constructor(net, oracleAddress) {
+        super(net)
         this.admin = adminAccount
         this.poster = posterAccount
         this.contractAddress = oracleAddress

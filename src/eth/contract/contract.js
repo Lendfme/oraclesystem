@@ -13,8 +13,12 @@ const {
     getGasPrice
 } = require('../../helpers/getPrice')
 
+const {
+    log
+} = require('../../utils/logger/log')
+
 class BaseContract {
-    constructor(net, log) {
+    constructor(net) {
         this.net = net
         this.web3 = web3Provider(net)
         this.log = log

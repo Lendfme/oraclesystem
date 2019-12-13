@@ -1,4 +1,7 @@
 const log4js = require('log4js')
+const {
+    netType
+} = require('../config/base.config.js')
 
 Date.prototype.Format = function (fmt) {
     var o = {
@@ -76,4 +79,66 @@ exports.useLogger = function (app, logger) {
     app.use(log4js.connectLogger(logger || log4js.getLogger('default'), {
         format: '[:remote-addr :method :url :status :response-timems][:referrer HTTP/:http-version :user-agent]'
     }));
+}
+
+function initLogger(filePath = 'mainnet') {
+    let file = `./logs/${new Date().Format("yyyy-MM-dd")}/${filePath}/log/`;
+    let extend = `-yyyy-MM-dd.log`;
+
+    log4js.configure({
+        replaceConsole: true,
+        appenders: {
+            stdout: {
+                type: 'stdout'
+            },
+            info: {
+                type: 'dateFile',
+                filename: file,
+                pattern: 'info' + extend,
+                alwaysIncludePattern: true
+            },
+            warning: {
+                type: 'dateFile',
+                filename: file,
+                pattern: 'warning' + extend,
+                alwaysIncludePattern: true
+            },
+            error: {
+                type: 'dateFile',
+                filename: file,
+                pattern: 'error' + extend,
+                alwaysIncludePattern: true
+            },
+        },
+        categories: {
+            default: {
+                appenders: ['stdout', 'info'],
+                level: 'INFO'
+            },
+            info: {
+                appenders: ['stdout', 'info'],
+                level: 'INFO'
+            },
+            warning: {
+                appenders: ['stdout', 'warning'],
+                level: 'WARN'
+            },
+            error: {
+                appenders: ['stdout', 'error'],
+                level: 'ERROR'
+            },
+        }
+    });
+}
+
+function getLogger(name) {
+    return log4js.getLogger(name || 'default');
+}
+
+// TODO: Modify code
+initLogger(netType)
+const log = getLogger()
+
+module.exports = {
+    log
 }
