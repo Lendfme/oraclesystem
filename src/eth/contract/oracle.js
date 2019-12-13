@@ -62,6 +62,19 @@ class Oracle extends BaseContract {
         })
     }
 
+    // poster
+    async getPoster() {
+        return new Promise((resolve, reject) => {
+            this.contract.methods.poster().call()
+                .then(result => {
+                    resolve(result)
+                })
+                .catch(err => {
+                    this.log.error("Fail due to ", err.message)
+                })
+        })
+    }
+
     // _setPendingAnchor(asset, newScaledPrice)
     async setPendingAnchor(asset, newAnchorPrice) {
         let txCount = await this.getNonce(this.admin)

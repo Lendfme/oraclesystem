@@ -35,7 +35,7 @@ if the new price meets either of these two conditions, we will set a new price.
 
 Calculate median and compare the median value to each value, if they differ by less than 1%, we think all prices are valid, so we use the median as the price to feed.
 
-_Notice: more details on median calculations, you can find at [here](./src/helpers/strategy.png)_
+_Notice: more details on median calculations, you can find at [here](./src/helpers/Strategy.png)_
 
 _Notice: when we set the price has exceeded the price of the `pendingAnchor` by ±10%, the final price will be ±10% of the `pendingAnchor` price, if admin does not update value of the `pendingAnchor`, we can not set a price that exceeds ±10% in an hour._
 

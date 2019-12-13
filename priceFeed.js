@@ -6,6 +6,7 @@ var log = log4js.getLogger()
 
 const {
     mantissaOne,
+    posterAccount,
     timeDir,
 } = require('./src/utils/config/common.config')
 
@@ -22,7 +23,8 @@ const {
 } = require('./src/utils/config/base.config')
 
 const {
-    ERROR_CODE
+    ERROR_CODE,
+    ERROR_MSG,
 } = require('./src/utils/config/error.config')
 
 const {
@@ -73,6 +75,25 @@ async function feed() {
             let getPrices = []
             let actualPrices = []
             let anchorPrices = []
+            let poster = await priceOracle.getPoster()
+            if (poster != posterAccount) {
+                currentTime = Math.round(new Date().getTime() / 1000)
+                let data = {
+                    'timestamp': currentTime,
+                    'net': netType,
+                    'err_code': ERROR_CODE.AUTHORITY_LIMITED,
+                    'err_msg': ERROR_MSG.AUTHORITY_LIMITED,
+                    'server': serviceName,
+                    'app': 'feed_price',
+                    'version': '',
+                    'data': {
+                        'actual_poster_address': poster,
+                        'expected_poster_address': posterAccount,
+                    },
+                }
+                post(monitorUrl, data)
+                continue
+            }
 
             currentBalance = await account.getBalance(priceOracle.poster)
             currentBalanceFromWei = web3.utils.fromWei(currentBalance.toString(), 'ether')
