@@ -43,6 +43,19 @@ function feedPrice(currenPrice, finalPrice, previousPrice, previousTime, anchorP
     }
 }
 
+function getIntervalTime(moment, minutes = 10) {
+	var milliseconds = 60000;
+	var interval = minutes * milliseconds;
+	var currentTimestamp = Date.now();
+	var timestamp = currentTimestamp + interval;
+	var timeDifference = moment - new Date(timestamp).getMinutes() % 10;
+
+	timeDifference = timeDifference < 0 - interval / (milliseconds * 2) ? timeDifference + interval / milliseconds : timeDifference;
+	timestamp += timeDifference * milliseconds;
+	return timestamp - currentTimestamp;
+}
+
 module.exports = {
     feedPrice,
+    getIntervalTime,
 }
