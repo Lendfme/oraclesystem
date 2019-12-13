@@ -2,6 +2,10 @@ const {
     ERROR_CODE
 } = require('../utils/config/error.config')
 
+const {
+    log
+} = require('../utils/logger/log')
+
 async function verify(priceOracle, assets, toVerifyPrices) {
     let result = {
         'status': ERROR_CODE.NO_ERROR,
@@ -16,7 +20,7 @@ async function verify(priceOracle, assets, toVerifyPrices) {
         } else {
             result.status = ERROR_CODE.FEED_ERROR
             result.msg.push([assets[i], toVerifyPrices[i].toString(), feedPrice.toString(), false])
-            console.log("Feed price failed!")
+            log.error("Feed price failed!")
         }
     }
     return result

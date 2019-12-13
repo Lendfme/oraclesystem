@@ -54,7 +54,10 @@ const {
 } = require('./src/helpers/verify')
 
 let currentBalance = 0
-let verifyResult = false
+let verifyResult = {
+    'status': ERROR_CODE.NO_ERROR,
+    'msg': ERROR_MSG.NO_WRITING,
+}
 let currentTime = 0
 let currentBalanceFromWei = 0
 
@@ -164,15 +167,15 @@ async function feed() {
             }
         }
 
+        currentTime = Math.round(new Date().getTime() / 1000)
         if (finalWritingPrices.length != 0) {
-            currentTime = Math.round(new Date().getTime() / 1000)
             log.info(currentNet, ' Current time is: ', currentTime)
             let setPriceResult = await priceOracle.setPrices(finalAssets, finalWritingPrices)
             if (setPriceResult.status) {
                 log.info(currentNet, " Set new price!", finalWritingPrices)
                 log.info(' Final prices are: ', actualPrices)
                 let timeData = {}
-                timeData[currentNet] = currentTime
+                timeData[netType] = currentTime
                 fs.writeFileSync(timeDir, JSON.stringify(timeData), 'utf8')
             } else {
                 log.error('You get an error when set new price!')

@@ -1,4 +1,8 @@
 const {
+    log
+} = require('../utils/logger/log')
+
+const {
     maxFeedingPriceInterval,
     maxPriceSwing,
 } = require('../utils/config/base.config')
@@ -9,12 +13,12 @@ const {
 
 function feedPrice(currenPrice, finalPrice, previousPrice, previousTime, anchorPricesPeriod, currentBlockNumber) {
     let priceChangingRatio = Math.abs(currenPrice - previousPrice) / previousPrice
-    console.log("ratio is ", priceChangingRatio)
+    log.info("ratio is ", priceChangingRatio)
     let currentTime = Math.round(new Date().getTime() / 1000)
     if (priceChangingRatio > maxPriceSwing) {
         // current price has been max based on anchor price.
         if (finalPrice === previousPrice && currentPrice != finalPrice) {
-            if (Math.floor(currentBlockNumber / newPendingAnchorInterval) + 1 < anchorPricesPeriod )
+            if (Math.floor(currentBlockNumber / newPendingAnchorInterval) + 1 < anchorPricesPeriod)
                 return false
         }
 

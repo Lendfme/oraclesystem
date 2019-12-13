@@ -19,6 +19,7 @@ const ERROR_MSG = {
     FEED_ERROR: '',  // Feed price failed
     INSUFFICIENT_BALANCE: 'Pay attention to your ETH balance', // Insufficient balance
     AUTHORITY_LIMITED: 'Check poster address!',
+    NO_WRITING: 'Do not set a new Price!',
 
     SYNC_PRICE_PARSE_ERROR:     'Parsing price anomalies',
     SYNC_PRICE_FILTER_ERROR:    'Get price less than 5',

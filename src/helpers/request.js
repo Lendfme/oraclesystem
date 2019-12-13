@@ -1,5 +1,9 @@
 const axios = require('axios')
 
+const {
+    log
+} = require('../utils/logger/log')
+
 // TODO: limit retry time
 function request(url) {
     return new Promise(async (resolve, reject) => {
@@ -7,8 +11,8 @@ function request(url) {
             let result = await axios.get(url)
             resolve(result.data)
         } catch (error) {
-            console.error(error.stack)
-            console.error('Get http error, try again after 15 seconds ...', error)
+            log.error(error.stack)
+            log.error('Get http error, try again after 15 seconds ...', error)
         }
     })
 }
@@ -16,7 +20,7 @@ function request(url) {
 // TODO: solve error
 function post(url, data) {
     axios.post(url, data).then((res) => {
-        console.log("res=>", res.status)
+        log.info("res=>", res.status)
     })
 }
 
@@ -37,8 +41,8 @@ function asyncGet(url, duration, data, sign = '') {
 			data.push(info);
 		else
 			data = info;
-        console.log('sign error : ' + sign);
-        console.log(error.errno);
+        log.error('sign error : ' + sign);
+        log.error(error.errno);
     })
 }
 

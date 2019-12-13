@@ -17,7 +17,7 @@ const supposedMantissa = [0, 12, 10]
 // Service name
 const serviceName = ''
 // Monitor url
-const monitorUrl = 'http://18.163.118.145:8000'
+const monitorUrl = ''
 const monitorGetPriceUrl = monitorUrl + '/getprice'
 const monitorPostPriceUrl = monitorUrl + '/postprice'
 
@@ -50,7 +50,7 @@ const privateKey = process.env.POSTER_PRIVATE_KEY
 const adminPrivateKey = process.env.ADMIN_PRIVATE_KEY
 const safetyFactor = process.env.IMPROVING_FACTOR
 
-const localPort = 30000;
+const localPort = 00;
 const localUrl = `http://127.0.0.1:${localPort}/?`
 
 function getUrl(model, param = '') {
