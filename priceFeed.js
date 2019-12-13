@@ -88,7 +88,7 @@ async function feed() {
                 },
             }
             post(monitorPostPriceUrl, data)
-            log.error(currentNet, ' current poster is: ', poster, 'contract poster is: ', posterAccount)
+            log.error(currentNet, ' current poster is: ', posterAccount, 'contract poster is: ', poster)
             return
         }
 
