@@ -49,7 +49,6 @@ const oracleContract = {
 
 const infuraKey = process.env.INFURA_KEY
 const privateKey = process.env.POSTER_PRIVATE_KEY
-const adminPrivateKey = process.env.ADMIN_PRIVATE_KEY
 const safetyFactor = process.env.IMPROVING_FACTOR
 
 const localPort = 00;
@@ -70,7 +69,6 @@ function getUrl(model, param = '') {
 }
 
 module.exports = {
-    adminPrivateKey,
     assets,
     infuraKey,
     netType,

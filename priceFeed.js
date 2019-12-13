@@ -227,7 +227,7 @@ async function main() {
     log.info("-------------------------------------------")
     log.info('\n\n\n')
 
-    await delay(getIntervalTime(moment))
+    await delay(getIntervalTime(moment, true))
 
     while (true) {
         feed()

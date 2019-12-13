@@ -43,14 +43,16 @@ function feedPrice(currenPrice, finalPrice, previousPrice, previousTime, anchorP
     }
 }
 
-function getIntervalTime(moment, minutes = 10) {
+function getIntervalTime(moment, flag = false) {
 	var milliseconds = 60000;
-	var interval = minutes * milliseconds;
+	var interval = 10 * milliseconds;
 	var currentTimestamp = Date.now();
 	var timestamp = currentTimestamp + interval;
-	var timeDifference = moment - new Date(timestamp).getMinutes() % 10;
+	var timeDifference = moment - (new Date(timestamp).getMinutes() % 10 == 0 ? 10 : new Date(timestamp).getMinutes() % 10);
 
 	timeDifference = timeDifference < 0 - interval / (milliseconds * 2) ? timeDifference + interval / milliseconds : timeDifference;
+	if (flag)
+		timeDifference = timeDifference > 0 ? timeDifference - minutes : timeDifference;
 	timestamp += timeDifference * milliseconds;
 	return timestamp - currentTimestamp;
 }
