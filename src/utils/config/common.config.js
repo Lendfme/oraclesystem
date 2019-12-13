@@ -20,21 +20,6 @@ const newPendingAnchorInterval = 240 // 240 blocks are equal to 1 hour
 const mantissaOne = (new BN(10)).pow(new BN(18))
 // query current gas price
 const ethgasstationAPI = `https://ethgasstation.info/json/ethgasAPI.json`
-// save last feeding time
-const timeDir = `${netType}Time.log`
-
-function init() {
-    fs.access(timeDir, fs.constants.F_OK, (err) => {
-        let exist = err ? false : true
-        if (!exist) {
-            let data = {}
-            data[netType] = 0
-            fs.writeFileSync(timeDir, JSON.stringify(data), 'utf8')
-        }
-    })
-}
-
-init()
 
 module.exports = {
     ethgasstationAPI,
@@ -42,5 +27,4 @@ module.exports = {
     maxPendingAnchorSwing,
     newPendingAnchorInterval,
     posterAccount,
-    timeDir,
 }

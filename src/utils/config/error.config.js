@@ -5,6 +5,7 @@ const ERROR_CODE = {
     FEED_ERROR: 300001,  // Feed price failed
     INSUFFICIENT_BALANCE: 300002, // Insufficient balance
     AUTHORITY_LIMITED: 300003,    // Authority
+    UNSPECTED_ERROR: 300004,      // Code error
 
     SYNC_PRICE_ERROR:           400001,
     SYNC_PRICE_PARSE_ERROR:     400002,
@@ -19,6 +20,7 @@ const ERROR_MSG = {
     FEED_ERROR: '',  // Feed price failed
     INSUFFICIENT_BALANCE: 'Pay attention to your ETH balance', // Insufficient balance
     AUTHORITY_LIMITED: 'Check poster address!',
+    UNSPECTED_ERROR: 'Check the log for more detail',
     NO_WRITING: 'Do not set a new Price!',
 
     SYNC_PRICE_PARSE_ERROR:     'Parsing price anomalies',

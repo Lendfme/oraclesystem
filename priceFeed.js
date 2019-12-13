@@ -4,7 +4,6 @@ const fs = require('fs')
 const {
     mantissaOne,
     posterAccount,
-    timeDir,
 } = require('./src/utils/config/common.config')
 
 const {
@@ -12,6 +11,7 @@ const {
     netType,
     minBalance,
     monitorPostPriceUrl,
+    moment,
     oracleContract,
     serviceName,
     supportAssets,
@@ -46,7 +46,8 @@ const {
 } = require('./src/helpers/request')
 
 const {
-    feedPrice
+    feedPrice,
+    getIntervalTime,
 } = require('./src/helpers/strategy')
 
 const {
@@ -60,6 +61,10 @@ let verifyResult = {
 }
 let currentTime = 0
 let currentBalanceFromWei = 0
+let previousTime = 0
+
+// TODO:
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 async function feed() {
     let currentNet = netType.toUpperCase()
@@ -145,8 +150,6 @@ async function feed() {
         let toVerifyPrices = []
         let result = {}
         for (let i = 0, len = getPrices.length; i < len; i++) {
-            let timeData = JSON.parse(fs.readFileSync(timeDir))
-            let previousTime = timeData[netType]
             log.info(currentNet, ' last feeding time is: ', previousTime)
             previousPrice = await priceOracle.getPrice(getPrices[i][2])
             let currentBlockNumber = await priceOracle.getBlockNumber()
@@ -174,9 +177,7 @@ async function feed() {
             if (setPriceResult.status) {
                 log.info(currentNet, " Set new price!", finalWritingPrices)
                 log.info(' Final prices are: ', actualPrices)
-                let timeData = {}
-                timeData[netType] = currentTime
-                fs.writeFileSync(timeDir, JSON.stringify(timeData), 'utf8')
+                previousTime = currentTime
             } else {
                 log.error('You get an error when set new price!')
                 throw new Error('Feed price failed!')
@@ -188,6 +189,20 @@ async function feed() {
     } catch (err) {
         log.error('You get an error in try-catch', err)
         log.trace('Error: ', err)
+        let data = {
+            'timestamp': currentTime,
+            'net': netType,
+            'err_code': ERROR_CODE.UNSPECTED_ERROR,
+            'err_msg': ERROR_MSG.UNSPECTED_ERROR,
+            'server': serviceName,
+            'app': 'feed_price',
+            'version': '',
+            'data': {
+                "error": err.message
+            },
+        }
+        post(monitorPostPriceUrl, data)
+        return
     }
     // TODO: Debug
     let data = {
@@ -202,11 +217,6 @@ async function feed() {
         'data': {},
     }
     post(monitorPostPriceUrl, data)
-
-    // Quit the program
-    setTimeout(() => {
-        process.exit(0)
-    }, 5000)
 }
 
 async function main() {
@@ -216,7 +226,13 @@ async function main() {
     log.info("-------------------------------------------")
     log.info("-------------------------------------------")
     log.info('\n\n\n')
-    await feed()
+
+    await delay(getIntervalTime(moment))
+
+    while (true) {
+        feed()
+        await delay(getIntervalTime(moment))
+    }
 }
 
 main()

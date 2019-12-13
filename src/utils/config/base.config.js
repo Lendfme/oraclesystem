@@ -10,10 +10,12 @@ const maxPriceSwing = 0.01
 const minBalance = 0.01
 // Support net type.
 const netType = 'mainnet'
-// Multi-collateral currencies
+// Multi-collateral currencies.
 const supportAssets = ['usdx', 'usdt']
-// Recommended magnification
+// Recommended magnification.
 const supposedMantissa = [0, 12, 10]
+// Interval time to run.
+const moment = 5
 // Service name
 const serviceName = ''
 // Monitor url
@@ -78,6 +80,7 @@ module.exports = {
     monitorUrl,
     monitorGetPriceUrl,
     monitorPostPriceUrl,
+    moment,
     oracleContract,
     privateKey,
     safePriceSwing,
