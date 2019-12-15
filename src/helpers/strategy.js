@@ -54,7 +54,7 @@ function getIntervalTime(moment, flag = false) {
 	if (flag)
 		timeDifference = timeDifference > 0 ? timeDifference - minutes : timeDifference;
 	timestamp += timeDifference * milliseconds;
-	return timestamp - currentTimestamp;
+	return timestamp - new Date(timestamp).getSeconds() * 1000 - currentTimestamp;
 }
 
 module.exports = {
