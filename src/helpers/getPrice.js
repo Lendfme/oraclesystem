@@ -26,7 +26,6 @@ const {
 
 const {
     medianStrategy,
-    safePriceSwing,
 } = require('../utils/config/base.config')
 
 const {
@@ -529,6 +528,7 @@ function getMedianPrice(allPrices) {
 function getMedian(allPrices) {
     let assetName = allPrices[0][1]
     let leastValidValueAmount = medianStrategy[assetName]["leastValidValue"]
+    let safePriceSwing = medianStrategy[assetName]["safePriceSwing"]
     let validPrices = []
     let midValue = 0
     let averagePrice = 0

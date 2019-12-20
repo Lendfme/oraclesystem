@@ -21,6 +21,7 @@ const {
 	supportAssets,
 	localPort,
 	serviceName,
+	medianStrategy,
 	monitorGetPriceUrl,
 } = require('./src/utils/config/base.config');
 
@@ -185,6 +186,27 @@ async function parsePriceData(priceData, currency, timestamp) {
 	return data;
 }
 
+// TODO: move out
+function verifyimBTCPrice(data) {
+	let calculatingBTCPrice = data[2][3];
+	let imBTCSwing = medianStrategy['imbtc']['safePriceSwing'];
+	let btcSwing = Math.abs(calculatingBTCPrice - imBTCPrice) / imBTCPrice;
+	if (btcSwing <= imBTCSwing) {
+		data[2] = ['tokenLon', 'imbtc', imBTCPrice, data[2][3]];
+	} else {
+		monitorData.err_code = ERROR_CODE.IMBTC_PRICE_ERROR;
+		monitorData.err_msg = ERROR_MSG.IMBTC_PRICE_ERROR;
+		monitorData.timestamp = Math.ceil(Date.now() / 1000);
+		monitorData.data = {
+			'Tokenlon_price': imBTCPrice,
+			'exchange_price': calculatingBTCPrice,
+		};
+		post(monitorGetPriceUrl, monitorData);
+	}
+
+	return data
+}
+
 async function main() {
 
 	oraclePrice.initDB();
@@ -246,12 +268,14 @@ async function main() {
 				};
 				post(monitorGetPriceUrl, monitorData);
 			}
-			
+
 		}
+		data = verifyimBTCPrice(data);
 		console.log(data);
-		if (data.length)	
+
+		if (data.length)
 			oraclePrice.insertFeedPrice(data);
-		
+
 		console.log('medianData----------------------------\n');
 		console.log(medianData);
 		console.log('end----------------------------\n\n');

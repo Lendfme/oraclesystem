@@ -11,6 +11,7 @@ const ERROR_CODE = {
     SYNC_PRICE_PARSE_ERROR:     400002,
     SYNC_PRICE_FILTER_ERROR:    400003,
     SYNC_PRICE_MEDIAN_ERROR:    400004,
+    IMBTC_PRICE_ERROR:          400005,  // Get an abnormal imBTC price from Tokenlon.
 };
 
 const ERROR_MSG = {
@@ -27,6 +28,7 @@ const ERROR_MSG = {
     SYNC_PRICE_FILTER_ERROR:    'Get price less than 5',
     SYNC_PRICE_FILTER_ERROR:    'Get price less than 5',
     SYNC_PRICE_MEDIAN_ERROR:    'Did not get median',
+    IMBTC_PRICE_ERROR:          'Abnormal imBTC price received from Tokenlon'
 };
 
 module.exports = {

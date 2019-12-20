@@ -1,7 +1,5 @@
 require('dotenv').config()
 
-// Max price difference ratio when try to compare median with average.
-const safePriceSwing = 0.01
 // If system havs not been set the price for 12 hours(43200s), must set a new price.
 const maxFeedingPriceInterval = 43200
 // Max price difference ratio when try to compare new price with previous price.
@@ -25,16 +23,19 @@ const monitorPostPriceUrl = monitorUrl + '/postprice'
 // Valid price strategy
 const medianStrategy = {
     'usdx': {
-        'allExchanges': 7,
-        'leastValidValue': 5
+        'allExchanges': 7,       // Total number of exchanges.
+        'leastValidValue': 5,    // Minimum amount of valid exchange price.
+        'safePriceSwing': 0.01,  // Max price difference ratio when try to compare median with average.
     },
     'usdt': {
         'allExchanges': 7,
-        'leastValidValue': 5
+        'leastValidValue': 5,
+        'safePriceSwing': 0.01,
     },
     'imbtc': {
         'allExchanges': 1,
-        'leastValidValue': 1
+        'leastValidValue': 1,
+        'safePriceSwing': 0.01,
     },
 }
 
@@ -99,7 +100,6 @@ module.exports = {
     moment,
     oracleContract,
     privateKey,
-    safePriceSwing,
     safetyFactor,
     serviceName,
     supportAssets,
