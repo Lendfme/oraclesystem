@@ -5,7 +5,6 @@ const {
 } = require('./contract')
 const oracleABI = require('../../abi/PriceOracle.json')
 const {
-    adminAccount,
     maxPendingAnchorSwing,
     posterAccount,
 } = require('../../utils/config/common.config')
@@ -14,7 +13,6 @@ const {
 class Oracle extends BaseContract {
     constructor(net, oracleAddress) {
         super(net)
-        this.admin = adminAccount
         this.poster = posterAccount
         this.contractAddress = oracleAddress
         this.contract = new this.web3.eth.Contract(oracleABI, this.contractAddress)
@@ -72,30 +70,6 @@ class Oracle extends BaseContract {
                 .catch(err => {
                     this.log.error("Fail due to ", err.message)
                 })
-        })
-    }
-
-    // _setPendingAnchor(asset, newScaledPrice)
-    async setPendingAnchor(asset, newAnchorPrice) {
-        let txCount = await this.getNonce(this.admin)
-        let data = this.contract.methods._setPendingAnchor(asset, newAnchorPrice).encodeABI()
-        let rawTX = await this.txHelper(this.admin, txCount, this.contractAddress, data)
-        let transaction = this.signTx(rawTX)
-
-        return new Promise((resolve, reject) => {
-            this.web3.eth.sendSignedTransaction(transaction)
-                .once("confirmation", (number, receipt) => {
-                    this.log.info('Transaction hash is: ', receipt.transactionHash)
-                    this.log.info("Transaction has been confirmed!")
-                    let status = receipt.status;
-                    resolve({
-                        status
-                    })
-                })
-                .on("error", (err) => {
-                    reject(err)
-                })
-                .catch(err => this.log.error(err.message))
         })
     }
 

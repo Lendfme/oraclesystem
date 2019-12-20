@@ -25,6 +25,7 @@ const {
 } = require('../utils/config/api.config')
 
 const {
+    medianStrategy,
     safePriceSwing,
 } = require('../utils/config/base.config')
 
@@ -33,7 +34,7 @@ const {
 } = require('../utils/config/common.config')
 
 const {
-    request
+    request,
 } = require('./request')
 
 let retrayBTCTimes = 0
@@ -526,6 +527,8 @@ function getMedianPrice(allPrices) {
 }
 
 function getMedian(allPrices) {
+    let assetName = allPrices[0][1]
+    let leastValidValueAmount = medianStrategy[assetName]["leastValidValue"]
     let validPrices = []
     let midValue = 0
     let averagePrice = 0
@@ -534,10 +537,10 @@ function getMedian(allPrices) {
         return a[2] - b[2]
     })
 
-    if (allPrices.length < 5) {
+    if (allPrices.length < leastValidValueAmount) {
         return {
             "result": false,
-            'exchange':'',
+            'exchange': '',
             "median": new BN(0),
         }
     }
@@ -553,10 +556,10 @@ function getMedian(allPrices) {
         }
     }
 
-    if (validPrices.length < 5) {
+    if (validPrices.length < leastValidValueAmount) {
         return {
             "result": false,
-            'exchange':'',
+            'exchange': '',
             "median": new BN(0),
         }
     }
@@ -576,13 +579,13 @@ function getMedian(allPrices) {
     if (swing <= safePriceSwing) {
         return {
             "result": true,
-            'exchange':allPrices[midIndex][0],
+            'exchange': allPrices[midIndex][0],
             "median": new BN((midValue * 10 ** 8).toFixed()),
         }
     }
     return {
         "result": false,
-        'exchange':'',
+        'exchange': '',
         "median": new BN(0),
     }
 

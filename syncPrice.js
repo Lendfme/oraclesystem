@@ -13,6 +13,11 @@ const {
 } = require('./src/helpers/getPrice');
 
 const {
+	imBTCPrice,
+	imBTCPriceBody,
+} = require('./src/utils/config/api.config');
+
+const {
 	supportAssets,
 	localPort,
 	serviceName,
@@ -188,6 +193,8 @@ async function main() {
 
 		console.log('start----------------------------\n');
 		time = Math.ceil(Date.now() / 1000);
+		post(imBTCPrice, imBTCPriceBody, duration);
+		console.log(`sync imbtc price  url: ${imBTCPrice}`);
 		for (let i = 0; i < supportAssets.length; i++) {
 
 			priceData[supportAssets[i]] = [];

@@ -18,9 +18,9 @@ function request(url) {
 }
 
 // TODO: solve error
-function post(url, data) {
-    axios.post(url, data).then((res) => {
-        log.info("res=>", res.status)
+function post(url, data, duration = 20000) {
+    axios.post(url, data, {timeout: duration}).then((res) => {
+        log.info("res=>", res.data, res.status)
     })
 }
 

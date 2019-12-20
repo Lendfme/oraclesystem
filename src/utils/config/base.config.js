@@ -11,7 +11,7 @@ const minBalance = 0.01
 // Support net type.
 const netType = 'mainnet'
 // Multi-collateral currencies.
-const supportAssets = ['usdx', 'usdt']
+const supportAssets = ['usdx', 'usdt', 'imbtc']
 // Recommended magnification.
 const supposedMantissa = [0, 12, 10]
 // Interval time to run.
@@ -22,18 +22,35 @@ const serviceName = ''
 const monitorUrl = ''
 const monitorGetPriceUrl = monitorUrl + '/getprice'
 const monitorPostPriceUrl = monitorUrl + '/postprice'
+// Valid price strategy
+const medianStrategy = {
+    'usdx': {
+        'allExchanges': 7,
+        'leastValidValue': 5
+    },
+    'usdt': {
+        'allExchanges': 7,
+        'leastValidValue': 5
+    },
+    'imbtc': {
+        'allExchanges': 1,
+        'leastValidValue': 1
+    },
+}
 
 // when add a new collateral asset, need to add here.
 const mainnetAssets = {
     'usdx': '0xeb269732ab75A6fD61Ea60b06fE994cD32a83549',
     'usdt': '0xdAC17F958D2ee523a2206206994597C13D831ec7',
     'weth': '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+    'imbtc': '0x3212b29E33587A00FB1C83346f5dBFA69A458923',
 }
 
 const rinkebyAssets = {
     'usdx': '0xAF21BB8ae7b7a5Eec37964e478583CD486FD12E2',
     'usdt': '0xA1e525F7d24D7cCB78A070BBd12C0BF21Fb4a848',
     'weth': '0xC8b1a5ef2e19937dd6c0f804DF2e3efE9F093B1e',
+    'imbtc': '0x7b054ebe1d7e003afda8e717daeab05d56d5836a',
 }
 
 const assets = {
@@ -74,6 +91,7 @@ module.exports = {
     netType,
     maxFeedingPriceInterval,
     maxPriceSwing,
+    medianStrategy,
     minBalance,
     monitorUrl,
     monitorGetPriceUrl,
