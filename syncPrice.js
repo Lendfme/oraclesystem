@@ -13,11 +13,6 @@ const {
 } = require('./src/helpers/getPrice');
 
 const {
-	imBTCPrice,
-	imBTCPriceBody,
-} = require('./src/utils/config/api.config');
-
-const {
 	supportAssets,
 	localPort,
 	serviceName,
@@ -186,27 +181,6 @@ async function parsePriceData(priceData, currency, timestamp) {
 	return data;
 }
 
-// TODO: move out
-function verifyimBTCPrice(data) {
-	let calculatingBTCPrice = data[2][3];
-	let imBTCSwing = medianStrategy['imbtc']['safePriceSwing'];
-	let btcSwing = Math.abs(calculatingBTCPrice - imBTCPrice) / imBTCPrice;
-	if (btcSwing <= imBTCSwing) {
-		data[2] = ['tokenLon', 'imbtc', imBTCPrice, data[2][3]];
-	} else {
-		monitorData.err_code = ERROR_CODE.IMBTC_PRICE_ERROR;
-		monitorData.err_msg = ERROR_MSG.IMBTC_PRICE_ERROR;
-		monitorData.timestamp = Math.ceil(Date.now() / 1000);
-		monitorData.data = {
-			'Tokenlon_price': imBTCPrice,
-			'exchange_price': calculatingBTCPrice,
-		};
-		post(monitorGetPriceUrl, monitorData);
-	}
-
-	return data
-}
-
 async function main() {
 
 	oraclePrice.initDB();
@@ -215,8 +189,6 @@ async function main() {
 
 		console.log('start----------------------------\n');
 		time = Math.ceil(Date.now() / 1000);
-		post(imBTCPrice, imBTCPriceBody, duration);
-		console.log(`sync imbtc price  url: ${imBTCPrice}`);
 		for (let i = 0; i < supportAssets.length; i++) {
 
 			priceData[supportAssets[i]] = [];
@@ -270,7 +242,6 @@ async function main() {
 			}
 
 		}
-		data = verifyimBTCPrice(data);
 		console.log(data);
 
 		if (data.length)
