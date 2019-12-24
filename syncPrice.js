@@ -185,7 +185,7 @@ async function parsePriceData(priceData, currency, timestamp) {
 }
 
 // TODO: move out, only for imBTC
-async function verifyTokenlonPrice(data) {
+async function verifyTokenlonPrice(calculatingBTCPrice) {
 	let tokenlonPrice = '';
 	try {
 		tokenlonPrice = await post(imBTCPrice, imBTCPriceBody, duration);
@@ -208,10 +208,10 @@ async function verifyTokenlonPrice(data) {
 	let getImBTCPrice = tokenlonPrice.data.result.last;
 	getImBTCPrice = 1 / getImBTCPrice;
 
-	let calculatingBTCPrice = data[2][3];
-	if (calculatingBTCPrice < getImBTCPrice) {
-		data[2] = ['tokenLon', 'imbtc', getImBTCPrice, data[2][3]];
-	}
+	// let calculatingBTCPrice = data[2][3];
+	// if (calculatingBTCPrice < getImBTCPrice) {
+	// 	data[2] = ['tokenLon', 'imbtc', getImBTCPrice, data[2][3]];
+	// }
 
 	let imBTCSwing = medianStrategy['imbtc']['safePriceSwing'];
 	let btcSwing = Math.abs(calculatingBTCPrice - getImBTCPrice) / getImBTCPrice;
@@ -225,7 +225,8 @@ async function verifyTokenlonPrice(data) {
 		};
 		post(monitorGetPriceUrl, monitorData);
 	}
-	return data;
+	// return data;
+	return calculatingBTCPrice < getImBTCPrice ? getImBTCPrice : calculatingBTCPrice;
 }
 
 async function main() {
@@ -274,8 +275,13 @@ async function main() {
 			console.log(supportAssets[index]);
 			console.log(priceMedian.result);
 			console.log(priceMedian.median.toString());
-			if (priceMedian.result)
-				data.push([priceMedian.exchange, supportAssets[index], priceMedian.median.toString(), time]);
+			if (priceMedian.result){
+
+				if (supportAssets[index] == 'imbtc')
+					data.push(['tokenLon', supportAssets[index], await verifyTokenlonPrice(priceMedian.median.toString()), time]);
+				else
+					data.push([priceMedian.exchange, supportAssets[index], priceMedian.median.toString(), time]);
+			}
 			else {
 				monitorData.err_code = ERROR_CODE.SYNC_PRICE_MEDIAN_ERROR;
 				monitorData.err_msg = ERROR_MSG.SYNC_PRICE_MEDIAN_ERROR;
@@ -287,9 +293,9 @@ async function main() {
 				post(monitorGetPriceUrl, monitorData);
 			}
 
-			if (supportAssets[index] == 'imbtc') {
-				data = await verifyTokenlonPrice(data);
-			}
+			// if (supportAssets[index] == 'imbtc') {
+			// 	data = await verifyTokenlonPrice(data);
+			// }
 		}
 		console.log(data);
 
