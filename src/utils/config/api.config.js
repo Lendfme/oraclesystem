@@ -130,16 +130,8 @@ const kucoinUSDTPrice = `https://api.kucoin.com/api/v1/market/orderbook/level1?s
 //     },
 //     "id": 1
 // }
-const imBTCPrice = `https://tokenlon-core-market.tokenlon.im/rpc`
-const imBTCPriceBody = {
-    "jsonrpc": "2.0",
-    "method": "market.getTicker",
-    "params": {
-        "pairs": "imBTC_ETH",
-        "period": "24H"
-    },
-    "id": 1
-}
+const imBTCPrice = `https://tokenlon-core-market.tokenlon.im/rest/get_ticker?period=24H&pairs=imBTC_ETH`
+
 
 module.exports = {
     binanceBTCPrice,
@@ -161,7 +153,6 @@ module.exports = {
     huobiproUSDxPrice,
     huobiproUSDTPrice,
     imBTCPrice,
-    imBTCPriceBody,
     kucoinBTCPrice,
     kucoinUSDxPrice,
     kucoinUSDTPrice,

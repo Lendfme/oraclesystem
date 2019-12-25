@@ -11,8 +11,8 @@ const {
     newPendingAnchorInterval
 } = require('../utils/config/common.config')
 
-function feedPrice(currenPrice, finalPrice, previousPrice, previousTime, anchorPricesPeriod, currentBlockNumber) {
-    let priceChangingRatio = Math.abs(currenPrice - previousPrice) / previousPrice
+function feedPrice(currentPrice, finalPrice, previousPrice, previousTime, anchorPricesPeriod, currentBlockNumber) {
+    let priceChangingRatio = Math.abs(currentPrice - previousPrice) / previousPrice
     log.info("ratio is ", priceChangingRatio)
     let currentTime = Math.round(new Date().getTime() / 1000)
     if (priceChangingRatio > maxPriceSwing) {
@@ -24,7 +24,7 @@ function feedPrice(currenPrice, finalPrice, previousPrice, previousTime, anchorP
 
         return {
             "type": true,
-            "feedPrice": currenPrice,
+            "feedPrice": currentPrice,
             "actualPrice": finalPrice,
         }
     }
@@ -32,7 +32,7 @@ function feedPrice(currenPrice, finalPrice, previousPrice, previousTime, anchorP
     if (currentTime - previousTime >= maxFeedingPriceInterval) {
         return {
             "type": true,
-            "feedPrice": currenPrice,
+            "feedPrice": currentPrice,
             "actualPrice": finalPrice,
         }
     }

@@ -5,6 +5,7 @@ const oraclePrice = require('./src/database/oraclePrice');
 const apiPriceConfig = require('./src/utils/config/apiPriceConfig');
 const {
 	asyncGet,
+	request,
 	post,
 } = require('./src/helpers/request');
 
@@ -22,7 +23,6 @@ const {
 
 const {
 	imBTCPrice,
-	imBTCPriceBody,
 } = require('./src/utils/config/api.config');
 
 const {
@@ -186,32 +186,29 @@ async function parsePriceData(priceData, currency, timestamp) {
 
 // TODO: move out, only for imBTC
 async function verifyTokenlonPrice(calculatingBTCPrice) {
+	calculatingBTCPrice = calculatingBTCPrice / 10 ** 8;
 	let tokenlonPrice = '';
 	try {
-		tokenlonPrice = await post(imBTCPrice, imBTCPriceBody, duration);
-		if (tokenlonPrice.status != 200) {
+		tokenlonPrice = await request(imBTCPrice);
+		// TODO: need to confirm field: error
+		if (tokenlonPrice.error != false) {
 			throw new Error({
-				'response': 'API responses error!'
+				'response': 'Tokenlon API error!'
 			});
-		}
+		};
 	} catch (error) {
 		console.log('Got an error: ', error.response);
 		monitorData.err_code = ERROR_CODE.IMBTC_API_ERROR;
 		monitorData.err_msg = ERROR_MSG.IMBTC_API_ERROR;
 		monitorData.timestamp = Math.ceil(Date.now() / 1000);
 		monitorData.data = {
-			'info': 'Tokenlon API error!'
+			'info': error.response
 		};
 		post(monitorGetPriceUrl, monitorData);
 	}
 
-	let getImBTCPrice = tokenlonPrice.data.result.last;
-	getImBTCPrice = 1 / getImBTCPrice;
-
-	// let calculatingBTCPrice = data[2][3];
-	// if (calculatingBTCPrice < getImBTCPrice) {
-	// 	data[2] = ['tokenLon', 'imbtc', getImBTCPrice, data[2][3]];
-	// }
+	let getImBTCPrice = tokenlonPrice.data.bid;
+	getImBTCPrice = (1 / getImBTCPrice).toFixed(8);
 
 	let imBTCSwing = medianStrategy['imbtc']['safePriceSwing'];
 	let btcSwing = Math.abs(calculatingBTCPrice - getImBTCPrice) / getImBTCPrice;
@@ -225,7 +222,8 @@ async function verifyTokenlonPrice(calculatingBTCPrice) {
 		};
 		post(monitorGetPriceUrl, monitorData);
 	}
-	// return data;
+	console.log('tokenlon price', getImBTCPrice);
+	console.log('exchange price', calculatingBTCPrice);
 	return calculatingBTCPrice < getImBTCPrice ? getImBTCPrice : calculatingBTCPrice;
 }
 
@@ -292,10 +290,6 @@ async function main() {
 				};
 				post(monitorGetPriceUrl, monitorData);
 			}
-
-			// if (supportAssets[index] == 'imbtc') {
-			// 	data = await verifyTokenlonPrice(data);
-			// }
 		}
 		console.log(data);
 
