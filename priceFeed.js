@@ -152,7 +152,7 @@ async function feed() {
         for (let i = 0, len = getPrices.length; i < len; i++) {
             log.info(currentNet, ' last feeding time is: ', previousTime)
             previousPrice = await priceOracle.getPrice(getPrices[i][2])
-            log.info(currentNet, ` ${getPrices[i][0]} get price from contract is: `, previousPrice.toString)
+            log.info(currentNet, ` ${getPrices[i][0]} get price from contract is: `, previousPrice.toString())
             let currentBlockNumber = await priceOracle.getBlockNumber()
             if (previousTime !== 0) {
                 result = feedPrice(getPrices[i][1], actualPrices[i][1], previousPrice, previousTime, anchorPrices[i].period, currentBlockNumber)
