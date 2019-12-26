@@ -172,6 +172,7 @@ async function feed() {
         }
 
         currentTime = Math.round(new Date().getTime() / 1000)
+        verifyResult.status = ERROR_CODE.NO_ERROR
         if (finalWritingPrices.length != 0) {
             log.info(currentNet, ' Current time is: ', currentTime)
             let setPriceResult = await priceOracle.setPrices(finalAssets, finalWritingPrices)
