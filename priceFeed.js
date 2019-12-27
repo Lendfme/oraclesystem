@@ -64,6 +64,10 @@ let currentBalanceFromWei = 0
 let previousTime = 0
 // feed price result
 let result = {}
+// exchange price
+let getPrices = []
+// contract price
+let actualPrices = []
 
 // TODO:
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -78,8 +82,7 @@ async function feed() {
         // init
         let account = new Account(netType)
         let priceOracle = new Oracle(netType, oracleContract[netType])
-        let getPrices = []
-        let actualPrices = []
+
         let anchorPrices = []
         let poster = await priceOracle.getPoster()
         if (poster != posterAccount) {
@@ -219,8 +222,8 @@ async function feed() {
         'app': 'feed_price',
         'version': '',
         'data': {
-            'exchange_price': result.feedPrice,
-            'contract_price': result.actualPrice,
+            'exchange_price': getPrices,
+            'contract_price': actualPrices,
         },
     }
     post(monitorPostPriceUrl, data)
