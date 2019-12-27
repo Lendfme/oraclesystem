@@ -186,7 +186,6 @@ async function parsePriceData(priceData, currency, timestamp) {
 
 // TODO: move out, only for imBTC
 async function verifyTokenlonPrice(calculatingBTCPrice) {
-	calculatingBTCPrice = calculatingBTCPrice / 10 ** 8;
 	let tokenlonPrice = '';
 	try {
 		tokenlonPrice = await request(imBTCPrice);
@@ -208,7 +207,7 @@ async function verifyTokenlonPrice(calculatingBTCPrice) {
 	}
 
 	let getImBTCPrice = tokenlonPrice.data.bid;
-	getImBTCPrice = (1 / getImBTCPrice).toFixed(8);
+	getImBTCPrice = (10 ** 8 / getImBTCPrice).toFixed();
 
 	let imBTCSwing = medianStrategy['imbtc']['safePriceSwing'];
 	let btcSwing = Math.abs(calculatingBTCPrice - getImBTCPrice) / getImBTCPrice;
@@ -273,14 +272,13 @@ async function main() {
 			console.log(supportAssets[index]);
 			console.log(priceMedian.result);
 			console.log(priceMedian.median.toString());
-			if (priceMedian.result){
+			if (priceMedian.result) {
 
 				if (supportAssets[index] == 'imbtc')
 					data.push(['tokenLon', supportAssets[index], await verifyTokenlonPrice(priceMedian.median.toString()), time]);
 				else
 					data.push([priceMedian.exchange, supportAssets[index], priceMedian.median.toString(), time]);
-			}
-			else {
+			} else {
 				monitorData.err_code = ERROR_CODE.SYNC_PRICE_MEDIAN_ERROR;
 				monitorData.err_msg = ERROR_MSG.SYNC_PRICE_MEDIAN_ERROR;
 				monitorData.timestamp = Math.ceil(Date.now() / 1000);;

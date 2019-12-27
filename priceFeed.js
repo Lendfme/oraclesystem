@@ -185,7 +185,6 @@ async function feed() {
                 throw new Error('Feed price failed!')
             }
 
-            await delay(5000)
             verifyResult = await verify(priceOracle, finalAssets, toVerifyPrices)
 
         }
