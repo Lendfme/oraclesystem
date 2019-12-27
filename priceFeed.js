@@ -62,6 +62,12 @@ let verifyResult = {
 let currentTime = 0
 let currentBalanceFromWei = 0
 let previousTime = 0
+// feed price result
+let result = {}
+// exchange price
+let getPrices = []
+// contract price
+let actualPrices = []
 
 // TODO:
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -76,8 +82,10 @@ async function feed() {
         // init
         let account = new Account(netType)
         let priceOracle = new Oracle(netType, oracleContract[netType])
-        let getPrices = []
-        let actualPrices = []
+        result = {}
+        getPrices = []
+        actualPrices = []
+
         let anchorPrices = []
         let poster = await priceOracle.getPoster()
         if (poster != posterAccount) {
@@ -148,10 +156,11 @@ async function feed() {
         let assetNames = []
         let previousPrice = 0
         let toVerifyPrices = []
-        let result = {}
+
         for (let i = 0, len = getPrices.length; i < len; i++) {
             log.info(currentNet, ' last feeding time is: ', previousTime)
             previousPrice = await priceOracle.getPrice(getPrices[i][2])
+            log.info(currentNet, ` ${getPrices[i][0]} get price from contract is: `, previousPrice.toString())
             let currentBlockNumber = await priceOracle.getBlockNumber()
             if (previousTime !== 0) {
                 result = feedPrice(getPrices[i][1], actualPrices[i][1], previousPrice, previousTime, anchorPrices[i].period, currentBlockNumber)
@@ -171,6 +180,7 @@ async function feed() {
         }
 
         currentTime = Math.round(new Date().getTime() / 1000)
+        verifyResult.status = ERROR_CODE.NO_ERROR
         if (finalWritingPrices.length != 0) {
             log.info(currentNet, ' Current time is: ', currentTime)
             let setPriceResult = await priceOracle.setPrices(finalAssets, finalWritingPrices)
@@ -214,9 +224,13 @@ async function feed() {
         'server': serviceName,
         'app': 'feed_price',
         'version': '',
-        'data': {},
+        'data': {
+            'exchange_price': getPrices,
+            'contract_price': actualPrices,
+        },
     }
     post(monitorPostPriceUrl, data)
+    return
 }
 
 async function main() {

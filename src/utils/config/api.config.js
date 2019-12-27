@@ -110,6 +110,29 @@ const kucoinBTCPrice = `https://api.kucoin.com/api/v1/market/orderbook/level1?sy
 const kucoinUSDxPrice = `https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=ETH-USDC`
 const kucoinUSDTPrice = `https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=ETH-USDT`
 
+// {
+//     "jsonrpc": "2.0",
+//     "result": {
+//         "timestamp": 1572577229,
+//         "period": "24H",
+//         "pairs": "IMBTC_ETH",
+//         "lastTimestamp": 1572577022,
+//         "last": 50.349932030000,
+//         "high": 50.349932030000,
+//         "low": 50.231062890000,
+//         "ask": 0,
+//         "mid": 0,
+//         "bid": 0,
+//         "vol": 0.003976900000,
+//         "txs": 2,
+//         "wallet": 2,
+//         "change": 0
+//     },
+//     "id": 1
+// }
+const imBTCPrice = `https://tokenlon-core-market.tokenlon.im/rest/get_ticker?period=24H&pairs=imBTC_ETH`
+
+
 module.exports = {
     binanceBTCPrice,
     binanceUSDxPrice,
@@ -129,6 +152,7 @@ module.exports = {
     huobiproBTCPrice,
     huobiproUSDxPrice,
     huobiproUSDTPrice,
+    imBTCPrice,
     kucoinBTCPrice,
     kucoinUSDxPrice,
     kucoinUSDTPrice,

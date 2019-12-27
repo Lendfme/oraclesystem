@@ -11,6 +11,7 @@ For version 1.5, collateral assets will be:
 - USDx
 - USDT
 - WETH
+- imBTC
 
 Feeding price every 10 minutes, we try to get price from these exchanges:
 
