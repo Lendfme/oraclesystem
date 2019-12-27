@@ -82,6 +82,9 @@ async function feed() {
         // init
         let account = new Account(netType)
         let priceOracle = new Oracle(netType, oracleContract[netType])
+        result = {}
+        getPrices = []
+        actualPrices = []
 
         let anchorPrices = []
         let poster = await priceOracle.getPoster()
