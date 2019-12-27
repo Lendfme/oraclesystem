@@ -62,6 +62,8 @@ let verifyResult = {
 let currentTime = 0
 let currentBalanceFromWei = 0
 let previousTime = 0
+// feed price result
+let result = {}
 
 // TODO:
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -148,7 +150,7 @@ async function feed() {
         let assetNames = []
         let previousPrice = 0
         let toVerifyPrices = []
-        let result = {}
+
         for (let i = 0, len = getPrices.length; i < len; i++) {
             log.info(currentNet, ' last feeding time is: ', previousTime)
             previousPrice = await priceOracle.getPrice(getPrices[i][2])
@@ -216,7 +218,10 @@ async function feed() {
         'server': serviceName,
         'app': 'feed_price',
         'version': '',
-        'data': {},
+        'data': {
+            'exchange_price': result.feedPrice,
+            'contract_price': result.actualPrice,
+        },
     }
     post(monitorPostPriceUrl, data)
     return

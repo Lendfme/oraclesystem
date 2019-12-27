@@ -19,7 +19,11 @@ function feedPrice(currentPrice, finalPrice, previousPrice, previousTime, anchor
         // current price has been max based on anchor price.
         if (finalPrice === previousPrice && currentPrice != finalPrice) {
             if (Math.floor(currentBlockNumber / newPendingAnchorInterval) + 1 < anchorPricesPeriod)
-                return false
+                return {
+                    "type": false,
+                    "feedPrice": currentPrice,
+                    "actualPrice": finalPrice,
+                }
         }
 
         return {
@@ -40,6 +44,8 @@ function feedPrice(currentPrice, finalPrice, previousPrice, previousTime, anchor
     // do not set a new price
     return {
         "type": false,
+        "feedPrice": currentPrice,
+        "actualPrice": finalPrice,
     }
 }
 
