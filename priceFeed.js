@@ -62,12 +62,6 @@ let verifyResult = {
 let currentTime = 0
 let currentBalanceFromWei = 0
 let previousTime = 0
-// feed price result
-let result = {}
-// exchange price
-let getPrices = []
-// contract price
-let actualPrices = []
 
 // TODO:
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -82,9 +76,12 @@ async function feed() {
         // init
         let account = new Account(netType)
         let priceOracle = new Oracle(netType, oracleContract[netType])
-        result = {}
-        getPrices = []
-        actualPrices = []
+        // feed price result
+        let result = {}
+        // exchange price
+        let getPrices = []
+        // contract price
+        let actualPrices = []
 
         let anchorPrices = []
         let poster = await priceOracle.getPoster()
@@ -194,11 +191,27 @@ async function feed() {
             }
 
             verifyResult = await verify(priceOracle, finalAssets, toVerifyPrices)
-
         }
+
+        // TODO: Debug
+        let data = {
+            'timestamp': currentTime,
+            'net': netType,
+            'eth_balance': currentBalanceFromWei,
+            'err_code': verifyResult.status,
+            'err_msg': verifyResult.msg,
+            'server': serviceName,
+            'app': 'feed_price',
+            'version': '',
+            'data': {
+                'exchange_price': getPrices,
+                'contract_price': actualPrices,
+            },
+        }
+        post(monitorPostPriceUrl, data)
     } catch (err) {
         log.error('You get an error in try-catch', err)
-        log.trace('Error: ', err)
+
         let data = {
             'timestamp': currentTime,
             'net': netType,
@@ -212,24 +225,7 @@ async function feed() {
             },
         }
         post(monitorPostPriceUrl, data)
-        return
     }
-    // TODO: Debug
-    let data = {
-        'timestamp': currentTime,
-        'net': netType,
-        'eth_balance': currentBalanceFromWei,
-        'err_code': verifyResult.status,
-        'err_msg': verifyResult.msg,
-        'server': serviceName,
-        'app': 'feed_price',
-        'version': '',
-        'data': {
-            'exchange_price': getPrices,
-            'contract_price': actualPrices,
-        },
-    }
-    post(monitorPostPriceUrl, data)
     return
 }
 
