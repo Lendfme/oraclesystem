@@ -74,8 +74,8 @@ async function feed() {
         log.info('-----------------------------------')
         log.info(currentNet, ' start to feed price ...')
         // init
-        let account = new Account(netType)
-        let priceOracle = new Oracle(netType, oracleContract[netType])
+        let account = new Account(netType, web3)
+        let priceOracle = new Oracle(netType, oracleContract[netType], web3)
         // feed price result
         let result = {}
         // exchange price

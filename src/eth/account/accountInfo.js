@@ -1,11 +1,7 @@
-const {
-    web3Provider
-} = require('../../utils/server/provider')
-
 class Account {
-    constructor(net) {
+    constructor(net, provider) {
         this.net = net
-        this.web3 = web3Provider(net)
+        this.web3 = provider
     }
 
     async getBalance(accountAddress) {

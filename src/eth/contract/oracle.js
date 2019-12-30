@@ -11,8 +11,8 @@ const {
 
 
 class Oracle extends BaseContract {
-    constructor(net, oracleAddress) {
-        super(net)
+    constructor(net, oracleAddress, provider) {
+        super(net, provider)
         this.poster = posterAccount
         this.contractAddress = oracleAddress
         this.contract = new this.web3.eth.Contract(oracleABI, this.contractAddress)

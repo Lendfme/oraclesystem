@@ -6,10 +6,6 @@ const {
 } = require('../../utils/config/base.config')
 
 const {
-    web3Provider
-} = require('../../utils/server/provider')
-
-const {
     getGasPrice
 } = require('../../helpers/getPrice')
 
@@ -18,9 +14,9 @@ const {
 } = require('../../utils/logger/log')
 
 class BaseContract {
-    constructor(net) {
+    constructor(net, provider) {
         this.net = net
-        this.web3 = web3Provider(net)
+        this.web3 = provider
         this.log = log
     }
 
