@@ -80,21 +80,7 @@ class Oracle extends BaseContract {
         let rawTX = await this.txHelper(this.poster, txCount, this.contractAddress, data)
         let transaction = this.signTx(rawTX)
 
-        return new Promise((resolve, reject) => {
-            this.web3.eth.sendSignedTransaction(transaction)
-                .once("confirmation", (number, receipt) => {
-                    this.log.info('Transaction hash is: ', receipt.transactionHash)
-                    this.log.info("Transaction has been confirmed!")
-                    let status = receipt.status;
-                    resolve({
-                        status
-                    })
-                })
-                .on("error", (err) => {
-                    reject(err)
-                })
-                .catch(err => this.log.error(err.message))
-        })
+        return await this.web3.eth.sendSignedTransaction(transaction)
     }
 }
 
