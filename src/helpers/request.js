@@ -52,7 +52,7 @@ function asyncGet(url, duration, data, sign = "") {
             if (Array.isArray(data)) data.push(info);
             else data = info;
             log.error("sign error : " + sign);
-            log.error(error.errno);
+            log.error(error);
         });
 }
 

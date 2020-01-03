@@ -155,7 +155,7 @@ async function parsePriceData(priceData, currency, timestamp) {
 	}
 	console.log(`currency: ${currency}, ${timestamp}, length: ${data.length}`);
 	console.log(data);
-	if (data.length < 5) {
+	if (data.length < medianStrategy[currency]['leastValidValue']) {
 		monitorData.err_code = ERROR_CODE.SYNC_PRICE_FILTER_ERROR;
 		monitorData.err_msg = ERROR_MSG.SYNC_PRICE_FILTER_ERROR;
 		monitorData.timestamp = Math.ceil(Date.now() / 1000);;
@@ -267,6 +267,10 @@ async function main() {
 		var data = [];
 		var priceMedian;
 		for (let index = 0; index < supportAssets.length; index++) {
+
+			if (medianData[supportAssets[index]].length < medianStrategy[supportAssets[index]]['leastValidValue'])
+				continue;
+				
 			priceMedian = getMedian(medianData[supportAssets[index]]);
 
 			console.log(supportAssets[index]);
