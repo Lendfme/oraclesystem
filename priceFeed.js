@@ -108,14 +108,14 @@ async function feed() {
         currentBalance = await account.getBalance(priceOracle.poster)
         currentBalanceFromWei = web3.utils.fromWei(currentBalance.toString(), 'ether')
         log.info(currentNet, ' current balance is: ', currentBalanceFromWei)
+        currentTime = Math.round(new Date().getTime() / 1000)
         if (currentBalanceFromWei < minBalance) {
             log.warn(currentNet, 'Attention to your balance! please deposit more!')
-            currentTime = Math.round(new Date().getTime() / 1000)
             let data = {
                 'timestamp': currentTime,
                 'net': netType,
                 'err_code': ERROR_CODE.INSUFFICIENT_BALANCE,
-                'err_msg': 'Pay attention to your ETH balance',
+                'err_msg': ERROR_MSG.INSUFFICIENT_BALANCE,
                 'server': serviceName,
                 'app': 'feed_price',
                 'version': '',
@@ -135,6 +135,24 @@ async function feed() {
 
             let requestUrl = getUrl('feedPrice', supportAssets[i])
             let currentPrice = await request(requestUrl)
+            let prevoiusSyncTime = currentPrice[0].timestamp
+            if (currentTime - prevoiusSyncTime > 300) {
+                let data = {
+                    'timestamp': currentTime,
+                    'net': netType,
+                    'err_code': ERROR_CODE.SYNC_PRICE_ERROR,
+                    'err_msg': ERROR_MSG.SYNC_PRICE_ERROR,
+                    'server': serviceName,
+                    'app': 'feed_price',
+                    'version': '',
+                    'data': {
+                        'last_sync_time': prevoiusSyncTime,
+                        'current_time': currentTime,
+                    },
+                }
+                post(monitorPostPriceUrl, data)
+                continue
+            }
 
             log.info(`${currentNet} ${supportAssets[i]} current price is: ${currentPrice[0].price.toString()}`)
             currentPrice = new BN(currentPrice[0].price)

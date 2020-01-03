@@ -6,6 +6,7 @@ const {
 
 // TODO: limit retry time
 function request(url) {
+    log.info("Request is: ", url)
     return new Promise(async (resolve, reject) => {
         try {
             let result = await axios.get(url);

@@ -25,6 +25,7 @@ const ERROR_MSG = {
     UNSPECTED_ERROR: 'Check the log for more detail',
     NO_WRITING: 'Do not set a new Price!',
 
+    SYNC_PRICE_ERROR:           'Sync price timeout',
     SYNC_PRICE_PARSE_ERROR:     'Parsing price anomalies',
     SYNC_PRICE_FILTER_ERROR:    'Get price less than 5',
     SYNC_PRICE_FILTER_ERROR:    'Get price less than 5',
