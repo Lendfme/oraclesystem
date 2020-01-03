@@ -100,7 +100,9 @@ async function feed() {
                     'contract_poster_address': poster,
                 },
             }
-            post(monitorPostPriceUrl, data)
+            let result = await post(monitorPostPriceUrl, data)
+            log.info('Request data is: ', data.err_msg)
+            log.info('Request response is: ', result.data)
             log.error(currentNet, ' current poster is: ', posterAccount, 'contract poster is: ', poster)
             return
         }
@@ -123,7 +125,9 @@ async function feed() {
                     'eth_balance': currentBalanceFromWei,
                 },
             }
-            post(monitorPostPriceUrl, data)
+            let result = await post(monitorPostPriceUrl, data)
+            log.info('Request data is: ', data.err_msg)
+            log.info('Request response is: ', result.data)
         }
 
         // get all assets current price and pending anchor price
@@ -150,7 +154,9 @@ async function feed() {
                         'current_time': currentTime,
                     },
                 }
-                post(monitorPostPriceUrl, data)
+                let result = await post(monitorPostPriceUrl, data)
+                log.info('Request data is: ', data.err_msg)
+                log.info('Request response is: ', result.data)
                 continue
             }
 
@@ -226,7 +232,9 @@ async function feed() {
                 'contract_price': actualPrices,
             },
         }
-        post(monitorPostPriceUrl, data)
+        let result = await post(monitorPostPriceUrl, data)
+        log.info('Request data is: ', data.err_msg)
+        log.info('Request response is: ', result.data)
     } catch (err) {
         log.error('You get an error in try-catch', err)
 
@@ -242,7 +250,9 @@ async function feed() {
                 "error": err.message
             },
         }
-        post(monitorPostPriceUrl, data)
+        let result = await post(monitorPostPriceUrl, data)
+        log.info('Request data is: ', data.err_msg)
+        log.info('Request response is: ', result.data)
     }
     return
 }
