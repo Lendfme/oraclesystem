@@ -85,7 +85,7 @@ async function feed() {
     const anchorPrices = [];
     const poster = await priceOracle.getPoster();
     // eslint-disable-next-line eqeqeq
-    if (poster == posterAccount) {
+    if (poster != posterAccount) {
       currentTime = Math.round(new Date().getTime() / 1000);
       const data = {
         'app': 'feed_price',
