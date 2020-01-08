@@ -339,7 +339,7 @@ http.createServer(async function(req, res) {
   });
   const urlInfo = url.parse(req.url, true);
   let result = 'parameter error';
-  console.log(urlInfo);
+  console.log('local request : ', req.url);
   let data = '';
   for (const key in urlInfo.query) {
     switch (key) {
