@@ -191,43 +191,52 @@ async function parsePriceData(priceData, currency, timestamp) {
 async function verifyTokenlonPrice(calculatingBTCPrice) {
   let tokenlonPrice = '';
   try {
-    tokenlonPrice = await request(imBTCPrice);
-    // TODO: need to confirm field: error
-    // eslint-disable-next-line eqeqeq
-    if (tokenlonPrice.error != false) {
-      throw new Error({
-        'response': 'Tokenlon API error!',
-      });
-    }
+	tokenlonPrice = await request(imBTCPrice);
+	if (tokenlonPrice.hasOwnProperty('data')
+					&& tokenlonPrice.data instanceof Object
+					&& tokenlonPrice.data.hasOwnProperty('bid')
+					&& tokenlonPrice.data.bid
+					&& !isNaN(tokenlonPrice.data.bid)
+	) {
+		let getImBTCPrice = tokenlonPrice.data.bid;
+		getImBTCPrice = (10 ** 8 / getImBTCPrice).toFixed();
+	
+		const imBTCSwing = medianStrategy.imbtc.safePriceSwing;
+		const btcSwing = Math.abs(calculatingBTCPrice - getImBTCPrice) / getImBTCPrice;
+		if (imBTCSwing < btcSwing) {
+			monitorData.err_code = ERROR_CODE.IMBTC_PRICE_ERROR;
+			monitorData.err_msg = ERROR_MSG.IMBTC_PRICE_ERROR;
+			monitorData.timestamp = Math.ceil(Date.now() / 1000);
+			monitorData.data = {
+				'Tokenlon_price': getImBTCPrice,
+				'exchange_price': calculatingBTCPrice,
+			};
+			post(monitorGetPriceUrl, monitorData);
+		}
+		console.log('tokenlon price', getImBTCPrice);
+		console.log('exchange price', calculatingBTCPrice);
+		return calculatingBTCPrice < getImBTCPrice ? getImBTCPrice : calculatingBTCPrice;
+	}else{
+		console.log('Get tokenlon price error: ');
+		monitorData.err_code = ERROR_CODE.IMBTC_API_ERROR;
+		monitorData.err_msg = ERROR_MSG.IMBTC_API_ERROR;
+		monitorData.timestamp = Math.ceil(Date.now() / 1000);
+		monitorData.data = {
+		'info': tokenlonPrice,
+		};
+		post(monitorGetPriceUrl, monitorData);
+	}
   } catch (error) {
-    console.log('Got an error: ', error.response);
+    console.log('Got an error: ', error);
     monitorData.err_code = ERROR_CODE.IMBTC_API_ERROR;
     monitorData.err_msg = ERROR_MSG.IMBTC_API_ERROR;
     monitorData.timestamp = Math.ceil(Date.now() / 1000);
     monitorData.data = {
-      'info': error.response,
+      'info': error,
     };
     post(monitorGetPriceUrl, monitorData);
   }
-
-  let getImBTCPrice = tokenlonPrice.data.bid;
-  getImBTCPrice = (10 ** 8 / getImBTCPrice).toFixed();
-
-  const imBTCSwing = medianStrategy.imbtc.safePriceSwing;
-  const btcSwing = Math.abs(calculatingBTCPrice - getImBTCPrice) / getImBTCPrice;
-  if (imBTCSwing < btcSwing) {
-    monitorData.err_code = ERROR_CODE.IMBTC_PRICE_ERROR;
-    monitorData.err_msg = ERROR_MSG.IMBTC_PRICE_ERROR;
-    monitorData.timestamp = Math.ceil(Date.now() / 1000);
-    monitorData.data = {
-      'Tokenlon_price': getImBTCPrice,
-      'exchange_price': calculatingBTCPrice,
-    };
-    post(monitorGetPriceUrl, monitorData);
-  }
-  console.log('tokenlon price', getImBTCPrice);
-  console.log('exchange price', calculatingBTCPrice);
-  return calculatingBTCPrice < getImBTCPrice ? getImBTCPrice : calculatingBTCPrice;
+  return false;
 }
 
 async function main() {
@@ -290,8 +299,12 @@ async function main() {
       if (priceMedian.result) {
 
         // eslint-disable-next-line eqeqeq
-        if (supportAssets[index] == 'imbtc')
-          data.push(['tokenLon', supportAssets[index], await verifyTokenlonPrice(priceMedian.median.toString()), time]);
+        if (supportAssets[index] == 'imbtc'){
+
+			var imbtcPriceMedian = await verifyTokenlonPrice(priceMedian.median.toString());
+			if (imbtcPriceMedian)	
+				data.push(['tokenLon', supportAssets[index], imbtcPriceMedian, time]);
+		}
         else
           data.push([priceMedian.exchange, supportAssets[index], priceMedian.median.toString(), time]);
       } else {
