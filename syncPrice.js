@@ -206,7 +206,16 @@ async function verifyTokenlonPrice(exchangeName, assetName, calculatingBTCPrice)
 
         const imBTCSwing = medianStrategy.imbtc.safePriceSwing;
         const btcSwing = Math.abs(calculatingBTCPrice - getImBTCPrice) / getImBTCPrice;
-        if (imBTCSwing < btcSwing) {
+        if (imBTCSwing >= btcSwing) {
+          monitorData.err_code = ERROR_CODE.NO_ERROR;
+          monitorData.err_msg = ERROR_MSG.NO_ERROR;
+          monitorData.timestamp = Math.ceil(Date.now() / 1000);
+          monitorData.data = {
+            'Tokenlon_price': getImBTCPrice,
+            'exchange_price': calculatingBTCPrice,
+          };
+          post(monitorGetPriceUrl, monitorData);
+        } else {
           monitorData.err_code = ERROR_CODE.IMBTC_PRICE_ERROR;
           monitorData.err_msg = ERROR_MSG.IMBTC_PRICE_ERROR;
           monitorData.timestamp = Math.ceil(Date.now() / 1000);
