@@ -9,9 +9,9 @@ const minBalance = 0.01;
 // Support net type.
 const netType = 'mainnet';
 // Multi-collateral currencies.
-const supportAssets = ['usdx', 'usdt', 'imbtc'];
+const supportAssets = ['usdx', 'usdt', 'imbtc', 'hbtc'];
 // Recommended magnification.
-const supposedMantissa = [0, 12, 10];
+const supposedMantissa = [0, 12, 10, 0];
 // Interval time to run.
 const moment = 5;
 // Service name
@@ -22,10 +22,15 @@ const monitorGetPriceUrl = monitorUrl + '/getprice';
 const monitorPostPriceUrl = monitorUrl + '/postprice';
 // Valid price strategy
 const medianStrategy = {
-  imbtc: {
+  hbtc: {
     allExchanges: 7,      // Total number of exchanges.
     leastValidValue: 5,   // Minimum amount of valid exchange price.
     safePriceSwing: 0.01, // Max price difference ratio when try to compare median with average.
+  },
+  imbtc: {
+    allExchanges: 7,
+    leastValidValue: 5,
+    safePriceSwing: 0.01,
   },
   usdt: {
     allExchanges: 7,
@@ -48,6 +53,7 @@ const mainnetAssets = {
 };
 
 const rinkebyAssets = {
+  hbtc:  '0xcf07906CbCF9824D0caE475E8F958d48AcF1014C',
   imbtc: '0x7b054eBe1D7e003afdA8e717DAEaB05D56D5836A',
   usdt:  '0xA1e525F7d24D7cCB78A070BBd12C0BF21Fb4a848',
   usdx:  '0xAF21BB8ae7b7a5Eec37964e478583CD486FD12E2',

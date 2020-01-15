@@ -126,8 +126,8 @@ async function feed() {
         'version': '',
       };
       const result = await post(monitorPostPriceUrl, data);
-      log.info('Request data is: ', data.err_msg);
-      log.info('Request response is: ', result.data);
+      log.info('Request data is: ', data);
+      log.info('Request response is: ', result.status);
     }
 
     // get all assets current price and pending anchor price

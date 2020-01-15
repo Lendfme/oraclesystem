@@ -111,6 +111,32 @@ const kucoinUSDxPrice = 'https://api.kucoin.com/api/v1/market/orderbook/level1?s
 const kucoinUSDTPrice = 'https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=ETH-USDT';
 
 // {
+//   "status": "ok",
+//   "ch": "market.ethbtc.detail.merged",
+//   "ts": 1579054246718,
+//   "tick": {
+//     "amount": 199430.8491,
+//     "open": 0.017472,
+//     "close": 0.019014,
+//     "high": 0.019449,
+//     "id": 203287206381,
+//     "count": 105069,
+//     "low": 0.01743,
+//     "version": 203287206381,
+//     "ask": [
+//       0.019014,
+//       2.7002
+//     ],
+//     "vol": 3659.0482120018,
+//     "bid": [
+//       0.019004,
+//       4.2096
+//     ]
+//   }
+// }
+const hbtcPrice = 'https://api.huobi.pro/market/detail/merged?symbol=ethbtc';
+
+// {
 //     "jsonrpc": "2.0",
 //     "result": {
 //         "timestamp": 1572577229,
@@ -146,6 +172,7 @@ module.exports = {
   gateBTCPrice,
   gateUSDTPrice,
   gateUSDxPrice,
+  hbtcPrice,
   hitbtcBTCPrice,
   hitbtcUSDTPrice,
   hitbtcUSDxPrice,

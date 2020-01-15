@@ -9,6 +9,15 @@ const exchange = [
 ];
 
 const apiList = {
+  'hbtc': [
+    'https://api.binance.com/api/v3/ticker/price?symbol=ETHBTC',
+    'https://api.hitbtc.com/api/2/public/ticker/ETHBTC?limit=1',
+    'https://api.huobi.pro/market/detail/merged?symbol=ethbtc',
+    'https://data.gateio.life/api2/1/ticker/eth_btc',
+    'https://api-pub.bitfinex.com/v2/tickers/?symbols=tETHBTC',
+    'https://api.bittrex.com/api/v1.1/public/getticker?market=BTC-ETH',
+    'https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=ETH-BTC',
+  ],
   'imbtc': [
     'https://api.binance.com/api/v3/ticker/price?symbol=ETHBTC',
     'https://api.hitbtc.com/api/2/public/ticker/ETHBTC?limit=1',

@@ -24,6 +24,7 @@ const {
 } = require('./src/utils/config/base.config');
 
 const {
+  hbtcPrice,
   imBTCPrice,
 } = require('./src/utils/config/api.config');
 
@@ -73,71 +74,71 @@ async function parsePriceData(priceData, currency, timestamp) {
       if (!(result instanceof Object))
         continue;
       switch (priceData[index].sign) {
-      case apiPriceConfig.exchange[0]:
-        if (result.hasOwnProperty('price') && result.price && !isNaN(result.price)) {
-          price = result.price.toString();
-          endSign = true;
-        }
-        break;
-      case apiPriceConfig.exchange[1]:
-        if (result.hasOwnProperty('last') && result.last && !isNaN(result.last)) {
-          price = result.last.toString();
-          endSign = true;
-        }
-        break;
-      case apiPriceConfig.exchange[2]:
-        if (result.hasOwnProperty('tick')
-						&& result.tick instanceof Object
-						&& result.tick.hasOwnProperty('bid')
-						&& Array.isArray(result.tick.bid)
-						&& result.tick.bid[0]
-						&& !isNaN(result.tick.bid[0])
-        ) {
-          price = result.tick.bid[0].toString();
-          endSign = true;
-        }
-        break;
-      case apiPriceConfig.exchange[3]:
-        if (result.hasOwnProperty('last') && result.last && !isNaN(result.last)) {
-          price = result.last.toString();
-          endSign = true;
-        }
-        break;
-      case apiPriceConfig.exchange[4]:
-        if (Array.isArray(result)
-						&& Array.isArray(result[0])
-						&& result[0].length > 7
-						&& result[0][7]
-						&& !isNaN(result[0][7])
-        ) {
-          price = result[0][7].toString();
-          endSign = true;
-        }
-        break;
-      case apiPriceConfig.exchange[5]:
-        if (result.hasOwnProperty('result')
-						&& result.result instanceof Object
-						&& result.result.hasOwnProperty('Last')
-						&& result.result.Last
-						&& !isNaN(result.result.Last)
-        ) {
-          price = result.result.Last.toString();
-          endSign = true;
-        }
-        break;
-      case apiPriceConfig.exchange[6]:
-        if (result.hasOwnProperty('data')
-						&& result.data instanceof Object
-						&& result.data.hasOwnProperty('price')
-						&& result.data.price
-						&& !isNaN(result.data.price)
-        ) {
-          price = result.data.price.toString();
-          endSign = true;
-        }
-        break;
-      default:
-        break;
+        case apiPriceConfig.exchange[0]:
+          if (result.hasOwnProperty('price') && result.price && !isNaN(result.price)) {
+            price = result.price.toString();
+            endSign = true;
+          }
+          break;
+        case apiPriceConfig.exchange[1]:
+          if (result.hasOwnProperty('last') && result.last && !isNaN(result.last)) {
+            price = result.last.toString();
+            endSign = true;
+          }
+          break;
+        case apiPriceConfig.exchange[2]:
+          if (result.hasOwnProperty('tick')
+            && result.tick instanceof Object
+            && result.tick.hasOwnProperty('bid')
+            && Array.isArray(result.tick.bid)
+            && result.tick.bid[0]
+            && !isNaN(result.tick.bid[0])
+          ) {
+            price = result.tick.bid[0].toString();
+            endSign = true;
+          }
+          break;
+        case apiPriceConfig.exchange[3]:
+          if (result.hasOwnProperty('last') && result.last && !isNaN(result.last)) {
+            price = result.last.toString();
+            endSign = true;
+          }
+          break;
+        case apiPriceConfig.exchange[4]:
+          if (Array.isArray(result)
+            && Array.isArray(result[0])
+            && result[0].length > 7
+            && result[0][7]
+            && !isNaN(result[0][7])
+          ) {
+            price = result[0][7].toString();
+            endSign = true;
+          }
+          break;
+        case apiPriceConfig.exchange[5]:
+          if (result.hasOwnProperty('result')
+            && result.result instanceof Object
+            && result.result.hasOwnProperty('Last')
+            && result.result.Last
+            && !isNaN(result.result.Last)
+          ) {
+            price = result.result.Last.toString();
+            endSign = true;
+          }
+          break;
+        case apiPriceConfig.exchange[6]:
+          if (result.hasOwnProperty('data')
+            && result.data instanceof Object
+            && result.data.hasOwnProperty('price')
+            && result.data.price
+            && !isNaN(result.data.price)
+          ) {
+            price = result.data.price.toString();
+            endSign = true;
+          }
+          break;
+        default:
+          break;
       }
     } catch (error) {
       console.log(error);
@@ -145,8 +146,8 @@ async function parsePriceData(priceData, currency, timestamp) {
       monitorData.err_msg = ERROR_MSG.SYNC_PRICE_PARSE_ERROR;
       monitorData.timestamp = Math.ceil(Date.now() / 1000);
       monitorData.data = {
-		  'currency': currency,
-		  'error_msg': error,
+        'currency': currency,
+        'error_msg': error,
         'exchange': priceData[index].sign,
         'info': priceData[index],
       };
@@ -188,55 +189,141 @@ async function parsePriceData(priceData, currency, timestamp) {
 }
 
 // TODO: move out, only for imBTC
-async function verifyTokenlonPrice(calculatingBTCPrice) {
+async function verifyTokenlonPrice(exchangeName, assetName, calculatingBTCPrice) {
+  let huobiPrice = '';
   let tokenlonPrice = '';
-  try {
-    tokenlonPrice = await request(imBTCPrice);
-    if (tokenlonPrice.hasOwnProperty('data')
-					&& tokenlonPrice.data instanceof Object
-					&& tokenlonPrice.data.hasOwnProperty('bid')
-					&& tokenlonPrice.data.bid
-					&& !isNaN(tokenlonPrice.data.bid)
-    ) {
-      let getImBTCPrice = tokenlonPrice.data.bid;
-      getImBTCPrice = (10 ** 8 / getImBTCPrice).toFixed();
+  if (assetName === 'imbtc') {
+    try {
+      tokenlonPrice = await request(imBTCPrice);
+      if (tokenlonPrice.hasOwnProperty('data')
+        && tokenlonPrice.data instanceof Object
+        && tokenlonPrice.data.hasOwnProperty('bid')
+        && tokenlonPrice.data.bid
+        && !isNaN(tokenlonPrice.data.bid)
+      ) {
+        let getImBTCPrice = tokenlonPrice.data.bid;
+        getImBTCPrice = (10 ** 8 / getImBTCPrice).toFixed();
 
-      const imBTCSwing = medianStrategy.imbtc.safePriceSwing;
-      const btcSwing = Math.abs(calculatingBTCPrice - getImBTCPrice) / getImBTCPrice;
-      if (imBTCSwing < btcSwing) {
-        monitorData.err_code = ERROR_CODE.IMBTC_PRICE_ERROR;
-        monitorData.err_msg = ERROR_MSG.IMBTC_PRICE_ERROR;
+        const imBTCSwing = medianStrategy.imbtc.safePriceSwing;
+        const btcSwing = Math.abs(calculatingBTCPrice - getImBTCPrice) / getImBTCPrice;
+        if (imBTCSwing < btcSwing) {
+          monitorData.err_code = ERROR_CODE.IMBTC_PRICE_ERROR;
+          monitorData.err_msg = ERROR_MSG.IMBTC_PRICE_ERROR;
+          monitorData.timestamp = Math.ceil(Date.now() / 1000);
+          monitorData.data = {
+            'Tokenlon_price': getImBTCPrice,
+            'exchange_price': calculatingBTCPrice,
+          };
+          post(monitorGetPriceUrl, monitorData);
+        }
+        console.log('tokenlon price', getImBTCPrice);
+        console.log('exchange price', calculatingBTCPrice);
+        if (calculatingBTCPrice < getImBTCPrice) {
+          return {
+            'exchange': exchangeName,
+            'price': calculatingBTCPrice,
+            'result': true,
+          };
+        } else {
+          return {
+            'exchange': 'tokenlon',
+            'price': getImBTCPrice,
+            'result': true,
+          };
+        }
+      } else {
+        console.log('Get tokenlon price error: ');
+        monitorData.err_code = ERROR_CODE.IMBTC_API_ERROR;
+        monitorData.err_msg = ERROR_MSG.IMBTC_API_ERROR;
         monitorData.timestamp = Math.ceil(Date.now() / 1000);
         monitorData.data = {
-          'Tokenlon_price': getImBTCPrice,
-          'exchange_price': calculatingBTCPrice,
+          'info': tokenlonPrice,
         };
         post(monitorGetPriceUrl, monitorData);
       }
-      console.log('tokenlon price', getImBTCPrice);
-      console.log('exchange price', calculatingBTCPrice);
-      return calculatingBTCPrice < getImBTCPrice ? getImBTCPrice : calculatingBTCPrice;
-    } else {
-      console.log('Get tokenlon price error: ');
+    } catch (error) {
+      console.log('Got an error: ', error);
       monitorData.err_code = ERROR_CODE.IMBTC_API_ERROR;
       monitorData.err_msg = ERROR_MSG.IMBTC_API_ERROR;
       monitorData.timestamp = Math.ceil(Date.now() / 1000);
       monitorData.data = {
-        'info': tokenlonPrice,
+        'info': error,
       };
       post(monitorGetPriceUrl, monitorData);
     }
-  } catch (error) {
-    console.log('Got an error: ', error);
-    monitorData.err_code = ERROR_CODE.IMBTC_API_ERROR;
-    monitorData.err_msg = ERROR_MSG.IMBTC_API_ERROR;
-    monitorData.timestamp = Math.ceil(Date.now() / 1000);
-    monitorData.data = {
-      'info': error,
-    };
-    post(monitorGetPriceUrl, monitorData);
+  } else if (assetName === 'hbtc') {
+    try {
+      huobiPrice = await request(hbtcPrice);
+
+      if (huobiPrice.hasOwnProperty('tick')
+        && huobiPrice.tick instanceof Object
+        && huobiPrice.tick.hasOwnProperty('bid')
+        && huobiPrice.tick.bid
+        && !isNaN(huobiPrice.tick.bid[0])
+      ) {
+        let btcPrice = huobiPrice.tick.bid[0];
+        btcPrice = (btcPrice * 10 ** 8).toFixed();
+
+        const hbtcSwing = medianStrategy.hbtc.safePriceSwing;
+        const btcSwing = Math.abs(calculatingBTCPrice - btcPrice) / btcPrice;
+        if (hbtcSwing >= btcSwing) {
+          monitorData.err_code = ERROR_CODE.NO_ERROR;
+          monitorData.err_msg = ERROR_MSG.NO_ERROR;
+          monitorData.timestamp = Math.ceil(Date.now() / 1000);
+          monitorData.data = {
+            'Huobi_price': btcPrice,
+            'exchange_price': calculatingBTCPrice,
+          };
+          post(monitorGetPriceUrl, monitorData);
+          console.log('huobi price', btcPrice);
+          console.log('exchange price', calculatingBTCPrice);
+        } else {
+          monitorData.err_code = ERROR_CODE.HBTC_PRICE_ERROR;
+          monitorData.err_msg = ERROR_MSG.HBTC_PRICE_ERROR;
+          monitorData.timestamp = Math.ceil(Date.now() / 1000);
+          monitorData.data = {
+            'Huobi_price': btcPrice,
+            'exchange_price': calculatingBTCPrice,
+          };
+          post(monitorGetPriceUrl, monitorData);
+        }
+        if (calculatingBTCPrice < btcPrice) {
+          return {
+            'exchange': exchangeName,
+            'price': calculatingBTCPrice,
+            'result': true,
+          };
+        } else {
+          return {
+            'exchange': 'huobiHBTC',
+            'price': btcPrice,
+            'result': true,
+          };
+        }
+      } else {
+        console.log('Get tokenlon price error: ');
+        monitorData.err_code = ERROR_CODE.IMBTC_API_ERROR;
+        monitorData.err_msg = ERROR_MSG.IMBTC_API_ERROR;
+        monitorData.timestamp = Math.ceil(Date.now() / 1000);
+        monitorData.data = {
+          'info': tokenlonPrice,
+        };
+        post(monitorGetPriceUrl, monitorData);
+      }
+    } catch (error) {
+      console.log('Got an error: ', error);
+      monitorData.err_code = ERROR_CODE.IMBTC_API_ERROR;
+      monitorData.err_msg = ERROR_MSG.IMBTC_API_ERROR;
+      monitorData.timestamp = Math.ceil(Date.now() / 1000);
+      monitorData.data = {
+        'info': error,
+      };
+      post(monitorGetPriceUrl, monitorData);
+    }
   }
-  return false;
+  return {
+    'result': false,
+  };
 }
 
 async function main() {
@@ -299,13 +386,15 @@ async function main() {
       if (priceMedian.result) {
 
         // eslint-disable-next-line eqeqeq
-        if (supportAssets[index] == 'imbtc'){
+        if (supportAssets[index] == 'imbtc' || supportAssets[index] == 'hbtc') {
 
-          const imbtcPriceMedian = await verifyTokenlonPrice(priceMedian.median.toString());
-          if (imbtcPriceMedian)
-            data.push(['tokenLon', supportAssets[index], imbtcPriceMedian, time]);
-        }
-        else
+          // eslint-disable-next-line max-len
+          const btcPrice = await verifyTokenlonPrice(priceMedian.exchange, supportAssets[index], priceMedian.median.toString());
+          console.log(btcPrice);
+          if (btcPrice.result) {
+            data.push([btcPrice.exchange, supportAssets[index], btcPrice.price.toString(), time]);
+          }
+        } else
           data.push([priceMedian.exchange, supportAssets[index], priceMedian.median.toString(), time]);
       } else {
         monitorData.err_code = ERROR_CODE.SYNC_PRICE_MEDIAN_ERROR;
@@ -343,40 +432,40 @@ http.createServer(async function(req, res) {
   let data = '';
   for (const key in urlInfo.query) {
     switch (key) {
-    case 'model':
-      switch (urlInfo.query[key]) {
-      case 'feedPrice':
-        if (urlInfo.query.currency) {
-          result = await oraclePrice.getFeedPrice(urlInfo.query.currency);
-          if (result[0].id == null)
-            result = [{}];
-          result = JSON.stringify(result);
-          res.end(`${result}`);
+      case 'model':
+        switch (urlInfo.query[key]) {
+          case 'feedPrice':
+            if (urlInfo.query.currency) {
+              result = await oraclePrice.getFeedPrice(urlInfo.query.currency);
+              if (result[0].id == null)
+                result = [{}];
+              result = JSON.stringify(result);
+              res.end(`${result}`);
+            }
+            break;
+          case 'lendfMePrice':
+            if (urlInfo.query.asset) {
+              result = await oraclePrice.getLendfMePrice(urlInfo.query.asset);
+              if (result[0].id == null)
+                result = [{}];
+              result = JSON.stringify(result);
+              res.end(`${result}`);
+            }
+            break;
+          case 'insertLendfMePrice':
+            req.on('data', async function(chunk) {
+              data += chunk;
+              console.log(data);
+              oraclePrice.insertLendfMePrice(JSON.parse(data));
+              res.end(`${data}`);
+            });
+            break;
+          default:
+            break;
         }
-        break;
-      case 'lendfMePrice':
-        if (urlInfo.query.asset) {
-          result = await oraclePrice.getLendfMePrice(urlInfo.query.asset);
-          if (result[0].id == null)
-            result = [{}];
-          result = JSON.stringify(result);
-          res.end(`${result}`);
-        }
-        break;
-      case 'insertLendfMePrice':
-        req.on('data', async function(chunk) {
-          data += chunk;
-          console.log(data);
-          oraclePrice.insertLendfMePrice(JSON.parse(data));
-          res.end(`${data}`);
-        });
         break;
       default:
         break;
-      }
-      break;
-    default:
-      break;
     }
     break;
   }

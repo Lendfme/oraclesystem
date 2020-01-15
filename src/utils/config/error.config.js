@@ -15,6 +15,7 @@ const ERROR_CODE = {
   IMBTC_API_ERROR:          400005,  // Can not get imBTC price from Tokenlon.
   IMBTC_PRICE_ERROR:        400006,  // Get an abnormal imBTC price from Tokenlon.
   SYNC_PRICE_KILLED:        400007,
+  HBTC_PRICE_ERROR:         400008,  // Get an abnormal HBTC price from Huobi.
 };
 
 const ERROR_MSG = {
@@ -33,6 +34,7 @@ const ERROR_MSG = {
   SYNC_PRICE_MEDIAN_ERROR:  'Did not get median',
   IMBTC_API_ERROR:          'Can not get imBTC price from Tokenlon',
   IMBTC_PRICE_ERROR:        'Abnormal imBTC price received from Tokenlon',
+  HBTC_PRICE_ERROR:         'Abnormal HBTC price received from Huobi',
   SYNC_PRICE_KILLED:        'Can not get price from syncPrice file!',
 };
 
