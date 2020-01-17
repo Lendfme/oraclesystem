@@ -267,7 +267,8 @@ async function verifyTokenlonPrice(exchangeName, assetName, calculatingBTCPrice)
       if (huobiPrice.hasOwnProperty('tick')
         && huobiPrice.tick instanceof Object
         && huobiPrice.tick.hasOwnProperty('bid')
-        && huobiPrice.tick.bid
+        && Array.isArray(huobiPrice.tick.bid)
+        && huobiPrice.tick.bid[0]
         && !isNaN(huobiPrice.tick.bid[0])
       ) {
         let btcPrice = huobiPrice.tick.bid[0];
