@@ -55,7 +55,8 @@ class BaseContract {
     const averagePrice = Math.floor(fast / '10' * safetyFactor * 10 ** 6).toString();
     const price = this.web3.utils.toHex(this.web3.utils.toWei(averagePrice, 'kwei'));
     let calculateGas = await this.estimateGas(account, accountNonce, receiver, originData);
-    calculateGas = (calculateGas * safetyFactor).toFixed();
+    // calculateGas = (calculateGas * safetyFactor).toFixed();
+    calculateGas = (calculateGas * 2).toFixed();
     const rawTransaction = {
       data: originData,
       gasLimit: this.web3.utils.toHex(calculateGas.toString()), // Raise the gas limit to a much higher amount
