@@ -90,6 +90,7 @@ async function parsePriceData(priceData, currency, timestamp) {
           if (result.hasOwnProperty('tick')
             && result.tick instanceof Object
             && result.tick.hasOwnProperty('close')
+            && result.tick.close
             && !isNaN(result.tick.close)
           ) {
             price = result.tick.close.toString();
