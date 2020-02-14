@@ -1,13 +1,13 @@
 {
     "name": "oracle-system",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "description": "Oracle system for Lendf.me Multi-Collateral",
     "repository": {
         "type": "git",
         "url": "https://github.com/Lendfme/oraclesystem.git"
     },
     "author": "LendfMe Community",
-    "license": "GPL",
+    "license": "MIT",
     "bugs": {
         "url": "https://github.com/Lendfme/oraclesystem/issues"
     },
