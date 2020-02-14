@@ -89,12 +89,10 @@ async function parsePriceData(priceData, currency, timestamp) {
         case apiPriceConfig.exchange[2]:
           if (result.hasOwnProperty('tick')
             && result.tick instanceof Object
-            && result.tick.hasOwnProperty('bid')
-            && Array.isArray(result.tick.bid)
-            && result.tick.bid[0]
-            && !isNaN(result.tick.bid[0])
+            && result.tick.hasOwnProperty('close')
+            && !isNaN(result.tick.close)
           ) {
-            price = result.tick.bid[0].toString();
+            price = result.tick.close.toString();
             endSign = true;
           }
           break;
