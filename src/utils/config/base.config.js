@@ -46,6 +46,7 @@ const medianStrategy = {
 
 // when add a new collateral asset, need to add here.
 const mainnetAssets = {
+  hbtc:  '0x0316EB71485b0Ab14103307bf65a021042c6d380',
   imbtc: '0x3212b29E33587A00FB1C83346f5dBFA69A458923',
   usdt:  '0xdAC17F958D2ee523a2206206994597C13D831ec7',
   usdx:  '0xeb269732ab75A6fD61Ea60b06fE994cD32a83549',
