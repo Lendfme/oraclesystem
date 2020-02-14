@@ -3,7 +3,7 @@ require('dotenv').config();
 // If system havs not been set the price for 12 hours(43200s), must set a new price.
 const maxFeedingPriceInterval = 43200;
 // Max price difference ratio when try to compare new price with previous price.
-const maxPriceSwing = 0.01;
+const maxPriceSwing = 0.005;
 // Expect account has minimum eth amount.
 const minBalance = 0.01;
 // Support net type.
