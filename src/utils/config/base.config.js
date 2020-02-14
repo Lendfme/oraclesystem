@@ -14,12 +14,6 @@ const supportAssets = ['usdx', 'usdt', 'imbtc', 'hbtc'];
 const supposedMantissa = [0, 12, 10, 0];
 // Interval time to run.
 const moment = 5;
-// Service name
-const serviceName = '';
-// Monitor url
-const monitorUrl = '';
-const monitorGetPriceUrl = monitorUrl + '/getprice';
-const monitorPostPriceUrl = monitorUrl + '/postprice';
 // Valid price strategy
 const medianStrategy = {
   hbtc: {
@@ -76,22 +70,28 @@ const oracleContract = {
 const infuraKey = process.env.INFURA_KEY;
 const privateKey = process.env.POSTER_PRIVATE_KEY;
 const safetyFactor = process.env.IMPROVING_FACTOR;
+// Service name
+const serviceName = process.env.SERVICE_NAME;
+// Monitor url
+const monitorUrl = process.env.MONITOR_URL;
 
-const localPort = 00;
+const localPort = process.env.RANDOM_PORT;
 /* eslint-enable */
+const monitorGetPriceUrl = monitorUrl + '/getprice';
+const monitorPostPriceUrl = monitorUrl + '/postprice';
 const localUrl = `http://127.0.0.1:${localPort}/?`;
 
 function getUrl(model, param = '') {
   const url = `${localUrl}model=${model}`;
   switch (model) {
-  case 'feedPrice':
-    return `${url}${param ? '&currency=' + param : ''}`;
-  case 'lendfMePrice':
-    return `${url}${param ? '&asset=' + param : ''}`;
-  case 'insertLendfMePrice':
-    return url;
-  default:
-    break;
+    case 'feedPrice':
+      return `${url}${param ? '&currency=' + param : ''}`;
+    case 'lendfMePrice':
+      return `${url}${param ? '&asset=' + param : ''}`;
+    case 'insertLendfMePrice':
+      return url;
+    default:
+      break;
   }
 }
 
