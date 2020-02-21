@@ -12,7 +12,10 @@ const {
   monitorPostPriceUrl,
   moment,
   oracleContract,
+  referenceStableCoin,
   serviceName,
+  stableCoinMantissa,
+  stableCoins,
   supportAssets,
   supposedMantissa,
   getUrl,
@@ -217,6 +220,14 @@ async function feed() {
       }
 
       if (result.type) {
+        if (getPrices[i][0] === referenceStableCoin) {
+          for (let i = 0, len = stableCoins.length; i < len; i++) {
+            assetNames.push(stableCoins[i]);
+            finalWritingPrices.push((getPrices[i][1]/10**(stableCoinMantissa[i])).toString());
+            toVerifyPrices.push((result.actualPrice/10**(stableCoinMantissa[i])).toString());
+            finalAssets.push(assets[netType][stableCoins[i]]);
+          }
+        }
         assetNames.push(getPrices[i][0]);
         finalWritingPrices.push(getPrices[i][1]);
         toVerifyPrices.push(result.actualPrice);
@@ -229,6 +240,8 @@ async function feed() {
     verifyResult.status = ERROR_CODE.NO_ERROR;
     if (finalWritingPrices.length !== 0) {
       log.info(currentNet, ' Current time is: ', currentTime);
+      log.info('You are going to set for assets are: ', finalAssets);
+      log.info('You are going to set new prices are: ', finalWritingPrices);
       const setPriceResult = await priceOracle.setPrices(finalAssets, finalWritingPrices);
       if (setPriceResult.status) {
         log.info(currentNet, ' Set new price!', finalWritingPrices);
