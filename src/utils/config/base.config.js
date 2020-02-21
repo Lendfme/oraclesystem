@@ -1,13 +1,19 @@
 require('dotenv').config();
 
+// Recommended btc magnification.
+const btcMantissa = [10];
 // If system havs not been set the price for 12 hours(43200s), must set a new price.
 const maxFeedingPriceInterval = 43200;
 // Max price difference ratio when try to compare new price with previous price.
 const maxPriceSwing = 0.005;
 // Expect account has minimum eth amount.
 const minBalance = 0.01;
+// Which btc is used as the price benchmark for all btc.
+const referenceBTC = 'hbtc';
 // Which stablecoin is used as the price benchmark for all stablecoins.
 const referenceStableCoin = 'usdx';
+// Support btcs.
+const btcs = ['wbtc'];
 // Recommended stable coin magnification.
 const stableCoinMantissa = [0, 0, 12];
 // Support stablecoins.
@@ -49,6 +55,7 @@ const mainnetAssets = {
   usdc:  '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
   usdt:  '0xdAC17F958D2ee523a2206206994597C13D831ec7',
   usdx:  '0xeb269732ab75A6fD61Ea60b06fE994cD32a83549',
+  wbtc:  '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
   weth:  '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
 };
 
@@ -60,6 +67,7 @@ const rinkebyAssets = {
   usdc:  '0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b',
   usdt:  '0xA1e525F7d24D7cCB78A070BBd12C0BF21Fb4a848',
   usdx:  '0xAF21BB8ae7b7a5Eec37964e478583CD486FD12E2',
+  wbtc:  '0x7B65B937A0f3764a7a5e29fD696C391233218E91',
   weth:  '0xC8b1a5ef2e19937dd6c0f804DF2e3efE9F093B1e',
 };
 
@@ -108,6 +116,8 @@ function getUrl(model, param = '') {
 
 module.exports = {
   assets,
+  btcMantissa,
+  btcs,
   getUrl,
   infuraKey,
   localPort,
@@ -123,6 +133,7 @@ module.exports = {
   netType,
   oracleContract,
   privateKey,
+  referenceBTC,
   referenceStableCoin,
   safetyFactor,
   serviceName,

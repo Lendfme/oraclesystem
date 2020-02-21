@@ -7,11 +7,14 @@ const {
 
 const {
   assets,
+  btcMantissa,
+  btcs,
   netType,
   minBalance,
   monitorPostPriceUrl,
   moment,
   oracleContract,
+  referenceBTC,
   referenceStableCoin,
   serviceName,
   stableCoinMantissa,
@@ -226,6 +229,13 @@ async function feed() {
             finalWritingPrices.push(((new BN(getPrices[i][1])).mul(new BN(10**(stableCoinMantissa[j])))).toString());
             toVerifyPrices.push(((new BN(result.actualPrice)).mul(new BN(10**(stableCoinMantissa[j])))).toString());
             finalAssets.push(assets[netType][stableCoins[j]]);
+          }
+        } else if (getPrices[i][0] === referenceBTC) {
+          for (let j = 0, len = btcs.length; j < len; j++) {
+            assetNames.push(btcs[j]);
+            finalWritingPrices.push(((new BN(getPrices[i][1])).mul(new BN(10**(btcMantissa[j])))).toString());
+            toVerifyPrices.push(((new BN(result.actualPrice)).mul(new BN(10**(btcMantissa[j])))).toString());
+            finalAssets.push(assets[netType][btcs[j]]);
           }
         }
         assetNames.push(getPrices[i][0]);
