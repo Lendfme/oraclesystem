@@ -221,11 +221,11 @@ async function feed() {
 
       if (result.type) {
         if (getPrices[i][0] === referenceStableCoin) {
-          for (let i = 0, len = stableCoins.length; i < len; i++) {
-            assetNames.push(stableCoins[i]);
-            finalWritingPrices.push((getPrices[i][1]/10**(stableCoinMantissa[i])).toString());
-            toVerifyPrices.push((result.actualPrice/10**(stableCoinMantissa[i])).toString());
-            finalAssets.push(assets[netType][stableCoins[i]]);
+          for (let j = 0, len = stableCoins.length; j < len; j++) {
+            assetNames.push(stableCoins[j]);
+            finalWritingPrices.push(((new BN(getPrices[i][1])).mul(new BN(10**(stableCoinMantissa[j])))).toString());
+            toVerifyPrices.push(((new BN(result.actualPrice)).mul(new BN(10**(stableCoinMantissa[j])))).toString());
+            finalAssets.push(assets[netType][stableCoins[j]]);
           }
         }
         assetNames.push(getPrices[i][0]);
