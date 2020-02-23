@@ -1,62 +1,60 @@
-const axios = require("axios");
+const axios = require('axios');
 
 const {
-    log
-} = require("../utils/logger/log");
+  log,
+} = require('../utils/logger/log');
 
-// TODO: limit retry time
-function request(url) {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let result = await axios.get(url);
-            resolve(result.data);
-        } catch (error) {
-            log.error(error.stack);
-            log.error("Get http error, try again after 15 seconds ...", error);
-        }
+async function request(url, duration = 20000) {
+  try {
+    const result = await axios.get(url, {
+      timeout: duration,
     });
+    return result.data;
+  } catch (error) {
+    log.error(error);
+  }
 }
 
 // TODO: solve error
 async function post(url, data, duration = 20000) {
-    try {
-        let result = await axios.post(url, data, {
-            timeout: duration
-        })
-        return Promise.resolve(result)
-    } catch (error) {
-        console.log("When you request url: ", url, " You encounter an error: ", error.response)
-        return Promise.reject(error.code)
-    }
+  try {
+    const result = await axios.post(url, data, {
+      timeout: duration,
+    });
+    return Promise.resolve(result);
+  } catch (error) {
+    console.log('When you request url: ', url, ' You encounter an error: ', error.response);
+    return Promise.reject(error.code);
+  }
 }
 
-function asyncGet(url, duration, data, sign = "") {
-    axios
-        .get(url, {
-            timeout: duration
-        })
-        .then(function (response) {
-            var info = sign ? {
-                sign: sign,
-                data: response.data
-            } : response.data;
-            if (Array.isArray(data)) data.push(info);
-            else data = info;
-        })
-        .catch(function (error) {
-            var info = sign ? {
-                sign: sign,
-                data: false
-            } : false;
-            if (Array.isArray(data)) data.push(info);
-            else data = info;
-            log.error("sign error : " + sign);
-            log.error(error.errno);
-        });
+function asyncGet(url, duration, data, sign = '') {
+  axios
+    .get(url, {
+      timeout: duration,
+    })
+    .then(function(response) {
+      const info = sign ? {
+        data: response.data,
+        sign: sign,
+      } : response.data;
+      if (Array.isArray(data)) data.push(info);
+      else data = info;
+    })
+    .catch(function(error) {
+      const info = sign ? {
+        data: false,
+        sign: sign,
+      } : false;
+      if (Array.isArray(data)) data.push(info);
+      else data = info;
+      log.error('sign error : ' + sign);
+      log.error(error);
+    });
 }
 
 module.exports = {
-    request,
-    post,
-    asyncGet
+  asyncGet,
+  post,
+  request,
 };

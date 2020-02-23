@@ -1,10 +1,10 @@
 // reponse is: {
 //     "symbol": "ETHUSDT",
 //     "price": "166.69000000"
-//   }
-const binanceBTCPrice = `https://api.binance.com/api/v3/ticker/price?symbol=ETHBTC`
-const binanceUSDxPrice = `https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDC`
-const binanceUSDTPrice = `https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT`
+// }
+const binanceBTCPrice = 'https://api.binance.com/api/v3/ticker/price?symbol=ETHBTC';
+const binanceUSDxPrice = 'https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDC';
+const binanceUSDTPrice = 'https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT';
 
 // response is: {
 //     "ask": "1.001716",
@@ -18,9 +18,9 @@ const binanceUSDTPrice = `https://api.binance.com/api/v3/ticker/price?symbol=ETH
 //     "timestamp": "2019-11-23T01:44:23.203Z",
 //     "symbol": "USDTUSD"
 // }
-const hitbtcBTCPrice = `https://api.hitbtc.com/api/2/public/ticker/ETHBTC?limit=1`
-const hitbtcUSDxPrice = `https://api.hitbtc.com/api/2/public/ticker/ETHUSDC?limit=1`
-const hitbtcUSDTPrice = `https://api.hitbtc.com/api/2/public/ticker/ETHUSD?limit=1`
+const hitbtcBTCPrice = 'https://api.hitbtc.com/api/2/public/ticker/ETHBTC?limit=1';
+const hitbtcUSDxPrice = 'https://api.hitbtc.com/api/2/public/ticker/ETHUSDC?limit=1';
+const hitbtcUSDTPrice = 'https://api.hitbtc.com/api/2/public/ticker/ETHUSD?limit=1';
 
 // response is: {
 //     "status": "ok",
@@ -41,9 +41,9 @@ const hitbtcUSDTPrice = `https://api.hitbtc.com/api/2/public/ticker/ETHUSD?limit
 //       ]
 //     }
 //   }
-const huobiproBTCPrice = `https://api.huobi.pro/market/trade?symbol=ethbtc`
-const huobiproUSDxPrice = `https://api.huobi.pro/market/trade?symbol=ethhusd`
-const huobiproUSDTPrice = `https://api.huobi.pro/market/trade?symbol=ethusdt`
+const huobiproBTCPrice = 'https://api.huobi.pro/market/trade?symbol=ethbtc';
+const huobiproUSDxPrice = 'https://api.huobi.pro/market/trade?symbol=ethhusd';
+const huobiproUSDTPrice = 'https://api.huobi.pro/market/trade?symbol=ethusdt';
 
 // response is: {
 //     "quoteVolume": "125344.748741319",
@@ -57,9 +57,9 @@ const huobiproUSDTPrice = `https://api.huobi.pro/market/trade?symbol=ethusdt`
 //     "low24hr": "3.8291",
 //     "percentChange": "-1.77"
 // }
-const gateBTCPrice = `https://data.gateio.life/api2/1/ticker/eth_btc`
-const gateUSDxPrice = `https://data.gateio.life/api2/1/ticker/usdc_usdt`
-const gateUSDTPrice = `https://data.gateio.life/api2/1/ticker/eth_usdt`
+const gateBTCPrice = 'https://data.gateio.life/api2/1/ticker/eth_btc';
+const gateUSDxPrice = 'https://data.gateio.life/api2/1/ticker/usdc_usdt';
+const gateUSDTPrice = 'https://data.gateio.life/api2/1/ticker/eth_usdt';
 
 // response is: [
 //     [
@@ -76,9 +76,9 @@ const gateUSDTPrice = `https://data.gateio.life/api2/1/ticker/eth_usdt`
 //         182.81        // LOW
 //     ]
 // ]
-const bitfinexBTCPrice = `https://api-pub.bitfinex.com/v2/tickers/?symbols=tETHBTC`
-const bitfinexUSDxPrice = `https://api-pub.bitfinex.com/v2/tickers/?symbols=tETHUSD`
-const bitfinexUSDTPrice = `https://api-pub.bitfinex.com/v2/tickers/?symbols=tETHUST`
+const bitfinexBTCPrice = 'https://api-pub.bitfinex.com/v2/tickers/?symbols=tETHBTC';
+const bitfinexUSDxPrice = 'https://api-pub.bitfinex.com/v2/tickers/?symbols=tETHUSD';
+const bitfinexUSDTPrice = 'https://api-pub.bitfinex.com/v2/tickers/?symbols=tETHUST';
 
 // response is: {
 //     "success": true,
@@ -89,9 +89,9 @@ const bitfinexUSDTPrice = `https://api-pub.bitfinex.com/v2/tickers/?symbols=tETH
 //         "Last": 183.20000000
 //     }
 // }
-const bittrexBTCPrice = `https://api.bittrex.com/api/v1.1/public/getticker?market=BTC-ETH`
-const bittrexUSDxPrice = `https://api.bittrex.com/api/v1.1/public/getticker?market=USD-ETH`
-const bittrexUSDTPrice = `https://api.bittrex.com/api/v1.1/public/getticker?market=USDT-ETH`
+const bittrexBTCPrice = 'https://api.bittrex.com/api/v1.1/public/getticker?market=BTC-ETH';
+const bittrexUSDxPrice = 'https://api.bittrex.com/api/v1.1/public/getticker?market=USD-ETH';
+const bittrexUSDTPrice = 'https://api.bittrex.com/api/v1.1/public/getticker?market=USDT-ETH';
 
 // response is: {
 //     "code": "200000",
@@ -106,9 +106,35 @@ const bittrexUSDTPrice = `https://api.bittrex.com/api/v1.1/public/getticker?mark
 //         "bestAskSize": "0.36036"
 //         }
 // }
-const kucoinBTCPrice = `https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=ETH-BTC`
-const kucoinUSDxPrice = `https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=ETH-USDC`
-const kucoinUSDTPrice = `https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=ETH-USDT`
+const kucoinBTCPrice = 'https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=ETH-BTC';
+const kucoinUSDxPrice = 'https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=ETH-USDC';
+const kucoinUSDTPrice = 'https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=ETH-USDT';
+
+// {
+//   "status": "ok",
+//   "ch": "market.ethbtc.detail.merged",
+//   "ts": 1579054246718,
+//   "tick": {
+//     "amount": 199430.8491,
+//     "open": 0.017472,
+//     "close": 0.019014,
+//     "high": 0.019449,
+//     "id": 203287206381,
+//     "count": 105069,
+//     "low": 0.01743,
+//     "version": 203287206381,
+//     "ask": [
+//       0.019014,
+//       2.7002
+//     ],
+//     "vol": 3659.0482120018,
+//     "bid": [
+//       0.019004,
+//       4.2096
+//     ]
+//   }
+// }
+const hbtcPrice = 'https://api.huobi.pro/market/detail/merged?symbol=ethbtc';
 
 // {
 //     "jsonrpc": "2.0",
@@ -130,30 +156,31 @@ const kucoinUSDTPrice = `https://api.kucoin.com/api/v1/market/orderbook/level1?s
 //     },
 //     "id": 1
 // }
-const imBTCPrice = `https://tokenlon-core-market.tokenlon.im/rest/get_ticker?period=24H&pairs=imBTC_ETH`
+const imBTCPrice = 'https://tokenlon-core-market.tokenlon.im/rest/get_ticker?period=24H&pairs=imBTC_ETH';
 
 
 module.exports = {
-    binanceBTCPrice,
-    binanceUSDxPrice,
-    binanceUSDTPrice,
-    bitfinexBTCPrice,
-    bitfinexUSDxPrice,
-    bitfinexUSDTPrice,
-    bittrexBTCPrice,
-    bittrexUSDxPrice,
-    bittrexUSDTPrice,
-    gateBTCPrice,
-    gateUSDxPrice,
-    gateUSDTPrice,
-    hitbtcUSDxPrice,
-    hitbtcBTCPrice,
-    hitbtcUSDTPrice,
-    huobiproBTCPrice,
-    huobiproUSDxPrice,
-    huobiproUSDTPrice,
-    imBTCPrice,
-    kucoinBTCPrice,
-    kucoinUSDxPrice,
-    kucoinUSDTPrice,
-}
+  binanceBTCPrice,
+  binanceUSDTPrice,
+  binanceUSDxPrice,
+  bitfinexBTCPrice,
+  bitfinexUSDTPrice,
+  bitfinexUSDxPrice,
+  bittrexBTCPrice,
+  bittrexUSDTPrice,
+  bittrexUSDxPrice,
+  gateBTCPrice,
+  gateUSDTPrice,
+  gateUSDxPrice,
+  hbtcPrice,
+  hitbtcBTCPrice,
+  hitbtcUSDTPrice,
+  hitbtcUSDxPrice,
+  huobiproBTCPrice,
+  huobiproUSDTPrice,
+  huobiproUSDxPrice,
+  imBTCPrice,
+  kucoinBTCPrice,
+  kucoinUSDTPrice,
+  kucoinUSDxPrice,
+};
