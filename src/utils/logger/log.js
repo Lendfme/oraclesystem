@@ -65,9 +65,10 @@ log4js.configure({
   categories: {
     default: {
       appenders: ['dataFile', 'console', 'errorFile', 'txFile'],
-      level: 'info',
+      level: 'debug',
     },
   },
+  replaceConsole: true,
 });
 
 const log = log4js.getLogger();
