@@ -1,16 +1,21 @@
 const BN = require('bn.js');
 
 const {
-  medianStrategy,
-} = require('../utils/config/base.config');
-
-const {
   ethgasstationAPI,
 } = require('../utils/config/common.config');
 
 const {
+  log,
+} = require('../utils/logger/log');
+
+const {
+  medianStrategy,
+} = require('../utils/config/base.config');
+
+const {
   request,
 } = require('./request');
+
 
 function getMedian(allPrices) {
   const assetName = allPrices[0][1];
@@ -34,7 +39,7 @@ function getMedian(allPrices) {
   const midIndex = Math.floor(allPrices.length / 2);
   midValue = allPrices[midIndex][2];
 
-  console.log('median value is ', midValue);
+  log.debug('median value is ', midValue);
 
   for (let i = 0, len = allPrices.length; i < len; i++) {
     const priceDifferance = Math.abs(Number(allPrices[i][2]) - midValue) / midValue;
@@ -56,12 +61,12 @@ function getMedian(allPrices) {
   }
   averagePrice = totalPrice / validPrices.length;
 
-  console.log('average value is ', averagePrice);
+  log.debug('average value is ', averagePrice);
 
   const swing = Math.abs(midValue - averagePrice) / averagePrice;
 
-  console.log('swing is', swing);
-  console.log('safePriceSwing is', safePriceSwing);
+  log.debug('swing is', swing);
+  log.debug('safePriceSwing is', safePriceSwing);
 
   if (swing <= safePriceSwing) {
     return {

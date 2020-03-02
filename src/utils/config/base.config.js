@@ -83,6 +83,7 @@ const oracleContract = {
 };
 
 /* eslint-disable */
+const appName = process.env.APP_NAME;
 const infuraKey = process.env.INFURA_KEY;
 const localPort = process.env.RANDOM_PORT;
 // Interval time to run.
@@ -115,6 +116,7 @@ function getUrl(model, param = '') {
 }
 
 module.exports = {
+  appName,
   assets,
   btcMantissa,
   btcs,

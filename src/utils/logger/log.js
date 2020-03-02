@@ -1,145 +1,76 @@
+/* eslint-disable no-undef */
+/* eslint-disable sort-keys */
 const log4js = require('log4js');
+
 const {
+  appName,
   netType,
 } = require('../config/base.config.js');
 
-Date.prototype.Format = function(fmt) {
-  const o = {
-    'M+': this.getMonth() + 1, // month
-    'S': this.getMilliseconds(), // milli seconds
-    'd+': this.getDate(), // day
-    'h+': this.getHours(), // hours
-    'm+': this.getMinutes(), // minutes
-    's+': this.getSeconds(), // seconds
-  };
-  if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
-  for (const k in o)
-    if (new RegExp('(' + k + ')').test(fmt)) {
-      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)));
-    }
-  return fmt;
-};
-
-exports.initLogger = function(filePath = 'mainnet') {
-
-  const file = `./logs/${new Date().Format('yyyy-MM-dd')}/${filePath}/log/`;
-  const extend = '-yyyy-MM-dd.log';
-
-  log4js.configure({
-    appenders: {
-      error: {
-        alwaysIncludePattern: true,
-        filename: file,
-        pattern: 'error' + extend,
-        type: 'dateFile',
-      },
-      info: {
-        alwaysIncludePattern: true,
-        filename: file,
-        pattern: 'info' + extend,
-        type: 'dateFile',
-      },
-      stdout: {
-        type: 'stdout',
-      },
-      warning: {
-        alwaysIncludePattern: true,
-        filename: file,
-        pattern: 'warning' + extend,
-        type: 'dateFile',
-      },
+log4js.configure({
+  appenders: {
+    // appender1: output to console
+    console: {
+      type: 'stdout',
     },
-    categories: {
-      default: {
-        appenders: ['stdout', 'info'],
-        level: 'INFO',
-      },
-      error: {
-        appenders: ['stdout', 'error'],
-        level: 'ERROR',
-      },
-      info: {
-        appenders: ['stdout', 'info'],
-        level: 'INFO',
-      },
-      warning: {
-        appenders: ['stdout', 'warning'],
-        level: 'WARN',
-      },
+    // appender2: output to all data file
+    dataFile: {
+      type: 'dateFile',
+      // the path to write to the log file
+      filename: `./logs/${appName}/${netType}`,
+      // specify the time interval for log splitting
+      pattern: '.yyyy-MM-dd.log',
+      // contains the previously set pattern information
+      alwaysIncludePattern: true,
+      // the number of days to keep logs
+      daysToKeep: 7,
+      // compress old logs with .gz
+      // compress: true,
+      // encoding format
+      encoding: 'utf-8',
     },
-    replaceConsole: true,
-  });
-};
-
-//name takes the categories item
-exports.getLogger = function(name) {
-  return log4js.getLogger(name || 'default');
-};
-
-//used to combine with express
-exports.useLogger = function(app, logger) {
-  app.use(log4js.connectLogger(logger || log4js.getLogger('default'), {
-    format: '[:remote-addr :method :url :status :response-timems][:referrer HTTP/:http-version :user-agent]',
-  }));
-};
-
-function initLogger(filePath = 'mainnet') {
-  const file = `./logs/${new Date().Format('yyyy-MM-dd')}/${filePath}/log/`;
-  const extend = '-yyyy-MM-dd.log';
-
-  log4js.configure({
-    appenders: {
-      error: {
-        alwaysIncludePattern: true,
-        filename: file,
-        pattern: 'error' + extend,
-        type: 'dateFile',
-      },
-      info: {
-        alwaysIncludePattern: true,
-        filename: file,
-        pattern: 'info' + extend,
-        type: 'dateFile',
-      },
-      stdout: {
-        type: 'stdout',
-      },
-      warning: {
-        alwaysIncludePattern: true,
-        filename: file,
-        pattern: 'warning' + extend,
-        type: 'dateFile',
-      },
+    // appender3: output to error log
+    error: {
+      type: 'dateFile',
+      filename: `./logs/${appName}/${netType}_error`,
+      pattern: '.yyyy-MM-dd.log',
+      alwaysIncludePattern: true,
+      daysToKeep: 7,
+      // compress: true,
+      encoding: 'utf-8',
     },
-    categories: {
-      default: {
-        appenders: ['stdout', 'info'],
-        level: 'INFO',
-      },
-      error: {
-        appenders: ['stdout', 'error'],
-        level: 'ERROR',
-      },
-      info: {
-        appenders: ['stdout', 'info'],
-        level: 'INFO',
-      },
-      warning: {
-        appenders: ['stdout', 'warning'],
-        level: 'WARN',
-      },
+    errorFile: {
+      type: 'logLevelFilter',
+      level: 'warn',
+      maxLevel: 'error',
+      appender: 'error',
     },
-    replaceConsole: true,
-  });
-}
+    // appender4: output to trade log
+    info: {
+      type: 'dateFile',
+      filename: `./logs/${appName}/${netType}_txInfo`,
+      pattern: '.yyyy-MM-dd.log',
+      alwaysIncludePattern: true,
+      daysToKeep: 7,
+      // compress: true,
+      encoding: 'utf-8',
+    },
+    txFile: {
+      type: 'logLevelFilter',
+      level: 'info',
+      maxLevel: 'info',
+      appender: 'info',
+    },
+  },
+  categories: {
+    default: {
+      appenders: ['dataFile', 'console', 'errorFile', 'txFile'],
+      level: 'info',
+    },
+  },
+});
 
-function getLogger(name) {
-  return log4js.getLogger(name || 'default');
-}
-
-// TODO: Modify code
-initLogger(netType);
-const log = getLogger();
+const log = log4js.getLogger();
 
 module.exports = {
   log,

@@ -23,7 +23,7 @@ async function post(url, data, duration = 20000) {
     });
     return Promise.resolve(result);
   } catch (error) {
-    console.log('When you request url: ', url, ' You encounter an error: ', error.response);
+    log.error('When you request url: ', url, ' You encounter an error: ', error.response);
     return Promise.reject(error.code);
   }
 }

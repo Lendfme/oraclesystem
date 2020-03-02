@@ -33,6 +33,10 @@ const {
   ERROR_MSG,
 } = require('./src/utils/config/error.config');
 
+const {
+  log,
+} = require('./src/utils/logger/log');
+
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -58,13 +62,13 @@ async function parsePriceData(priceData, currency, timestamp) {
   let result;
   let price = '0';
   let endSign = false;
-  console.log(`parsePriceData : ${currency} ; timestamp : ${timestamp}----------------------------\n`);
+  log.debug(`parsePriceData : ${currency} ; timestamp : ${timestamp}----------------------------\n`);
   for (let index = 0; index < priceData.length; index++) {
     price = '0';
     endSign = false;
-    console.log(`exchange: ${priceData[index].sign}, ${timestamp}, length: ${data.length}`);
-    console.log(`res: ${JSON.stringify(priceData[index])}`);
-    console.log('\n');
+    log.debug(`exchange: ${priceData[index].sign}, ${timestamp}, length: ${data.length}`);
+    log.debug(`res: ${JSON.stringify(priceData[index])}`);
+    log.debug('\n');
     if (!priceData[index].data)
       continue;
 
@@ -140,7 +144,7 @@ async function parsePriceData(priceData, currency, timestamp) {
           break;
       }
     } catch (error) {
-      console.log(error);
+      log.error(error);
       monitorData.err_code = ERROR_CODE.SYNC_PRICE_PARSE_ERROR;
       monitorData.err_msg = ERROR_MSG.SYNC_PRICE_PARSE_ERROR;
       monitorData.timestamp = Math.ceil(Date.now() / 1000);
@@ -156,8 +160,8 @@ async function parsePriceData(priceData, currency, timestamp) {
     if (endSign)
       data.push([priceData[index].sign, currency, price.toString(), endSign, timestamp]);
   }
-  console.log(`currency: ${currency}, ${timestamp}, length: ${data.length}`);
-  console.log(data);
+  log.debug(`currency: ${currency}, ${timestamp}, length: ${data.length}`);
+  log.debug(data);
   if (data.length < medianStrategy[currency].leastValidValue) {
     monitorData.err_code = ERROR_CODE.SYNC_PRICE_FILTER_ERROR;
     monitorData.err_msg = ERROR_MSG.SYNC_PRICE_FILTER_ERROR;
@@ -224,8 +228,8 @@ async function verifyTokenlonPrice(exchangeName, assetName, calculatingBTCPrice)
           };
           post(monitorGetPriceUrl, monitorData);
         }
-        console.log('tokenlon price', getImBTCPrice);
-        console.log('exchange price', calculatingBTCPrice);
+        log.debug('tokenlon price', getImBTCPrice);
+        log.debug('exchange price', calculatingBTCPrice);
         if (calculatingBTCPrice < getImBTCPrice) {
           return {
             'exchange': exchangeName,
@@ -240,7 +244,7 @@ async function verifyTokenlonPrice(exchangeName, assetName, calculatingBTCPrice)
           };
         }
       } else {
-        console.log('Get tokenlon price error: ');
+        log.error('Get tokenlon price error: ');
         monitorData.err_code = ERROR_CODE.IMBTC_API_ERROR;
         monitorData.err_msg = ERROR_MSG.IMBTC_API_ERROR;
         monitorData.timestamp = Math.ceil(Date.now() / 1000);
@@ -250,7 +254,7 @@ async function verifyTokenlonPrice(exchangeName, assetName, calculatingBTCPrice)
         post(monitorGetPriceUrl, monitorData);
       }
     } catch (error) {
-      console.log('Got an error: ', error);
+      log.error('Got an error: ', error);
       monitorData.err_code = ERROR_CODE.IMBTC_API_ERROR;
       monitorData.err_msg = ERROR_MSG.IMBTC_API_ERROR;
       monitorData.timestamp = Math.ceil(Date.now() / 1000);
@@ -284,8 +288,8 @@ async function verifyTokenlonPrice(exchangeName, assetName, calculatingBTCPrice)
             'exchange_price': calculatingBTCPrice,
           };
           post(monitorGetPriceUrl, monitorData);
-          console.log('huobi price', btcPrice);
-          console.log('exchange price', calculatingBTCPrice);
+          log.debug('huobi price', btcPrice);
+          log.debug('exchange price', calculatingBTCPrice);
         } else {
           monitorData.err_code = ERROR_CODE.HBTC_PRICE_ERROR;
           monitorData.err_msg = ERROR_MSG.HBTC_PRICE_ERROR;
@@ -310,7 +314,7 @@ async function verifyTokenlonPrice(exchangeName, assetName, calculatingBTCPrice)
           };
         }
       } else {
-        console.log('Get tokenlon price error: ');
+        log.error('Get tokenlon price error: ');
         monitorData.err_code = ERROR_CODE.IMBTC_API_ERROR;
         monitorData.err_msg = ERROR_MSG.IMBTC_API_ERROR;
         monitorData.timestamp = Math.ceil(Date.now() / 1000);
@@ -320,7 +324,7 @@ async function verifyTokenlonPrice(exchangeName, assetName, calculatingBTCPrice)
         post(monitorGetPriceUrl, monitorData);
       }
     } catch (error) {
-      console.log('Got an error: ', error);
+      log.error('Got an error: ', error);
       monitorData.err_code = ERROR_CODE.IMBTC_API_ERROR;
       monitorData.err_msg = ERROR_MSG.IMBTC_API_ERROR;
       monitorData.timestamp = Math.ceil(Date.now() / 1000);
@@ -342,7 +346,7 @@ async function main() {
   // eslint-disable-next-line no-constant-condition
   while (true) {
 
-    console.log('start----------------------------\n');
+    log.debug('start----------------------------\n');
     time = Math.ceil(Date.now() / 1000);
     for (let i = 0; i < supportAssets.length; i++) {
 
@@ -351,7 +355,7 @@ async function main() {
         // eslint-disable-next-line max-len
         asyncGet(apiPriceConfig.apiList[supportAssets[i]][index], duration, priceData[supportAssets[i]], apiPriceConfig.exchange[index]);
         // eslint-disable-next-line max-len
-        console.log(`sync ${supportAssets[i]} price [${index}]:${apiPriceConfig.exchange[index]}  url: ${apiPriceConfig.apiList[supportAssets[i]][index]}`);
+        log.debug(`sync ${supportAssets[i]} price [${index}]:${apiPriceConfig.exchange[index]}  url: ${apiPriceConfig.apiList[supportAssets[i]][index]}`);
       }
       monitorData.err_code = ERROR_CODE.NO_ERROR;
       monitorData.err_msg = ERROR_MSG.NO_ERROR;
@@ -389,9 +393,9 @@ async function main() {
 
       priceMedian = getMedian(medianData[supportAssets[index]]);
 
-      console.log(supportAssets[index]);
-      console.log(priceMedian.result);
-      console.log(priceMedian.median.toString());
+      log.debug(supportAssets[index]);
+      log.debug(priceMedian.result);
+      log.debug(priceMedian.median.toString());
       if (priceMedian.result) {
 
         // eslint-disable-next-line eqeqeq
@@ -399,7 +403,7 @@ async function main() {
 
           // eslint-disable-next-line max-len
           const btcPrice = await verifyTokenlonPrice(priceMedian.exchange, supportAssets[index], priceMedian.median.toString());
-          console.log(btcPrice);
+          log.debug(btcPrice);
           if (btcPrice.result) {
             data.push([btcPrice.exchange, supportAssets[index], btcPrice.price.toString(), time]);
           }
@@ -416,14 +420,14 @@ async function main() {
         post(monitorGetPriceUrl, monitorData);
       }
     }
-    console.log(data);
+    log.debug(data);
 
     if (data.length)
       oraclePrice.insertFeedPrice(data);
 
-    console.log('medianData----------------------------\n');
-    console.log(medianData);
-    console.log('end----------------------------\n\n');
+    log.debug('medianData----------------------------\n');
+    log.debug(medianData);
+    log.debug('end----------------------------\n\n');
     await delay(50000);
   }
 }
@@ -437,7 +441,7 @@ http.createServer(async function(req, res) {
   });
   const urlInfo = url.parse(req.url, true);
   let result = 'parameter error';
-  console.log('local request : ', req.url);
+  log.debug('local request : ', req.url);
   let data = '';
   for (const key in urlInfo.query) {
     switch (key) {
@@ -464,7 +468,7 @@ http.createServer(async function(req, res) {
           case 'insertLendfMePrice':
             req.on('data', async function(chunk) {
               data += chunk;
-              console.log(data);
+              log.debug(data);
               oraclePrice.insertLendfMePrice(JSON.parse(data));
               res.end(`${data}`);
             });

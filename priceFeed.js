@@ -75,9 +75,9 @@ async function feed() {
   const currentNet = netType.toUpperCase();
   try {
     const web3 = web3Provider(netType);
-    log.info('\n');
-    log.info('-----------------------------------');
-    log.info(currentNet, ' start to feed price ...');
+    log.debug('\n');
+    log.debug('-----------------------------------');
+    log.debug(currentNet, ' start to feed price ...');
     // init
     const account = new Account(netType, web3);
     const priceOracle = new Oracle(netType, oracleContract[netType], web3);
@@ -107,15 +107,15 @@ async function feed() {
         'version': '',
       };
       const result = await post(monitorPostPriceUrl, data);
-      log.info('Request data is: ', data.err_msg);
-      log.info('Request response is: ', result.data);
+      log.error('Request data is: ', data.err_msg);
+      log.error('Request response is: ', result.data);
       log.error(currentNet, ' current poster is: ', posterAccount, 'contract poster is: ', poster);
       return;
     }
 
     currentBalance = await account.getBalance(priceOracle.poster);
     currentBalanceFromWei = web3.utils.fromWei(currentBalance.toString(), 'ether');
-    log.info(currentNet, ' current balance is: ', currentBalanceFromWei);
+    log.debug(currentNet, ' current balance is: ', currentBalanceFromWei);
     currentTime = Math.round(new Date().getTime() / 1000);
     if (currentBalanceFromWei < minBalance) {
       log.warn(currentNet, 'Attention to your balance! please deposit more!');
@@ -132,20 +132,20 @@ async function feed() {
         'version': '',
       };
       const result = await post(monitorPostPriceUrl, data);
-      log.info('Request data is: ', data);
-      log.info('Request response is: ', result.status);
+      log.warn('Request data is: ', data);
+      log.warn('Request response is: ', result.status);
     }
 
     // get all assets current price and pending anchor price
     for (let i = 0, len = supportAssets.length; i < len; i++) {
       let anchorPrice = await priceOracle.getPendingAnchor(assets[netType][supportAssets[i]]);
       anchorPrices.push(anchorPrice);
-      log.info(`${currentNet} ${supportAssets[i]} pending anchor is: ${anchorPrice.priceMantissa.toString()}`);
+      log.debug(`${currentNet} ${supportAssets[i]} pending anchor is: ${anchorPrice.priceMantissa.toString()}`);
       anchorPrice = new BN(anchorPrice.priceMantissa);
 
       const requestUrl = getUrl('feedPrice', supportAssets[i]);
       let currentPrice = await request(requestUrl);
-      log.info(currentNet, ' get current price is: ', currentPrice);
+      log.debug(currentNet, ' get current price is: ', currentPrice);
       if (typeof (currentPrice) == 'undefined') {
         const data = {
           'app': 'feed_price',
@@ -160,8 +160,8 @@ async function feed() {
           'version': '',
         };
         const result = await post(monitorPostPriceUrl, data);
-        log.info('Request data is: ', data.err_msg);
-        log.info('Request response is: ', result.data);
+        log.error('Request data is: ', data.err_msg);
+        log.error('Request response is: ', result.data);
         continue;
       }
       const prevoiusSyncTime = currentPrice[0].timestamp;
@@ -180,12 +180,12 @@ async function feed() {
           'version': '',
         };
         const result = await post(monitorPostPriceUrl, data);
-        log.info('Request data is: ', data.err_msg);
-        log.info('Request response is: ', result.data);
+        log.error('Request data is: ', data.err_msg);
+        log.error('Request response is: ', result.data);
         continue;
       }
 
-      log.info(`${currentNet} ${supportAssets[i]} current price is: ${currentPrice[0].price.toString()}`);
+      log.debug(`${currentNet} ${supportAssets[i]} current price is: ${currentPrice[0].price.toString()}`);
       currentPrice = new BN(currentPrice[0].price);
 
       const toWritePrice = mantissaOne.mul(new BN(10 ** 8)).div(currentPrice).mul(new BN(10 ** supposedMantissa[i]));
@@ -194,8 +194,8 @@ async function feed() {
       actualPrices.push([supportAssets[i], finalPrice.toString(), assets[netType][supportAssets[i]]]);
     }
 
-    log.info(' Get prices are: ', getPrices);
-    log.info(' Actual prices are: ', actualPrices);
+    log.debug(' Get prices are: ', getPrices);
+    log.debug(' Actual prices are: ', actualPrices);
 
     const finalWritingPrices = [];
     const finalAssets = [];
@@ -204,9 +204,9 @@ async function feed() {
     const toVerifyPrices = [];
 
     for (let i = 0, len = getPrices.length; i < len; i++) {
-      log.info(currentNet, ' last feeding time is: ', previousTime);
+      log.debug(currentNet, ' last feeding time is: ', previousTime);
       previousPrice = await priceOracle.getPrice(getPrices[i][2]);
-      log.info(currentNet, ` ${getPrices[i][0]} get price from contract is: `, previousPrice.toString());
+      log.debug(currentNet, ` ${getPrices[i][0]} get price from contract is: `, previousPrice.toString());
       const currentBlockNumber = await priceOracle.getBlockNumber();
       if (previousTime !== 0) {
         result = feedPrice(
@@ -282,8 +282,8 @@ async function feed() {
       'version': '',
     };
     const response = await post(monitorPostPriceUrl, data);
-    log.info('Request data is: ', data.err_msg);
-    log.info('Request response is: ', response.data);
+    log.debug('Request data is: ', data.err_msg);
+    log.debug('Request response is: ', response.data);
   } catch (err) {
     log.error('You get an error in try-catch', err);
 
@@ -300,19 +300,19 @@ async function feed() {
       'version': '',
     };
     const result = await post(monitorPostPriceUrl, data);
-    log.info('Request data is: ', data.err_msg);
-    log.info('Request response is: ', result.data);
+    log.error('Request data is: ', data.err_msg);
+    log.error('Request response is: ', result.data);
   }
   return;
 }
 
 async function main() {
-  log.info('\n\n\n');
-  log.info('Init files');
-  log.info('start to run!');
-  log.info('-------------------------------------------');
-  log.info('-------------------------------------------');
-  log.info('\n\n\n');
+  log.debug('\n\n\n');
+  log.debug('Init files');
+  log.debug('start to run!');
+  log.debug('-------------------------------------------');
+  log.debug('-------------------------------------------');
+  log.debug('\n\n\n');
 
   await delay(getIntervalTime(moment, true));
 
