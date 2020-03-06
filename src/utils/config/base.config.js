@@ -24,7 +24,7 @@ const supportAssets = ['usdx', 'usdt', 'imbtc', 'hbtc', 'dsr'];
 const supposedMantissa = [0, 12, 10, 0, 0];
 // Valid price strategy
 const medianStrategy = {
-  dai: {
+  dsr: {
     allExchanges: 7,
     leastValidValue: 5,
     safePriceSwing: 0.01,

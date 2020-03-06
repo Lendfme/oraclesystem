@@ -371,7 +371,10 @@ async function main() {
       priceData[supportAssets[i]] = [];
       for (let index = 0; index < apiPriceConfig.apiList[supportAssets[i]].length; index++) {
         // eslint-disable-next-line max-len
-        asyncGet(apiPriceConfig.apiList[supportAssets[i]][index], duration, priceData[supportAssets[i]], apiPriceConfig.exchange[index]);
+        // TODO:
+        const requestURL = apiPriceConfig.apiList[supportAssets[i]][index];
+        const exchangeName = requestURL.split('.')[1];
+        asyncGet(requestURL, duration, priceData[supportAssets[i]], exchangeName);
         // eslint-disable-next-line max-len
         console.log(`sync ${supportAssets[i]} price [${index}]:${apiPriceConfig.exchange[index]}  url: ${apiPriceConfig.apiList[supportAssets[i]][index]}`);
       }
@@ -387,7 +390,7 @@ async function main() {
 
     while (endflag < supportAssets.length) {
       for (let index = 0; index < supportAssets.length; index++) {
-        if (priceData[supportAssets[index]].length === apiPriceConfig.exchange.length) {
+        if (priceData[supportAssets[index]].length === medianStrategy[supportAssets[index]].allExchanges) {
           // eslint-disable-next-line max-len
           medianData[supportAssets[index]] = await parsePriceData(priceData[supportAssets[index]], supportAssets[index], time);
           // eslint-disable-next-line require-atomic-updates
