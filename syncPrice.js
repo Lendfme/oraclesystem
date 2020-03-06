@@ -175,8 +175,13 @@ async function parsePriceData(priceData, currency, timestamp) {
       post(monitorGetPriceUrl, monitorData);
     }
 
-    if (endSign)
-      data.push([priceData[index].sign, currency, price.toString(), endSign, timestamp]);
+    if (endSign) {
+      let finalPrice = price.toString();
+      if (currency === 'dsr' && (priceData[index].sign === 'bitfinex' || priceData[index].sign === 'bittrex')) {
+        finalPrice = (1 / finalPrice).toFixed(6);
+      }
+      data.push([priceData[index].sign, currency, finalPrice, endSign, timestamp]);
+    }
   }
   console.log(`currency: ${currency}, ${timestamp}, length: ${data.length}`);
   console.log(data);

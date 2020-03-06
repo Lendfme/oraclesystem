@@ -15,7 +15,7 @@ const binanceUSDTPrice = 'https://api.binance.com/api/v3/ticker/price?symbol=ETH
 //   "ask": "232.78",
 //   "volume": "1509.05360000"
 // }
-const coinbaseDAIPrice = `https://api.pro.coinbase.com/products/ETH-DAI/ticker`;
+const coinbaseDAIPrice = 'https://api.pro.coinbase.com/products/ETH-DAI/ticker';
 
 // response is: {
 //     "ask": "1.001716",
@@ -148,7 +148,7 @@ const bittrexUSDTPrice = 'https://api.bittrex.com/api/v1.1/public/getticker?mark
 //         }
 //     }
 // }
-const krakenDAIPrice = `https://api.kraken.com/0/public/Ticker?pair=ETHDAI`;
+const krakenDAIPrice = 'https://api.kraken.com/0/public/Ticker?pair=ETHDAI';
 
 // response is: {
 //     "code": "200000",
@@ -233,7 +233,7 @@ const imBTCPrice = 'https://tokenlon-core-market.tokenlon.im/rest/get_ticker?per
 //     "timestamp": "2020-02-20T02:22:05.555Z",
 //     "quote_volume_24h": "16567.69"
 // }
-const okexDAIPrice = `https://www.okex.com/api/spot/v3/instruments/ETH-DAI/ticker`;
+const okexDAIPrice = 'https://www.okex.com/api/spot/v3/instruments/ETH-DAI/ticker';
 
 
 module.exports = {
