@@ -50,7 +50,7 @@ class Oracle extends BaseContract {
   // assetPrices(asset)
   getPrice(assetAddress) {
     return new Promise((resolve) => {
-      this.contract.methods.assetPrices(assetAddress).call()
+      this.contract.methods._assetPrices(assetAddress).call()
         .then(result => {
           resolve(result);
         })
