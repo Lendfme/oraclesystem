@@ -6,9 +6,21 @@ const exchange = [
   'bitfinex',
   'bittrex',
   'kucoin',
+  'kraken',
+  'coinbase',
+  'okex',
 ];
 
 const apiList = {
+  'dai': [
+    'ttps://api.hitbtc.com/api/2/public/ticker/ETHDAI?limit=1',
+    'https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=ETH-DAI',
+    'https://api-pub.bitfinex.com/v2/tickers/?symbols=tDAIETH',
+    'https://api.bittrex.com/api/v1.1/public/getticker?market=ETH-DAI',
+    'https://api.kraken.com/0/public/Ticker?pair=ETHDAI',
+    'https://api.pro.coinbase.com/products/ETH-DAI/ticker',
+    'https://www.okex.com/api/spot/v3/instruments/ETH-DAI/ticker',
+  ],
   'hbtc': [
     'https://api.binance.com/api/v3/ticker/price?symbol=ETHBTC',
     'https://api.hitbtc.com/api/2/public/ticker/ETHBTC?limit=1',

@@ -136,6 +136,28 @@ async function parsePriceData(priceData, currency, timestamp) {
             endSign = true;
           }
           break;
+        case apiPriceConfig.exchange[7]:
+          if (result.hasOwnProperty('price') && result.price && !isNaN(result.price)) {
+            price = result.price.toString();
+            endSign = true;
+          }
+          break;
+        case apiPriceConfig.exchange[8]:
+          if (result.error.length === 0
+            && result.result instanceof Object
+            && Object.values(result.result)[0].c[0]
+            && !isNaN(Object.values(result.result)[0].c[0])
+          ) {
+            price = (Object.values(result.result)[0].c[0]).toString();
+            endSign = true;
+          }
+          break;
+        case apiPriceConfig.exchange[9]:
+          if (result.hasOwnProperty('last') && result.last && !isNaN(result.last)) {
+            price = result.last.toString();
+            endSign = true;
+          }
+          break;
         default:
           break;
       }
