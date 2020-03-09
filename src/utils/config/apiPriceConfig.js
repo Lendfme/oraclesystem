@@ -15,7 +15,6 @@ const apiList = {
   'dsr': [
     'https://api.hitbtc.com/api/2/public/ticker/ETHDAI?limit=1',
     'https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=ETH-DAI',
-    'https://api-pub.bitfinex.com/v2/tickers/?symbols=tDAIETH',
     'https://api.bittrex.com/api/v1.1/public/getticker?market=ETH-DAI',
     'https://api.kraken.com/0/public/Ticker?pair=ETHDAI',
     'https://api.pro.coinbase.com/products/ETH-DAI/ticker',

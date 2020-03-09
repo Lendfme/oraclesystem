@@ -25,9 +25,9 @@ const supposedMantissa = [0, 12, 10, 0, 0];
 // Valid price strategy
 const medianStrategy = {
   dsr: {
-    allExchanges: 7,
-    leastValidValue: 5,
-    safePriceSwing: 0.01,
+    allExchanges: 6,
+    leastValidValue: 4,
+    safePriceSwing: 0.015,
   },
   hbtc: {
     allExchanges: 7,      // Total number of exchanges.
