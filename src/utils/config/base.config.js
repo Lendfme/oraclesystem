@@ -53,6 +53,7 @@ const medianStrategy = {
 
 // when add a new collateral asset, need to add here.
 const mainnetAssets = {
+  dsr:   '0x06AF07097C9Eeb7fD685c692751D5C66dB49c215',
   hbtc:  '0x0316EB71485b0Ab14103307bf65a021042c6d380',
   imbtc: '0x3212b29E33587A00FB1C83346f5dBFA69A458923',
   pax:   '0x8E870D67F660D95d5be530380D0eC0bd388289E1',
@@ -84,7 +85,7 @@ const assets = {
 
 // price oracle contract address
 const oracleContract = {
-  mainnet: '0xE8a616FD9D7e82cfCaEf3f8a90c6A7EEA97E0856',
+  mainnet: '0xE171D8c7e9EE0DDAe1A9bec0c7f35294e48c28d4',
   rinkeby: '0xb84216cdfF19805B3a84E9Cc623960A6b7d5ef9D',
 };
 
