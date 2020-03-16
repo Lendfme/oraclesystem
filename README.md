@@ -6,13 +6,17 @@ Get and calculate price from off-chain source, and then set for the Lendf.me Sys
 
 ## Overview:
 
-For version 1.5, collateral assets will be:
+For version 1.5, we support assets are:
 
-- USDx
-- USDT
-- WETH
-- imBTC
 - HBTC
+- imBTC
+- PAX
+- TUSD
+- USDC
+- USDT
+- USDx
+- WBTC
+- WETH
 
 Feeding price every 10 minutes, we try to get price from these exchanges:
 

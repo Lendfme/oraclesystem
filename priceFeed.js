@@ -7,12 +7,18 @@ const {
 
 const {
   assets,
+  btcMantissa,
+  btcs,
   netType,
   minBalance,
   monitorPostPriceUrl,
   moment,
   oracleContract,
+  referenceBTC,
+  referenceStableCoin,
   serviceName,
+  stableCoinMantissa,
+  stableCoins,
   supportAssets,
   supposedMantissa,
   getUrl,
@@ -217,6 +223,21 @@ async function feed() {
       }
 
       if (result.type) {
+        if (getPrices[i][0] === referenceStableCoin) {
+          for (let j = 0, len = stableCoins.length; j < len; j++) {
+            assetNames.push(stableCoins[j]);
+            finalWritingPrices.push(((new BN(getPrices[i][1])).mul(new BN(10**(stableCoinMantissa[j])))).toString());
+            toVerifyPrices.push(((new BN(result.actualPrice)).mul(new BN(10**(stableCoinMantissa[j])))).toString());
+            finalAssets.push(assets[netType][stableCoins[j]]);
+          }
+        } else if (getPrices[i][0] === referenceBTC) {
+          for (let j = 0, len = btcs.length; j < len; j++) {
+            assetNames.push(btcs[j]);
+            finalWritingPrices.push(((new BN(getPrices[i][1])).mul(new BN(10**(btcMantissa[j])))).toString());
+            toVerifyPrices.push(((new BN(result.actualPrice)).mul(new BN(10**(btcMantissa[j])))).toString());
+            finalAssets.push(assets[netType][btcs[j]]);
+          }
+        }
         assetNames.push(getPrices[i][0]);
         finalWritingPrices.push(getPrices[i][1]);
         toVerifyPrices.push(result.actualPrice);
@@ -229,6 +250,8 @@ async function feed() {
     verifyResult.status = ERROR_CODE.NO_ERROR;
     if (finalWritingPrices.length !== 0) {
       log.info(currentNet, ' Current time is: ', currentTime);
+      log.info('You are going to set for assets are: ', finalAssets);
+      log.info('You are going to set new prices are: ', finalWritingPrices);
       const setPriceResult = await priceOracle.setPrices(finalAssets, finalWritingPrices);
       if (setPriceResult.status) {
         log.info(currentNet, ' Set new price!', finalWritingPrices);
