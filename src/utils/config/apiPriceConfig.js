@@ -10,6 +10,7 @@ const exchange = [
   'kraken',
   'okex',
   'kyber',
+  'oasisdex',
 ];
 
 const apiList = {
@@ -20,6 +21,7 @@ const apiList = {
     'https://api.kraken.com/0/public/Ticker?pair=ETHDAI',
     'https://api.pro.coinbase.com/products/ETH-DAI/ticker',
     'https://api.kyber.network/market',
+    'https://api.oasisdex.com/v2/prices/eth/dai',
   ],
   'hbtc': [
     'https://api.binance.com/api/v3/ticker/price?symbol=ETHBTC',

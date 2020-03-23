@@ -86,7 +86,7 @@ const assets = {
 // price oracle contract address
 const oracleContract = {
   mainnet: '0xE171D8c7e9EE0DDAe1A9bec0c7f35294e48c28d4',
-  rinkeby: '0xb84216cdfF19805B3a84E9Cc623960A6b7d5ef9D',
+  rinkeby: '0xd75AF5Bc8e1f022002c47508C27455A20738b1F5',
 };
 
 /* eslint-disable */

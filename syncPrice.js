@@ -162,8 +162,18 @@ async function parsePriceData(priceData, currency, timestamp) {
           if (result.hasOwnProperty('data')
             && result.data.length > 0
             && result.data[3].base_name === 'DAI'
+            && !isNaN(result.data[3].last_traded)
           ) {
             price = result.data[3].last_traded.toString();
+            endSign = true;
+          }
+          break;
+        case apiPriceConfig.exchange[11]:
+          if (result.hasOwnProperty('data')
+            && result.message === 'success'
+            && !isNaN(result.data.last)
+          ) {
+            price = result.data.last.toString();
             endSign = true;
           }
           break;
