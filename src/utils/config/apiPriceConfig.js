@@ -9,6 +9,7 @@ const exchange = [
   'pro',  // coinbase
   'kraken',
   'okex',
+  'kyber',
 ];
 
 const apiList = {
@@ -18,7 +19,7 @@ const apiList = {
     'https://api.bittrex.com/api/v1.1/public/getticker?market=ETH-DAI',
     'https://api.kraken.com/0/public/Ticker?pair=ETHDAI',
     'https://api.pro.coinbase.com/products/ETH-DAI/ticker',
-    'https://www.okex.com/api/spot/v3/instruments/ETH-DAI/ticker',
+    'https://api.kyber.network/market',
   ],
   'hbtc': [
     'https://api.binance.com/api/v3/ticker/price?symbol=ETHBTC',

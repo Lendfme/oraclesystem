@@ -158,6 +158,15 @@ async function parsePriceData(priceData, currency, timestamp) {
             endSign = true;
           }
           break;
+        case apiPriceConfig.exchange[10]:
+          if (result.hasOwnProperty('data')
+            && result.data.length > 0
+            && result.data[3].base_name === 'DAI'
+          ) {
+            price = result.data[3].last_traded.toString();
+            endSign = true;
+          }
+          break;
         default:
           break;
       }
@@ -177,7 +186,8 @@ async function parsePriceData(priceData, currency, timestamp) {
 
     if (endSign) {
       let finalPrice = price.toString();
-      if (currency === 'dsr' && (priceData[index].sign === 'bitfinex' || priceData[index].sign === 'bittrex')) {
+      // eslint-disable-next-line max-len
+      if (currency === 'dsr' && (priceData[index].sign === 'bitfinex' || priceData[index].sign === 'bittrex' || priceData[index].sign === 'kyber')) {
         finalPrice = (1 / finalPrice).toFixed(6);
       }
       data.push([priceData[index].sign, currency, finalPrice, endSign, timestamp]);
