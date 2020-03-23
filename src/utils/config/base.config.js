@@ -25,7 +25,7 @@ const supposedMantissa = [0, 12, 10, 0, 0];
 // Valid price strategy
 const medianStrategy = {
   dsr: {
-    allExchanges: 6,
+    allExchanges: 7,
     leastValidValue: 4,
     safePriceSwing: 0.015,
   },
