@@ -8,6 +8,7 @@ Get and calculate price from off-chain source, and then set for the Lendf.me Sys
 
 For version 1.5, we support assets are:
 
+- DAI
 - HBTC
 - imBTC
 - PAX
@@ -27,6 +28,8 @@ Feeding price every 10 minutes, we try to get price from these exchanges:
 - Huobi
 - Gate.io
 - KuCoin
+- Kyber
+- Oasis
 
 ### Intervals
 
