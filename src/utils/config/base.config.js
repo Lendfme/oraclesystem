@@ -4,24 +4,6 @@ require('dotenv').config();
 const btcMantissa = [10];
 // If system havs not been set the price for 12 hours(43200s), must set a new price.
 const maxFeedingPriceInterval = 43200;
-// Max price difference ratio when try to compare new price with previous price.
-const maxPriceSwing = 0.005;
-// Expect account has minimum eth amount.
-const minBalance = 0.01;
-// Which btc is used as the price benchmark for all btc.
-const referenceBTC = 'hbtc';
-// Which stablecoin is used as the price benchmark for all stablecoins.
-const referenceStableCoin = 'usdx';
-// Support btcs.
-const btcs = ['wbtc'];
-// Recommended stable coin magnification.
-const stableCoinMantissa = [0, 0, 12];
-// Support stablecoins.
-const stableCoins = ['pax', 'tusd', 'usdc'];
-// Multi-collateral currencies.
-const supportAssets = ['usdx', 'usdt', 'imbtc', 'hbtc', 'dsr'];
-// Recommended magnification.
-const supposedMantissa = [0, 12, 10, 0, 0];
 // Valid price strategy
 const medianStrategy = {
   dsr: {
@@ -50,6 +32,22 @@ const medianStrategy = {
     safePriceSwing: 0.01,
   },
 };
+// Expect account has minimum eth amount.
+const minBalance = 0.01;
+// Which btc is used as the price benchmark for all btc.
+const referenceBTC = 'hbtc';
+// Which stablecoin is used as the price benchmark for all stablecoins.
+const referenceStableCoin = 'usdx';
+// Support btcs.
+const btcs = ['wbtc'];
+// Recommended stable coin magnification.
+const stableCoinMantissa = [10, 0, 0, 12];
+// Support stablecoins.
+const stableCoins = ['husd', 'pax', 'tusd', 'usdc'];
+// Multi-collateral currencies.
+const supportAssets = ['usdx', 'usdt', 'imbtc', 'hbtc', 'dsr'];
+// Recommended magnification.
+const supposedMantissa = [0, 12, 10, 0, 0];
 
 // when add a new collateral asset, need to add here.
 const mainnetAssets = {
@@ -92,6 +90,8 @@ const oracleContract = {
 /* eslint-disable */
 const infuraKey = process.env.INFURA_KEY;
 const localPort = process.env.RANDOM_PORT;
+// Max price difference ratio when try to compare new price with previous price.
+const maxPriceSwing = process.env.MAX_SWING;
 // Interval time to run.
 const moment = process.env.MOMENT;
 // Monitor url
