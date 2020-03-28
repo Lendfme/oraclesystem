@@ -52,6 +52,7 @@ const supposedMantissa = [0, 12, 10, 0, 0];
 // when add a new collateral asset, need to add here.
 const mainnetAssets = {
   dsr:   '0x06AF07097C9Eeb7fD685c692751D5C66dB49c215',
+  husd:  '0xdF574c24545E5FfEcb9a659c229253D4111d87e1',
   hbtc:  '0x0316EB71485b0Ab14103307bf65a021042c6d380',
   imbtc: '0x3212b29E33587A00FB1C83346f5dBFA69A458923',
   pax:   '0x8E870D67F660D95d5be530380D0eC0bd388289E1',
@@ -65,6 +66,7 @@ const mainnetAssets = {
 
 const rinkebyAssets = {
   dsr:   '0x8a5C1BD4D75e168a4f65eB902c289400B90FD980',
+  husd:  '0x0D518472330FF1D943881BBBDda03b221A7F9F74',
   hbtc:  '0xcf07906CbCF9824D0caE475E8F958d48AcF1014C',
   imbtc: '0x5Dc95A046020880b93F15902540Dbfe86489FddA',
   pax:   '0x722E6238335d89393A42e2cA316A5fb1b8B2EB55',
