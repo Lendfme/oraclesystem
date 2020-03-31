@@ -9,7 +9,7 @@ const medianStrategy = {
   dsr: {
     allExchanges: 7,
     leastValidValue: 4,
-    safePriceSwing: 0.015,
+    safePriceSwing: 0.04,
   },
   hbtc: {
     allExchanges: 7,      // Total number of exchanges.
