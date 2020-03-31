@@ -136,6 +136,47 @@ async function parsePriceData(priceData, currency, timestamp) {
             endSign = true;
           }
           break;
+        case apiPriceConfig.exchange[7]:
+          if (result.hasOwnProperty('price') && result.price && !isNaN(result.price)) {
+            price = result.price.toString();
+            endSign = true;
+          }
+          break;
+        case apiPriceConfig.exchange[8]:
+          if (result.error.length === 0
+            && result.result instanceof Object
+            && Object.values(result.result)[0].c[0]
+            && !isNaN(Object.values(result.result)[0].c[0])
+          ) {
+            price = (Object.values(result.result)[0].c[0]).toString();
+            endSign = true;
+          }
+          break;
+        case apiPriceConfig.exchange[9]:
+          if (result.hasOwnProperty('last') && result.last && !isNaN(result.last)) {
+            price = result.last.toString();
+            endSign = true;
+          }
+          break;
+        case apiPriceConfig.exchange[10]:
+          if (result.hasOwnProperty('data')
+            && result.data.length > 0
+            && result.data[3].base_name === 'DAI'
+            && !isNaN(result.data[3].last_traded)
+          ) {
+            price = result.data[3].last_traded.toString();
+            endSign = true;
+          }
+          break;
+        case apiPriceConfig.exchange[11]:
+          if (result.hasOwnProperty('data')
+            && result.message === 'success'
+            && !isNaN(result.data.last)
+          ) {
+            price = result.data.last.toString();
+            endSign = true;
+          }
+          break;
         default:
           break;
       }
@@ -153,8 +194,14 @@ async function parsePriceData(priceData, currency, timestamp) {
       post(monitorGetPriceUrl, monitorData);
     }
 
-    if (endSign)
-      data.push([priceData[index].sign, currency, price.toString(), endSign, timestamp]);
+    if (endSign) {
+      let finalPrice = price.toString();
+      // eslint-disable-next-line max-len
+      if (currency === 'dsr' && (priceData[index].sign === 'bitfinex' || priceData[index].sign === 'bittrex' || priceData[index].sign === 'kyber')) {
+        finalPrice = (1 / finalPrice).toFixed(6);
+      }
+      data.push([priceData[index].sign, currency, finalPrice, endSign, timestamp]);
+    }
   }
   console.log(`currency: ${currency}, ${timestamp}, length: ${data.length}`);
   console.log(data);
@@ -349,7 +396,10 @@ async function main() {
       priceData[supportAssets[i]] = [];
       for (let index = 0; index < apiPriceConfig.apiList[supportAssets[i]].length; index++) {
         // eslint-disable-next-line max-len
-        asyncGet(apiPriceConfig.apiList[supportAssets[i]][index], duration, priceData[supportAssets[i]], apiPriceConfig.exchange[index]);
+        // TODO:
+        const requestURL = apiPriceConfig.apiList[supportAssets[i]][index];
+        const exchangeName = requestURL.split('.')[1];
+        asyncGet(requestURL, duration, priceData[supportAssets[i]], exchangeName);
         // eslint-disable-next-line max-len
         console.log(`sync ${supportAssets[i]} price [${index}]:${apiPriceConfig.exchange[index]}  url: ${apiPriceConfig.apiList[supportAssets[i]][index]}`);
       }
@@ -365,7 +415,7 @@ async function main() {
 
     while (endflag < supportAssets.length) {
       for (let index = 0; index < supportAssets.length; index++) {
-        if (priceData[supportAssets[index]].length === apiPriceConfig.exchange.length) {
+        if (priceData[supportAssets[index]].length === medianStrategy[supportAssets[index]].allExchanges) {
           // eslint-disable-next-line max-len
           medianData[supportAssets[index]] = await parsePriceData(priceData[supportAssets[index]], supportAssets[index], time);
           // eslint-disable-next-line require-atomic-updates

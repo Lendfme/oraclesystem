@@ -19,11 +19,16 @@ const stableCoinMantissa = [0, 0, 12];
 // Support stablecoins.
 const stableCoins = ['pax', 'tusd', 'usdc'];
 // Multi-collateral currencies.
-const supportAssets = ['usdx', 'usdt', 'imbtc', 'hbtc'];
+const supportAssets = ['usdx', 'usdt', 'imbtc', 'hbtc', 'dsr'];
 // Recommended magnification.
-const supposedMantissa = [0, 12, 10, 0];
+const supposedMantissa = [0, 12, 10, 0, 0];
 // Valid price strategy
 const medianStrategy = {
+  dsr: {
+    allExchanges: 7,
+    leastValidValue: 4,
+    safePriceSwing: 0.015,
+  },
   hbtc: {
     allExchanges: 7,      // Total number of exchanges.
     leastValidValue: 5,   // Minimum amount of valid exchange price.
@@ -48,6 +53,7 @@ const medianStrategy = {
 
 // when add a new collateral asset, need to add here.
 const mainnetAssets = {
+  dsr:   '0x06AF07097C9Eeb7fD685c692751D5C66dB49c215',
   hbtc:  '0x0316EB71485b0Ab14103307bf65a021042c6d380',
   imbtc: '0x3212b29E33587A00FB1C83346f5dBFA69A458923',
   pax:   '0x8E870D67F660D95d5be530380D0eC0bd388289E1',
@@ -60,6 +66,7 @@ const mainnetAssets = {
 };
 
 const rinkebyAssets = {
+  dsr:   '0x8a5C1BD4D75e168a4f65eB902c289400B90FD980',
   hbtc:  '0xcf07906CbCF9824D0caE475E8F958d48AcF1014C',
   imbtc: '0x5Dc95A046020880b93F15902540Dbfe86489FddA',
   pax:   '0x722E6238335d89393A42e2cA316A5fb1b8B2EB55',
@@ -78,8 +85,8 @@ const assets = {
 
 // price oracle contract address
 const oracleContract = {
-  mainnet: '0xE8a616FD9D7e82cfCaEf3f8a90c6A7EEA97E0856',
-  rinkeby: '0x22D79Eff644aF72f183Df3ACaF9293A636aa2014',
+  mainnet: '0xE171D8c7e9EE0DDAe1A9bec0c7f35294e48c28d4',
+  rinkeby: '0xd75AF5Bc8e1f022002c47508C27455A20738b1F5',
 };
 
 /* eslint-disable */

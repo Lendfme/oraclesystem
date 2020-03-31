@@ -6,6 +6,17 @@ const binanceBTCPrice = 'https://api.binance.com/api/v3/ticker/price?symbol=ETHB
 const binanceUSDxPrice = 'https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDC';
 const binanceUSDTPrice = 'https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT';
 
+// {
+//   "trade_id": 295277,
+//   "price": "233.57",
+//   "size": "0.5458",
+//   "time": "2020-03-05T12:37:50.510604Z",
+//   "bid": "232.21",
+//   "ask": "232.78",
+//   "volume": "1509.05360000"
+// }
+const coinbaseDAIPrice = 'https://api.pro.coinbase.com/products/ETH-DAI/ticker';
+
 // response is: {
 //     "ask": "1.001716",
 //     "bid": "1.001496",
@@ -93,6 +104,52 @@ const bittrexBTCPrice = 'https://api.bittrex.com/api/v1.1/public/getticker?marke
 const bittrexUSDxPrice = 'https://api.bittrex.com/api/v1.1/public/getticker?market=USD-ETH';
 const bittrexUSDTPrice = 'https://api.bittrex.com/api/v1.1/public/getticker?market=USDT-ETH';
 
+
+// {
+//     "error": [
+//     ],
+//     "result": {
+//         "ETHDAI": {
+//             "a": [        // ask
+//             "260.363000",
+//             "16",
+//             "16.000"
+//             ],
+//             "b": [        // bid
+//             "258.300000",
+//             "1",
+//             "1.000"
+//             ],
+//             "c": [        // close
+//             "260.221000",
+//             "0.79461218"
+//             ],
+//             "v": [        // volumn
+//             "18.07558823",
+//             "533.56357472"
+//             ],
+//             "p": [        // average price
+//             "258.745661",
+//             "267.102524"
+//             ],
+//             "t": [        // trading amount
+//             13,
+//             387
+//             ],
+//             "l": [        // lowest price
+//             "258.292000",
+//             "252.634000"
+//             ],
+//             "h": [        // highest price
+//             "261.402000",
+//             "286.843000"
+//             ],
+//             "o": "259.407000"  // opening price
+//         }
+//     }
+// }
+const krakenDAIPrice = 'https://api.kraken.com/0/public/Ticker?pair=ETHDAI';
+
 // response is: {
 //     "code": "200000",
 //     "data": {
@@ -158,6 +215,26 @@ const hbtcPrice = 'https://api.huobi.pro/market/detail/merged?symbol=ethbtc';
 // }
 const imBTCPrice = 'https://tokenlon-core-market.tokenlon.im/rest/get_ticker?period=24H&pairs=imBTC_ETH';
 
+// {
+//     "best_ask": "260.21",
+//     "best_bid": "257.49",
+//     "instrument_id": "ETH-DAI",
+//     "product_id": "ETH-DAI",
+//     "last": "260.5",
+//     "last_qty": "0",
+//     "ask": "260.21",
+//     "best_ask_size": "1.063452",
+//     "bid": "257.49",
+//     "best_bid_size": "0.668172",
+//     "open_24h": "272.09",
+//     "high_24h": "284.1",
+//     "low_24h": "260.5",
+//     "base_volume_24h": "60.18",
+//     "timestamp": "2020-02-20T02:22:05.555Z",
+//     "quote_volume_24h": "16567.69"
+// }
+const okexDAIPrice = 'https://www.okex.com/api/spot/v3/instruments/ETH-DAI/ticker';
+
 
 module.exports = {
   binanceBTCPrice,
@@ -169,6 +246,7 @@ module.exports = {
   bittrexBTCPrice,
   bittrexUSDTPrice,
   bittrexUSDxPrice,
+  coinbaseDAIPrice,
   gateBTCPrice,
   gateUSDTPrice,
   gateUSDxPrice,
@@ -180,7 +258,9 @@ module.exports = {
   huobiproUSDTPrice,
   huobiproUSDxPrice,
   imBTCPrice,
+  krakenDAIPrice,
   kucoinBTCPrice,
   kucoinUSDTPrice,
   kucoinUSDxPrice,
+  okexDAIPrice,
 };
