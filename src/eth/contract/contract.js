@@ -47,12 +47,12 @@ class BaseContract {
   async txHelper(account, count, receiver, originData) {
     const accountNonce = this.web3.utils.toHex(count);
     const {
-      // average,
-      fast,
+      average,
+      // fast,
     } = await getGasPrice();
     // TODO: const 10**6
-    // const averagePrice = Math.floor(average / '10' * safetyFactor * 10 ** 6).toString();
-    const averagePrice = Math.floor(fast / '10' * safetyFactor * 10 ** 6).toString();
+    const averagePrice = Math.floor(average / '10' * safetyFactor * 10 ** 6).toString();
+    // const averagePrice = Math.floor(fast / '10' * safetyFactor * 10 ** 6).toString();
     const price = this.web3.utils.toHex(this.web3.utils.toWei(averagePrice, 'kwei'));
     let calculateGas = await this.estimateGas(account, accountNonce, receiver, originData);
     // calculateGas = (calculateGas * safetyFactor).toFixed();

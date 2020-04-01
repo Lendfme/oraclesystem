@@ -4,30 +4,12 @@ require('dotenv').config();
 const btcMantissa = [10];
 // If system havs not been set the price for 12 hours(43200s), must set a new price.
 const maxFeedingPriceInterval = 43200;
-// Max price difference ratio when try to compare new price with previous price.
-const maxPriceSwing = 0.005;
-// Expect account has minimum eth amount.
-const minBalance = 0.01;
-// Which btc is used as the price benchmark for all btc.
-const referenceBTC = 'hbtc';
-// Which stablecoin is used as the price benchmark for all stablecoins.
-const referenceStableCoin = 'usdx';
-// Support btcs.
-const btcs = ['wbtc'];
-// Recommended stable coin magnification.
-const stableCoinMantissa = [0, 0, 12];
-// Support stablecoins.
-const stableCoins = ['pax', 'tusd', 'usdc'];
-// Multi-collateral currencies.
-const supportAssets = ['usdx', 'usdt', 'imbtc', 'hbtc', 'dsr'];
-// Recommended magnification.
-const supposedMantissa = [0, 12, 10, 0, 0];
 // Valid price strategy
 const medianStrategy = {
   dsr: {
     allExchanges: 7,
     leastValidValue: 4,
-    safePriceSwing: 0.015,
+    safePriceSwing: 0.04,
   },
   hbtc: {
     allExchanges: 7,      // Total number of exchanges.
@@ -50,10 +32,27 @@ const medianStrategy = {
     safePriceSwing: 0.01,
   },
 };
+// Expect account has minimum eth amount.
+const minBalance = 0.01;
+// Which btc is used as the price benchmark for all btc.
+const referenceBTC = 'hbtc';
+// Which stablecoin is used as the price benchmark for all stablecoins.
+const referenceStableCoin = 'usdx';
+// Support btcs.
+const btcs = ['wbtc'];
+// Recommended stable coin magnification.
+const stableCoinMantissa = [10, 0, 0, 12];
+// Support stablecoins.
+const stableCoins = ['husd', 'pax', 'tusd', 'usdc'];
+// Multi-collateral currencies.
+const supportAssets = ['usdx', 'usdt', 'imbtc', 'hbtc', 'dsr'];
+// Recommended magnification.
+const supposedMantissa = [0, 12, 10, 0, 0];
 
 // when add a new collateral asset, need to add here.
 const mainnetAssets = {
   dsr:   '0x06AF07097C9Eeb7fD685c692751D5C66dB49c215',
+  husd:  '0xdF574c24545E5FfEcb9a659c229253D4111d87e1',
   hbtc:  '0x0316EB71485b0Ab14103307bf65a021042c6d380',
   imbtc: '0x3212b29E33587A00FB1C83346f5dBFA69A458923',
   pax:   '0x8E870D67F660D95d5be530380D0eC0bd388289E1',
@@ -67,6 +66,7 @@ const mainnetAssets = {
 
 const rinkebyAssets = {
   dsr:   '0x8a5C1BD4D75e168a4f65eB902c289400B90FD980',
+  husd:  '0x0D518472330FF1D943881BBBDda03b221A7F9F74',
   hbtc:  '0xcf07906CbCF9824D0caE475E8F958d48AcF1014C',
   imbtc: '0x5Dc95A046020880b93F15902540Dbfe86489FddA',
   pax:   '0x722E6238335d89393A42e2cA316A5fb1b8B2EB55',
@@ -92,6 +92,8 @@ const oracleContract = {
 /* eslint-disable */
 const infuraKey = process.env.INFURA_KEY;
 const localPort = process.env.RANDOM_PORT;
+// Max price difference ratio when try to compare new price with previous price.
+const maxPriceSwing = process.env.MAX_SWING;
 // Interval time to run.
 const moment = process.env.MOMENT;
 // Monitor url

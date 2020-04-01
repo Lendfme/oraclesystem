@@ -10,6 +10,7 @@ For version 1.5, we support assets are:
 
 - DAI
 - HBTC
+- HUSD
 - imBTC
 - PAX
 - TUSD
