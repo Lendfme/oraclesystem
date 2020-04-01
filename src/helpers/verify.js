@@ -15,6 +15,9 @@ async function verify(priceOracle, assets, toVerifyPrices) {
     const feedPrice = await priceOracle.getPrice(assets[i]);
     priceOracle.log.info(assets[i], ' current oracle price is: ', feedPrice.toString());
     priceOracle.log.info(' Previous price is: ', toVerifyPrices[i].toString());
+    if (toVerifyPrices[i].toString() === '0') {
+      continue;
+    }
     if (toVerifyPrices[i].toString() === feedPrice.toString()) {
       result.msg.push([assets[i], toVerifyPrices[i].toString(), feedPrice.toString(), true]);
     } else {

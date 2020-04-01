@@ -87,6 +87,7 @@ const assets = {
 const oracleContract = {
   mainnet: '0xE171D8c7e9EE0DDAe1A9bec0c7f35294e48c28d4',
   rinkeby: '0xd75AF5Bc8e1f022002c47508C27455A20738b1F5',
+  testnet: '0x61055f1dAC1436cc86433D74910487Ca5D6E5276',
 };
 
 /* eslint-disable */
