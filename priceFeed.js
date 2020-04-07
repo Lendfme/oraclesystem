@@ -80,7 +80,13 @@ async function feed() {
     log.info(currentNet, ' start to feed price ...');
     // init
     const account = new Account(netType, web3);
-    const priceOracle = new Oracle(netType, oracleContract[netType], web3);
+    let oracleAddress = oracleContract[netType];
+    // eslint-disable-next-line no-undef
+    const netState = process.argv[2];
+    if (netState === 'testnet') {
+      oracleAddress = oracleContract.testnet;
+    }
+    const priceOracle = new Oracle(netType, oracleAddress, web3);
     // feed price result
     let result = {};
     // exchange price

@@ -8,6 +8,7 @@ Get and calculate price from off-chain source, and then set for the Lendf.me Sys
 
 For version 1.5, we support assets are:
 
+- BUSD
 - DAI
 - HBTC
 - HUSD
