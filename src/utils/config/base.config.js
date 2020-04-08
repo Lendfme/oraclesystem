@@ -41,9 +41,9 @@ const referenceStableCoin = 'usdx';
 // Support btcs.
 const btcs = ['wbtc'];
 // Recommended stable coin magnification.
-const stableCoinMantissa = [0, 10, 0, 0, 12];
+const stableCoinMantissa = [0, 10, 0, 0, 12, 0];
 // Support stablecoins.
-const stableCoins = ['busd', 'husd', 'pax', 'tusd', 'usdc'];
+const stableCoins = ['busd', 'husd', 'pax', 'tusd', 'usdc', 'usr'];
 // Multi-collateral currencies.
 const supportAssets = ['usdx', 'usdt', 'imbtc', 'hbtc', 'dsr'];
 // Recommended magnification.
@@ -76,6 +76,7 @@ const rinkebyAssets = {
   usdc:  '0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b',
   usdt:  '0xaa74B62f737bbA1D2E520F9ec38Fc23b6E6817df',
   usdx:  '0xD96cC7f80C1cb595eBcdC072531e1799B3a2436E',
+  usr:   '0x1f2B68512A0e4C2CcEFAd0af60E699B22588362a',
   wbtc:  '0x7B65B937A0f3764a7a5e29fD696C391233218E91',
   weth:  '0x7A967421410019044aA829746D65575325082e99',
 };
